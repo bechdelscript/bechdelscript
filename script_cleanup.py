@@ -55,7 +55,7 @@ script_title_df = title_cleanup(script_title_df)
 #print(script_title_df.columns)
 
 
-# Rename the film names in the ebchdel_df dataframe
+# Rename the film names in the bechdel_df dataframe
 bechdel_df['title'].replace('THE|the|,the', '', regex=True, inplace=True)
 bechdel_df['title'].replace(',', '', regex=True, inplace=True)
 bechdel_df.replace('&amp;', '', regex=True, inplace=True)
@@ -77,4 +77,7 @@ bechdel_script_df.drop(columns = 'script', inplace = True)
 #print(bechdel_script_df['rating'].value_counts())
 #print(bechdel_script_df['file_name'].head())
 
-bechdel_script_df.to_csv('data/bechdel_script_1.csv')
+bechdel_script_df.to_csv('data/bechdel_script_kaggle.csv')
+
+# commenter ça
+# drop les doublons
