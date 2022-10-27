@@ -69,11 +69,9 @@ def get_script(relative_link: str) -> Tuple[str, str]:
 
 def get_clean_title(paragraph: bs4.element.Tag) -> str:
     title = paragraph.a.text
-    if title.endswith(', The"'):
-        # first character is a "
-        title = title[1:]
+    if title.endswith(", The"):
         # remove the , The" at the end
-        title.replace(', The"', "")
+        title = title.replace(", The", "")
         # Add The at the beginning
         title = "The " + title
     return title
