@@ -49,35 +49,36 @@ def title_cleanup(df):
     df['title'].replace('THE|the', '', regex=True, inplace=True)
     # change all letters to lowercase
     df['title'] = [name.lower() for name in df['title']]
+    # Replace the &#39 values
+    df.replace('&#39;', "'", regex=True, inplace=True)
+    # remove the commas
+    df['title'].replace(',', '', regex=True, inplace=True)
     return df
 
+# Cleanup the film titles in both dataframes for an easier merge
 script_title_df = title_cleanup(script_title_df)
-#print(script_title_df.columns)
+bechdel_df = title_cleanup(bechdel_df)
 
-
-# Rename the film names in the bechdel_df dataframe
-bechdel_df['title'].replace('THE|the|,the', '', regex=True, inplace=True)
-bechdel_df['title'].replace(',', '', regex=True, inplace=True)
-bechdel_df.replace('&amp;', '', regex=True, inplace=True)
-bechdel_df.replace('&#39;', "'", regex=True, inplace=True)
-bechdel_df['title'] = [name.lower() for name in bechdel_df['title']]
-
-#print(script_title_df['title'].sample(5))
-#print(bechdel_df.sample(5))
-
+# Merge the script title dataframe and the bechdel dataframe on 'title' field
 bechdel_script_df = pd.merge(script_title_df, bechdel_df, left_on='title', right_on='title')
 
+# Transform filename field into path to file, for easier access in the future
 def fpath(filename):
     return ('data/Scripts/'+filename)
-
 bechdel_script_df['file_name'] = bechdel_script_df['file_name'].apply(fpath)
 
-bechdel_script_df.drop(columns = 'script', inplace = True)
-#print(bechdel_script_df.columns)
-#print(bechdel_script_df['rating'].value_counts())
-#print(bechdel_script_df['file_name'].head())
+# Drop duplicates on title field
+bechdel_script_df.drop_duplicates(subset = 'title', keep = 'first', inplace=True)
 
+# Drop the script column from this dataframe
+bechdel_script_df.drop(columns = 'script', inplace = True)
+
+# Save dataframe to csv file.
 bechdel_script_df.to_csv('data/bechdel_script_kaggle.csv')
 
-# commenter ça
-# drop les doublons
+
+# For further exploration :
+
+print(bechdel_script_df.shape)
+print(bechdel_script_df['rating'].value_counts())
+#print(bechdel_script_df['file_name'].head())
