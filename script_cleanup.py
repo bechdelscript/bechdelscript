@@ -8,15 +8,15 @@ import re
 import warnings
 warnings.filterwarnings("ignore")
 
-bechdel_df = pd.read_csv('data/inputs/Bechdel_db.csv', index_col='id')
+bechdel_df = pd.read_csv('data/input/Bechdel_db.csv', index_col='id')
 bechdel_df.drop(columns='Unnamed: 0', axis=1, inplace=True)
 
-file_names = os.listdir('data/inputs/scripts/')
+file_names = os.listdir('data/input/scripts/')
 # Create Dictionary for File Name and Text
 file_name_and_text = {}
 for file in file_names: 
     if not file.startswith('.'): 
-        with open('data/inputs/scripts/' + file, "r", encoding="utf8") as target_file:
+        with open('data/input/scripts/' + file, "r", encoding="utf8") as target_file:
     #This reads everything from the directory and aliases it as the the target file 
             file_name_and_text[file] = target_file.read().split(sep='\n\n')
             file_name_and_text[file] = ' '.join(file_name_and_text[file])
@@ -29,7 +29,7 @@ for file in file_names:
     #UnicodeDecodeError: 'charmap' codec can't decode byte 0x90 in position 2907500: character maps to `<undefined> 
     #This means you need to change to a UTF- encoding`  
     if not file.startswith('.'): 
-        with open('data/inputs/scripts/' + file, "r", encoding="utf8") as target_file:
+        with open('data/input/scripts/' + file, "r", encoding="utf8") as target_file:
     #This reads everything from the directory and aliases it as the the target file 
             file_name_and_text[file] = target_file.readline().strip()
 title_df = (pd.DataFrame.from_dict(file_name_and_text, orient='index')
@@ -64,7 +64,7 @@ bechdel_script_df = pd.merge(script_title_df, bechdel_df, left_on='title', right
 
 # Transform filename field into path to file, for easier access in the future
 def fpath(filename):
-    return ('data/inputs/scripts/'+filename)
+    return ('data/input/scripts/'+filename)
 bechdel_script_df['file_name'] = bechdel_script_df['file_name'].apply(fpath)
 
 # Drop duplicates on title field
@@ -74,7 +74,7 @@ bechdel_script_df.drop_duplicates(subset = 'title', keep = 'first', inplace=True
 bechdel_script_df.drop(columns = 'script', inplace = True)
 
 # Save dataframe to csv file.
-bechdel_script_df.to_csv('data/inputs/bechdel_script_kaggle.csv')
+bechdel_script_df.to_csv('data/input/bechdel_script_kaggle.csv')
 
 
 # For further exploration :

@@ -10,14 +10,14 @@ import os
 
 
 def rename():
-    file_names = os.listdir('data/inputs/scripts/')
+    file_names = os.listdir('data/input/scripts/')
 
     for file in file_names:
         if not file.startswith('.'):
             try:
                 with open(file) as f:
                     first_line = f.readline().strip()
-                    os.rename('data/inputs/scripts/'+file, (str(first_line) + '.txt').upper())
+                    os.rename('data/input/scripts/'+file, (str(first_line) + '.txt').upper())
             except:
                 print(f'{file} could not be renamed. Please check manually')
 
@@ -27,7 +27,7 @@ def create_db():
     bechdel_df = pd.read_json('http://bechdeltest.com/api/v1/getAllMovies')
     print(bechdel_df.head())
     print(bechdel_df.shape)
-    bechdel_df.to_csv('data/inputs/Bechdel_db.csv')
+    bechdel_df.to_csv('data/input/Bechdel_db.csv')
 
 #create_db()
 
