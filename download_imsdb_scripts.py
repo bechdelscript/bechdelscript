@@ -4,19 +4,19 @@
 import os
 from typing import List, Tuple
 from urllib.parse import quote
+from venv import create
 
+import yaml
 import bs4
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 
+config = yaml.safe_load(open("parameters.yaml"))
+
 SAVE_EVERY = 10  # for each SAVE_EVRY scripts downloaded we update the csv file
 
-PARENT_FOLDER = os.path.join("data", "input")
-SCRIPTS_DIR_NAME = "bechdel_scripts_imsdb"
-SCRIPTS_DF_NAME = "bechdel_script_imsdb.csv"
-
-BASE_URL = "http://www.imsdb.com"
+BASE_URL = config["urls"]["imsdb_base_url"]
 
 
 def clean_script(text: str) -> str:
@@ -87,8 +87,8 @@ def begin_from_where_we_left(
     else:
         # If the program was interrupted before, we begin from the last registered movie
         list_dfs = [pd.read_csv(scripts_df_path)]
-        last_movie_name = list_dfs[0]["Movie title"].iloc[-1]
-        list_movies_names = [p.a.text for p in paragraphs]
+        last_movie_name = list_dfs[0]["title"].iloc[-1]
+        list_movies_names = [get_clean_title(p) for p in paragraphs]
         begin_from = list_movies_names.index(last_movie_name) + 1
         return list_dfs, begin_from
 
@@ -102,11 +102,13 @@ def retrieve_all_scripts():
     paragraphs = soup.find_all("p")
 
     # Checking if we start from the first movie or not
-    scripts_df_path = os.path.join(PARENT_FOLDER, SCRIPTS_DF_NAME)
+    scripts_df_path = os.path.join(
+        config["paths"]["input_folder_name"], config["names"]["imsdb_intermediate_name"]
+    )
     list_dfs, begin_from_index = begin_from_where_we_left(paragraphs, scripts_df_path)
 
     # Creating result folder
-    scripts_dir_path = os.path.join(PARENT_FOLDER, SCRIPTS_DIR_NAME)
+    scripts_dir_path = config["paths"]["path_to_imsdb_scripts"]
     os.makedirs(scripts_dir_path, exist_ok=True)
 
     # Looping on all movies
@@ -123,14 +125,38 @@ def retrieve_all_scripts():
             outfile.write(script)
 
         # Adding movie name and path to a dataframe
-        list_dfs.append(
-            pd.DataFrame([[title, script_path]], columns=["Movie title", "Script path"])
-        )
+        list_dfs.append(pd.DataFrame([[title, script_path]], columns=["title", "path"]))
         # We save the data frame every SAVE_EVERY scripts
-        if (i + 1) % SAVE_EVERY == 0:
+        if (i + 1) % SAVE_EVERY == 0 or i == len(paragraphs[begin_from_index:]) - 1:
             df = pd.concat(list_dfs)
             df.to_csv(scripts_df_path, index=False)
 
 
-if __name__ == "__main__":
+def merge_imsdb_with_bechdel():
+    bechdel_df_path = os.path.join(
+        config["paths"]["input_folder_name"], config["names"]["bechdel_db_name"]
+    )
+    bechdel_df = pd.read_csv(bechdel_df_path, index_col=0)
+
+    imsbd_df_path = os.path.join(
+        config["paths"]["input_folder_name"], config["names"]["imsdb_intermediate_name"]
+    )
+    imsbd_df = pd.read_csv(imsbd_df_path)
+
+    complete_df_path = os.path.join(
+        config["paths"]["input_folder_name"], config["names"]["imsdb_db_name"]
+    )
+    complete_df = pd.merge(
+        left=bechdel_df, right=imsbd_df, left_on="title", right_on="title"
+    )
+
+    complete_df.to_csv(complete_df_path, index=False)
+
+
+def main():
     retrieve_all_scripts()
+    merge_imsdb_with_bechdel()
+
+
+if __name__ == "__main__":
+    main()
