@@ -1,0 +1,10 @@
+paths :
+    input_folder_name : data/input/
+    path_to_kaggle_scripts : data/input/scripts_kaggle/
+    path_to_imsdb_scripts : data/input/scripts_imsdb/
+
+names :
+    kaggle_db_name : bechdel_script_kaggle.csv
+    imsdb_db_name : bechdel_script_imsdb.csv
+    db_name : dataset.csv
+    bechdel_db_name : Bechdel_db.csv

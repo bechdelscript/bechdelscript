@@ -7,17 +7,19 @@ https://bechdeltest.com/api/v1/doc#getMovieByImdbId"""
 
 import pandas as pd
 import os
+import yaml
 
+config = yaml.safe_load(open('parameters.yaml'))
 
 def rename():
-    file_names = os.listdir('data/input/scripts/')
+    file_names = os.listdir(config['paths']['path_to_kaggle_scripts'])
 
     for file in file_names:
         if not file.startswith('.'):
             try:
                 with open(file) as f:
                     first_line = f.readline().strip()
-                    os.rename('data/input/scripts/'+file, (str(first_line) + '.txt').upper())
+                    os.rename(config['path_to_kaggle_scripts']+file, (str(first_line) + '.txt').upper())
             except:
                 print(f'{file} could not be renamed. Please check manually')
 
@@ -27,7 +29,7 @@ def create_db():
     bechdel_df = pd.read_json('http://bechdeltest.com/api/v1/getAllMovies')
     print(bechdel_df.head())
     print(bechdel_df.shape)
-    bechdel_df.to_csv('data/input/Bechdel_db.csv')
+    bechdel_df.to_csv(config['paths']['input_folder_name']+config['names']['bechdel_db_name'])
 
 #create_db()
 
