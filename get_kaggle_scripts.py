@@ -11,6 +11,7 @@ import pandas as pd
 import os
 import yaml
 import warnings
+
 warnings.filterwarnings("ignore")
 
 config = yaml.safe_load(open("parameters.yaml"))
@@ -22,23 +23,20 @@ def rename():
     for file in file_names:
         if not file.startswith("."):
             try:
-                with open(file) as f:
+                with open(
+                    os.path.join(config["paths"]["path_to_kaggle_scripts"], file)
+                ) as f:
                     first_line = f.readline().strip()
                     os.rename(
-                        config["path_to_kaggle_scripts"] + file,
-                        (str(first_line) + ".txt").upper(),
+                        os.path.join(config["paths"]["path_to_kaggle_scripts"], file),
+                        os.path.join(
+                            config["paths"]["path_to_kaggle_scripts"],
+                            (str(first_line) + ".txt").upper(),
+                        ),
                     )
             except:
                 print(f"{file} could not be renamed. Please check manually")
 
-
-def create_db():
-    bechdel_df = pd.read_json("http://bechdeltest.com/api/v1/getAllMovies")
-    print(bechdel_df.head())
-    print(bechdel_df.shape)
-    bechdel_df.to_csv(
-        config["paths"]["input_folder_name"] + config["names"]["bechdel_db_name"]
-    )
 
 def title_cleanup(df):
     # removing &amp
@@ -71,19 +69,20 @@ def title_cleanup(df):
     df["title"].replace(",", "", regex=True, inplace=True)
     return df
 
+
 # Transform filename field into path to file, for easier access in the future
 def fpath(filename):
     return config["paths"]["path_to_kaggle_scripts"] + filename
 
 
 def main_kaggle():
-    #rename()
-    #create_db()
+    rename()
     bechdel_df = pd.read_csv(
-    config["paths"]["input_folder_name"] + config["names"]["bechdel_db_name"],
-    index_col="id",
+        os.path.join(
+            config["paths"]["input_folder_name"], config["names"]["bechdel_db_name"]
+        ),
+        index_col="id",
     )
-    bechdel_df.drop(columns="Unnamed: 0", axis=1, inplace=True)
 
     file_names = os.listdir(config["paths"]["path_to_kaggle_scripts"])
 
@@ -136,9 +135,9 @@ def main_kaggle():
 
     # Save dataframe to csv file.
     bechdel_script_df.to_csv(
-        config["paths"]["input_folder_name"] + config["names"]["kaggle_db_name"]
+        config["paths"]["input_folder_name"] + config["names"]["kaggle_db_name"],
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main_kaggle()

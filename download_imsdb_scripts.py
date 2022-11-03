@@ -136,7 +136,7 @@ def merge_imsdb_with_bechdel():
     bechdel_df_path = os.path.join(
         config["paths"]["input_folder_name"], config["names"]["bechdel_db_name"]
     )
-    bechdel_df = pd.read_csv(bechdel_df_path, index_col=0)
+    bechdel_df = pd.read_csv(bechdel_df_path)
 
     imsbd_df_path = os.path.join(
         config["paths"]["input_folder_name"], config["names"]["imsdb_intermediate_name"]
@@ -153,10 +153,10 @@ def merge_imsdb_with_bechdel():
     complete_df.to_csv(complete_df_path, index=False)
 
 
-def main():
+def main_imsdb():
     retrieve_all_scripts()
     merge_imsdb_with_bechdel()
 
 
 if __name__ == "__main__":
-    main()
+    main_imsdb()
