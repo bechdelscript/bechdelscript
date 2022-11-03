@@ -11,10 +11,77 @@ import pandas as pd
 import os
 import yaml
 import warnings
+import sys
 
 warnings.filterwarnings("ignore")
 
 config = yaml.safe_load(open("parameters.yaml"))
+
+
+
+def clean_script(text: str) -> str:
+    text = text.replace(
+        """<b><!--
+</b>if (window!= top)
+top.location.href=location.href
+<b>// -->
+</b>
+
+""",
+        "",
+    )
+
+    text = text.replace(
+        """<b><!--
+
+</b>if (window!= top)
+
+top.location.href=location.href
+
+<b>// -->
+
+</b>
+
+""",
+        "",
+    )
+
+    text = text.replace("""<b><!--
+
+</b>
+
+<b>/*
+
+</b>Break-out-of-frames script
+
+By Website Abstraction (http://wsabstract.com)
+
+Over 400+ free scripts here!
+
+Above notice MUST stay entact for use
+
+<b>*/
+
+</b>
+
+if (window!= top)
+
+top.location.href=location.href
+
+<b>// -->
+
+</b>
+""", "")
+
+    return text.replace(r"\r", "")
+
+
+def clean_file(path):
+    with open(path, 'r') as f:
+        script = f.read()
+        script = clean_script(script)
+    with open(path, "w") as f:
+        f.write(script)
 
 
 def rename():
@@ -23,19 +90,27 @@ def rename():
     for file in file_names:
         if not file.startswith("."):
             try:
+                old_path = os.path.join(config["paths"]["path_to_kaggle_scripts"], file)
+                clean_file(old_path)
                 with open(
-                    os.path.join(config["paths"]["path_to_kaggle_scripts"], file)
+                    old_path
                 ) as f:
-                    first_line = f.readline().strip()
-                    os.rename(
-                        os.path.join(config["paths"]["path_to_kaggle_scripts"], file),
-                        os.path.join(
+
+                    first_line = f.readline().strip().replace(":", "_").replace("\"", "'").replace("/", "-").replace('*', '+')
+                    while first_line == '' or first_line == '<script>':  # if first_line empty or == "<script>", we take the next one
+                        first_line = f.readline().strip().replace(":", "_").replace("\"", "'").replace("/", "-").replace('*', '+')
+
+                    new_path = os.path.join(
                             config["paths"]["path_to_kaggle_scripts"],
                             (str(first_line) + ".txt").upper(),
-                        ),
-                    )
+                        )
+                os.rename(
+                    old_path,
+                    new_path,
+                )
             except:
                 print(f"{file} could not be renamed. Please check manually")
+                print("Unexpected error:", sys.exc_info()[0])
 
 
 def title_cleanup(df):
@@ -60,7 +135,7 @@ def title_cleanup(df):
         inplace=True,
     )
     # removing other items from titles for merging
-    df["title"].replace("THE|the", "", regex=True, inplace=True)
+    df["title"].replace("\bTHE|the\b", "", regex=True, inplace=True)
     # change all letters to lowercase
     df["title"] = [name.lower() for name in df["title"]]
     # Replace the &#39 values
