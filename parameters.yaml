@@ -10,6 +10,9 @@ names :
     bechdel_db_name : bechdel_db.csv
     db_name : dataset.csv
 
+merge_dataset :
+    keep : imsdb ## imsdb ou kaggle
+
 urls : 
     bechdel_test_api : http://bechdeltest.com/api/v1/getAllMovies
     imsdb_base_url : http://www.imsdb.com

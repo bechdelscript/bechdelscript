@@ -208,9 +208,13 @@ def main_kaggle():
     # Drop the script column from this dataframe
     bechdel_script_df.drop(columns="script", inplace=True)
 
+    # Rename "file_name" column to "path"
+    bechdel_script_df = bechdel_script_df.rename(columns = {"file_name" : "path"})
+
     # Save dataframe to csv file.
     bechdel_script_df.to_csv(
         config["paths"]["input_folder_name"] + config["names"]["kaggle_db_name"],
+        index = False,
     )
 
 
