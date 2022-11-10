@@ -18,7 +18,6 @@ warnings.filterwarnings("ignore")
 config = yaml.safe_load(open("parameters.yaml"))
 
 
-
 def clean_script(text: str) -> str:
     text = text.replace(
         """<b><!--
@@ -46,7 +45,8 @@ top.location.href=location.href
         "",
     )
 
-    text = text.replace("""<b><!--
+    text = text.replace(
+        """<b><!--
 
 </b>
 
@@ -71,13 +71,15 @@ top.location.href=location.href
 <b>// -->
 
 </b>
-""", "")
+""",
+        "",
+    )
 
     return text.replace(r"\r", "")
 
 
 def clean_file(path):
-    with open(path, 'r') as f:
+    with open(path, "r") as f:
         script = f.read()
         script = clean_script(script)
     with open(path, "w") as f:
@@ -92,18 +94,32 @@ def rename():
             try:
                 old_path = os.path.join(config["paths"]["path_to_kaggle_scripts"], file)
                 clean_file(old_path)
-                with open(
-                    old_path
-                ) as f:
+                with open(old_path) as f:
 
-                    first_line = f.readline().strip().replace(":", "_").replace("\"", "'").replace("/", "-").replace('*', '+')
-                    while first_line == '' or first_line == '<script>':  # if first_line empty or == "<script>", we take the next one
-                        first_line = f.readline().strip().replace(":", "_").replace("\"", "'").replace("/", "-").replace('*', '+')
+                    first_line = (
+                        f.readline()
+                        .strip()
+                        .replace(":", "_")
+                        .replace('"', "'")
+                        .replace("/", "-")
+                        .replace("*", "+")
+                    )
+                    while (
+                        first_line == "" or first_line == "<script>"
+                    ):  # if first_line empty or == "<script>", we take the next one
+                        first_line = (
+                            f.readline()
+                            .strip()
+                            .replace(":", "_")
+                            .replace('"', "'")
+                            .replace("/", "-")
+                            .replace("*", "+")
+                        )
 
                     new_path = os.path.join(
-                            config["paths"]["path_to_kaggle_scripts"],
-                            (str(first_line) + ".txt").upper(),
-                        )
+                        config["paths"]["path_to_kaggle_scripts"],
+                        (str(first_line) + ".txt").upper(),
+                    )
                 os.rename(
                     old_path,
                     new_path,
@@ -209,12 +225,12 @@ def main_kaggle():
     bechdel_script_df.drop(columns="script", inplace=True)
 
     # Rename "file_name" column to "path"
-    bechdel_script_df = bechdel_script_df.rename(columns = {"file_name" : "path"})
+    bechdel_script_df = bechdel_script_df.rename(columns={"file_name": "path"})
 
     # Save dataframe to csv file.
     bechdel_script_df.to_csv(
         config["paths"]["input_folder_name"] + config["names"]["kaggle_db_name"],
-        index = False,
+        index=False,
     )
 
 

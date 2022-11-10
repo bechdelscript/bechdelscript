@@ -29,22 +29,24 @@ def merge_datasets():
         os.path.join(
             config["paths"]["input_folder_name"], config["names"]["imsdb_db_name"]
         ),
-    ).drop(columns = "id")
+    ).drop(columns="id")
 
     df_kaggle["imdbid"] = df_kaggle["imdbid"].apply(lambda x: int(x))
     df_imsdb["imdbid"] = df_imsdb["imdbid"].apply(lambda x: int(x))
 
     df_dataset = pd.concat([df_imsdb, df_kaggle], ignore_index=True)
     df_dataset = df_dataset.sort_values(["imdbid", "path"])
-    
-    if config["merge_dataset"]["keep"] == "imsdb" : keep = "first"
-    if config["merge_dataset"]["keep"] == "kaggle" : keep = "last"
-    
-    df_dataset = df_dataset.drop_duplicates(subset = ["imdbid"], keep = keep)
+
+    if config["merge_dataset"]["keep"] == "imsdb":
+        keep = "first"
+    if config["merge_dataset"]["keep"] == "kaggle":
+        keep = "last"
+
+    df_dataset = df_dataset.drop_duplicates(subset=["imdbid"], keep=keep)
 
     df_dataset.to_csv(
         config["paths"]["input_folder_name"] + config["names"]["db_name"],
-        index = False,
+        index=False,
     )
 
 
