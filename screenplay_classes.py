@@ -109,7 +109,7 @@ class Scene:
                 current_speaker = [
                     character
                     for character in characters_in_movie
-                    if speaker_name in character.name_variations
+                    if speaker_name in character.name_variation
                 ][0]
                 return current_speaker
             search_index -= 1
@@ -138,7 +138,7 @@ class Characters:
                 for scene in list_list_dialogues
             ]
         )
-        for name_variation in self.name_variations:
+        for name_variation in self.name_variation:
             if name_variation.capitalize() in concatenated_dialogues:
                 self.is_named = True
 
