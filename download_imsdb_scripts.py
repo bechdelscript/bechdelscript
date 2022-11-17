@@ -121,7 +121,7 @@ def retrieve_all_scripts():
 
         # Saving script as text file
         script_path = os.path.join(scripts_dir_path, filename.strip(".html") + ".txt")
-        with open(script_path, "w+") as outfile:
+        with open(script_path, "w+", encoding="utf-8") as outfile:
             outfile.write(script)
 
         # Adding movie name and path to a dataframe
