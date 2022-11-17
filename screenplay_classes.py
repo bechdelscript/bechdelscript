@@ -166,7 +166,6 @@ if __name__ == "__main__":
 
     folder_name = "data/input/scripts_imsdb"
     script_name = choice(os.listdir(folder_name))
-    script_name = "Soldier.txt"
 
     script = Script(os.path.join(folder_name, script_name))
 
