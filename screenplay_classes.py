@@ -36,10 +36,10 @@ class Script:
                             name_og.name
                         ):
                             name_og.add_name_variation(name)
+                            already_in = True
                             break
                     if already_in == False:
                         self.list_characters.append(Characters(scene[j].lstrip()))
-        self.list_characters = list(dict.fromkeys(self.list_characters))
 
     def load_dialogues(self):
         for scene in self.list_scenes:
@@ -166,6 +166,7 @@ if __name__ == "__main__":
 
     folder_name = "data/input/scripts_imsdb"
     script_name = choice(os.listdir(folder_name))
+    script_name = "Soldier.txt"
 
     script = Script(os.path.join(folder_name, script_name))
 
