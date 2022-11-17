@@ -266,4 +266,5 @@ if __name__ == "__main__":
     folder_name = "data/input/scripts_imsdb"
     script_name = choice(os.listdir(folder_name))
     print(script_name)
-    markdown_color_script(os.path.join(folder_name, script_name))
+    #markdown_color_script(os.path.join(folder_name, script_name))
+    print(tag_script(os.path.join(folder_name, script_name))[0][:2])
