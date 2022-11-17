@@ -17,6 +17,7 @@ class Script:
         self.load_scenes()
         self.identify_characters()
         self.load_dialogues()
+        self.are_characters_named()
 
     def load_scenes(self):
         list_scenes, self.list_list_tags = tag_script(self.script_path)
@@ -33,6 +34,10 @@ class Script:
         for scene in self.list_scenes:
             scene.load_dialogues(self.list_characters)
             self.list_list_dialogues.append(scene.list_dialogues)
+
+    def are_characters_named(self):
+        for character in self.list_characters:
+            character.fill_is_named(self.list_list_dialogues)
 
 
 class Scene:
@@ -110,8 +115,18 @@ class Characters:
     def identify_gender(self):
         NotImplemented
 
-    def get_is_named(self):
-        NotImplemented
+    def fill_is_named(self, list_list_dialogues):
+        self.is_named = False
+        # transform dialogues of all movie in one string
+        concatenated_dialogues = " ".join(
+            [
+                " ".join([dialogue.speech_text for dialogue in scene])
+                for scene in list_list_dialogues
+            ]
+        )
+        for name_variation in self.name_variations:
+            if name_variation.capitalize() in concatenated_dialogues:
+                self.is_named = True
 
     def __repr__(self) -> str:
         return self.name
@@ -136,9 +151,8 @@ if __name__ == "__main__":
     from random import choice
 
     folder_name = "data/input/scripts_imsdb"
-    while True:
-        script_name = choice(os.listdir(folder_name))
+    script_name = choice(os.listdir(folder_name))
 
-        script = Script(os.path.join(folder_name, script_name))
+    script = Script(os.path.join(folder_name, script_name))
 
-        print(script)
+    print(script)
