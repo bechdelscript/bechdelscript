@@ -1,25 +1,18 @@
 import numpy as np
 from collections import Counter
+from enum import Enum
 
-EMPTY_LINE_LABEL = "E"
-SCENES_BOUNDARY_AND_DESCRIPTION_LABEL = "SN"
-SCENES_BOUNDARY_LABEL = "S"
-SCENES_DESCRIPTION_LABEL = "N"
-CHARACTER_LABEL = "C"
-DIALOGUE_LABEL = "D"
-METADATA_LABEL = "M"
-UNKNOWN_LABEL = "?"
 
-correspondance = {
-    EMPTY_LINE_LABEL: "empty lines",
-    SCENES_BOUNDARY_AND_DESCRIPTION_LABEL: "scenes (boundary and description)",
-    SCENES_BOUNDARY_LABEL: "scenes boundary",
-    SCENES_DESCRIPTION_LABEL: "scenes description",
-    CHARACTER_LABEL: "character names",
-    DIALOGUE_LABEL: "dialogues",
-    METADATA_LABEL: "metadata",
-    UNKNOWN_LABEL: "unknown",
-}
+class label(Enum):
+    EMPTY_LINE = "E"
+    SCENES_BOUNDARY_AND_DESCRIPTION = "SN"
+    SCENES_BOUNDARY = "S"
+    SCENES_DESCRIPTION = "N"
+    CHARACTER = "C"
+    DIALOGUE = "D"
+    METADATA = "M"
+    UNKNOWN = "?"
+
 
 CHARACTER_KEYWORDS = ["(O.S.)", "(CONT'D)", "(0.S.)", "(O. S.)", "(0. S.)", "(V.O.)"]
 BEGINNING_SCENES_KEYWORDS = ["EXT ", "EXT.", "INT ", "INT."]
@@ -162,22 +155,22 @@ def characterize_indent_levels(lines, indents):
 
     for i, group in enumerate(groups):
         if relevant_indent_levels[i] == -1:
-            result[relevant_indent_levels[i]] = EMPTY_LINE_LABEL
+            result[relevant_indent_levels[i]] = label.EMPTY_LINE
         elif characters_keywords_occurences[i] > 0:
-            result[relevant_indent_levels[i]] = CHARACTER_LABEL
+            result[relevant_indent_levels[i]] = label.CHARACTER
         elif scenes_beginning_keywords_occurences[i] > 0:
-            result[relevant_indent_levels[i]] = SCENES_BOUNDARY_AND_DESCRIPTION_LABEL
+            result[relevant_indent_levels[i]] = label.SCENES_BOUNDARY_AND_DESCRIPTION
         elif scenes_ending_keywords_occurences[i] / len(group) > 0.8:
-            result[relevant_indent_levels[i]] = SCENES_BOUNDARY_LABEL
+            result[relevant_indent_levels[i]] = label.SCENES_BOUNDARY
         elif capitalized_frequency[i] > 0.9 and mean_text_lengths[i] < 10:
-            result[relevant_indent_levels[i]] = CHARACTER_LABEL
+            result[relevant_indent_levels[i]] = label.CHARACTER
         elif meta_keywords_occurences[i] / len(group) > 1.0:
             # usually two parenthesis per line, one is the minimum
-            result[relevant_indent_levels[i]] = METADATA_LABEL
+            result[relevant_indent_levels[i]] = label.METADATA
         elif dialogues_keywords_occurences[i] > 0:
-            result[relevant_indent_levels[i]] = DIALOGUE_LABEL
+            result[relevant_indent_levels[i]] = label.DIALOGUE
         else:
-            result[relevant_indent_levels[i]] = UNKNOWN_LABEL
+            result[relevant_indent_levels[i]] = label.UNKNOWN
 
     return result
 
@@ -189,16 +182,16 @@ def tag_lines(list_lines, characterized_indent_levels):
         if indents[i] in characterized_indent_levels:
             if (
                 characterized_indent_levels[indents[i]]
-                == SCENES_BOUNDARY_AND_DESCRIPTION_LABEL
+                == label.SCENES_BOUNDARY_AND_DESCRIPTION
             ):
                 if frequency_capitalized_in_groups([line])[0] > 0.8:
-                    tags.append(SCENES_BOUNDARY_LABEL)
+                    tags.append(label.SCENES_BOUNDARY)
                 else:
-                    tags.append(SCENES_DESCRIPTION_LABEL)
+                    tags.append(label.SCENES_DESCRIPTION)
             else:
                 tags.append(characterized_indent_levels[indents[i]])
         else:
-            tags.append(UNKNOWN_LABEL)
+            tags.append(label.UNKNOWN)
 
     return tags
 
@@ -253,16 +246,17 @@ def markdown_color_script(script_path, html=False):
 
 def write_one_markdown_line(f, line, tag):
     color_correspondance = {
-        EMPTY_LINE_LABEL: "rosybrown",
-        SCENES_BOUNDARY_LABEL: "dodgerblue",
-        SCENES_DESCRIPTION_LABEL: "hotpink",
-        CHARACTER_LABEL: "gold",
-        DIALOGUE_LABEL: "peru",
-        METADATA_LABEL: "olivedrab",
-        UNKNOWN_LABEL: "snow",
+        label.EMPTY_LINE: "rosybrown",
+        label.SCENES_BOUNDARY: "dodgerblue",
+        label.SCENES_DESCRIPTION: "hotpink",
+        label.CHARACTER: "gold",
+        label.DIALOGUE: "peru",
+        label.METADATA: "olivedrab",
+        label.UNKNOWN: "snow",
     }
-    line = f"{tag}    {line}"
+    line = f"{tag.value}    {line}"
     line = line.replace(" ", "&nbsp;")
+    line = line.replace("	", "&nbsp;" * 4)
     f.write(f'<span style="color:{color_correspondance[tag]}">{line}</span><br>\n')
 
 
@@ -271,4 +265,5 @@ if __name__ == "__main__":
 
     folder_name = "data/input/scripts_imsdb"
     script_name = choice(os.listdir(folder_name))
+    print(script_name)
     markdown_color_script(os.path.join(folder_name, script_name))
