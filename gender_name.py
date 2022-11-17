@@ -84,24 +84,30 @@ def _gender_features(name):
     features["suffix4"] = name[-4:]
     return features
 
-keywords = {'f':['Mrs.', 'Mrs', 'mrs.', 'mrs', 'MRS.', 'MRS'], 'm':['Mr.', 'Mr', 'mr.', 'mr', 'MR.', 'MR']}
+
+keywords = {
+    "f": ["Mrs.", "Mrs", "mrs.", "mrs", "MRS.", "MRS"],
+    "m": ["Mr.", "Mr", "mr.", "mr", "MR.", "MR"],
+}
 
 # Given a name and a classifier, this prints out the name, the predicted ouput, and the probability.
 def _classify(name, classifier):
-    if any(ele in name for ele in keywords['f']):
-        guess = 'f'
+    if any(ele in name for ele in keywords["f"]):
+        guess = "f"
         prob = 1
-        print("%s -> %s (%.2f%%) (Mrs)" % (name, guess, prob * 100))      
-    elif any(ele in name for ele in keywords['m']):
-        guess = 'm'
+        print("%s -> %s (%.2f%%) (Mrs)" % (name, guess, prob * 100))
+    elif any(ele in name for ele in keywords["m"]):
+        guess = "m"
         prob = 1
-        print("%s -> %s (%.2f%%) (Mr)" % (name, guess, prob * 100))     
-    elif name in gender_data["name"].values:
-        guess = gender_data.loc[gender_data["name"] == name]["gender"].values[0]
+        print("%s -> %s (%.2f%%) (Mr)" % (name, guess, prob * 100))
+    elif name.lower().split()[0] in gender_data["name"].values:
+        guess = gender_data.loc[gender_data["name"] == name.lower().split()[0]][
+            "gender"
+        ].values[0]
         prob = 1
         print("%s -> %s (%.2f%%) (prénom dans la db)" % (name, guess, prob * 100))
     else:
-        _name = _gender_features(name)
+        _name = _gender_features(name.split()[0])
         dist = classifier.prob_classify(_name)
         m, f = dist.prob("m"), dist.prob("f")
         d = {m: "m", f: "f"}
@@ -143,6 +149,8 @@ name_test = [
     "elaine",
     "willie",
     "Mrs. J",
-    "Mr J"
+    "Mr J",
+    "pretty french journalist",
+    "Harry Potter",
 ]
 print(classify(name_test, classifier))
