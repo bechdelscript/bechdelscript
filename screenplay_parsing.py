@@ -133,7 +133,7 @@ def group_lines_by_indent_level(lines, indents, minimum_occurences=0):
 
 def characterize_indent_levels(lines, indents):
     relevant_indent_levels, groups = group_lines_by_indent_level(
-        lines, indents, minimum_occurences=10
+        lines, indents, minimum_occurences=0
     )
     mean_text_lengths = mean_text_length_in_groups(groups)
     capitalized_frequency = frequency_capitalized_in_groups(groups)
