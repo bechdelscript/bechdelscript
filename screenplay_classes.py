@@ -16,7 +16,7 @@ class Script:
         self.script_path = script_path
         self.list_scenes: List[Scene] = []
         self.list_list_tags: List[List[label]] = []
-        self.list_characters : List[Character] = []
+        self.list_characters: List[Character] = []
         self.list_list_dialogues = []
         self.male_named_characters = []
 
@@ -62,10 +62,10 @@ class Script:
         for character in self.list_characters:
             if character.is_named == True:
                 character.identify_gender()
-    
+
     def load_named_males(self):
         for character in self.list_characters:
-            if character.is_named == True: 
+            if character.is_named == True:
                 if character.gender == "m":
                     self.male_named_characters += list(character.name_variation)
 
