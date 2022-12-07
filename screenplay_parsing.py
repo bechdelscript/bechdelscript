@@ -1,6 +1,9 @@
-import numpy as np
+import os
 from collections import Counter
 from enum import Enum
+from typing import Dict, List, Tuple
+
+import numpy as np
 
 
 class label(Enum):
@@ -21,22 +24,62 @@ META_KEYWORDS = ["(", ")"]
 DIALOGUE_KEYWORDS = ["?"]
 
 
-def get_indents_list(lines):
-    indents = []
-    for line in lines:
-        len_line_with_no_left_spaces = len(line.lstrip())
-        if len_line_with_no_left_spaces == 0:  # the line only had spaces
-            indents.append(-1)
-        else:
-            indents.append(len(line) - len_line_with_no_left_spaces)
-    return indents
+def tag_script(script_path: str) -> Tuple[List[List[str]], List[label]]:
+    """Assign a label to each line of a script.
+
+    Args:
+        script_path (str): path of the script
+
+    Returns:
+        Tuple[List[List[str]], List[label]]: First element of the tuple is
+            a list of scenes, each scene being a list of lines. The second
+            element returned is the list of labels for each line.
+    """
+    with open(script_path) as f:
+        screenplay = f.read()
+
+    lines = screenplay.split("\n")
+    scenes = find_scenes(lines)
+
+    indents = get_indents_list(lines)
+    # We remove the first and last scenes (which often contain the title of
+    # the movie etc.), then we assign a label to each indent level
+    if len(scenes) > 2:
+        middle_indents = indents[len(scenes[0]) : -len(scenes[-1])]
+        middle_lines = sum(scenes[1:-1], [])
+    else:
+        middle_indents = indents
+        middle_lines = lines
+
+    characterized_indent_levels = characterize_indent_levels(
+        middle_lines, middle_indents
+    )
+    tags = []
+    for scene in scenes:
+        tags.append(tag_lines(scene, characterized_indent_levels))
+
+    return scenes, tags
 
 
 def find_scenes(
-    lines,
-    beginning_scenes_keywords=BEGINNING_SCENES_KEYWORDS,
-    end_scenes_keywords=ENDING_SCENES_KEYWORDS,
-):
+    lines: List[str],
+    beginning_scenes_keywords: List[str] = BEGINNING_SCENES_KEYWORDS,
+    end_scenes_keywords: List[str] = ENDING_SCENES_KEYWORDS,
+) -> List[List[str]]:
+    """Splits the list of lines into sublists corresponding to the different scenes.
+    The delimitation between the scenes is found thanks to specific keywords marking
+    the beginning and the end of the keywords.
+
+    Args:
+        lines (List[str]): _description_
+        beginning_scenes_keywords (List[str], optional): list of keywords usually found
+            to mark the beginning of a scene. Defaults to BEGINNING_SCENES_KEYWORDS.
+        end_scenes_keywords (List[str], optional): list of keywords usually found
+            to mark the end of a scene. Defaults to ENDING_SCENES_KEYWORDS.
+
+    Returns:
+        List[List[str]]: List of scenes, each scene being a list of lines.
+    """
     scenes = []
     current_scene = []
     for line in lines:
@@ -60,7 +103,7 @@ def find_scenes(
     return clean_scenes(scenes)
 
 
-def clean_scenes(scenes):
+def clean_scenes(scenes: List[List[str]]) -> List[List[str]]:
     """Scenes containing only empty lines are merged with the previous scene"""
     cleaned_scenes = []
     for scene in scenes:
@@ -71,67 +114,50 @@ def clean_scenes(scenes):
     return cleaned_scenes
 
 
-def occurences_keywords_in_groups(groups, keywords):
-    groups_keyword_quantity = [0 for _ in range(len(groups))]
-    for i, group in enumerate(groups):
-        group_text = "".join(group)
-        for keyword in keywords:
-            groups_keyword_quantity[i] += group_text.count(keyword)
-    return groups_keyword_quantity
+def get_indents_list(lines: List[str]) -> List[int]:
+    """Given a list of lines, returns a list of the number of white spaces
+    that was before the text in each line. If the line is empty (i.e.
+    it only contains white spaces), the number of white spaces is set to -1,
+    this enables to differentiate the empty lines with the lines whose text
+    is written without left white spaces.
 
+    Args:
+        lines (List[str]): list of lines from the script
 
-def frequency_capitalized_in_groups(groups):
-    groups_upper_quantity = [0 for _ in range(len(groups))]
-    for i, group in enumerate(groups):
-        group_text = "".join(group)
-        total_letters = sum(
-            (letter.isupper() or letter.islower()) for letter in group_text
-        )
-        if total_letters != 0:
-            groups_upper_quantity[i] += round(
-                sum(letter.isupper() for letter in group_text) / total_letters, 2
-            )
+    Returns:
+        List[int]: list of the number of white spaces that was before
+            the text in each line
+    """
+    indents = []
+    for line in lines:
+        len_line_with_no_left_spaces = len(line.lstrip())
+        if len_line_with_no_left_spaces == 0:  # the line only had spaces
+            indents.append(-1)
         else:
-            groups_upper_quantity[i] = 0
-    return groups_upper_quantity
+            indents.append(len(line) - len_line_with_no_left_spaces)
+    return indents
 
 
-def mean_text_length_in_groups(groups):
-    groups_text_length = []
-    for i, group in enumerate(groups):
-        groups_text_length.append(
-            round(sum([len(line.lstrip()) for line in group]) / len(group), 2)
-        )
-    return groups_text_length
+def characterize_indent_levels(
+    lines: List[str], indents: List[int]
+) -> Dict[int, label]:
+    """Given a script (or an extract of the script) as a list of lines, we try to
+    identify for each level of indentation which label it should have. This method
+    relies on the hypothesis that lines with the same indentation level all have
+    the same label. The type of an indent level is identified using the number of
+    keywords specific to a label as well as the frequency of capitalized letters
+    and the mean length of words.
 
+    Args:
+        lines (List[str]): list of lines
+        indents (List[int]): list of the number of white spaces found before
+            the text in each line of lines
 
-def print_several_lists(list_labels, lists):
-    maximum_length = max(
-        [max([len(str(element)) for element in sublist]) for sublist in lists]
-    )
-    for i, sublist in enumerate(lists):
-        string = f"{list_labels[i]} : ["
-        for element in sublist:
-            string += " " * (maximum_length - len(str(element))) + str(element) + ", "
-        string += "]"
-        print(string)
+    Returns:
+        Dict[int, label]: a dictionnary containing the label assigned to each
+            indentation level (number of whitespaces being the keys)
+    """
 
-
-def group_lines_by_indent_level(lines, indents, minimum_occurences=0):
-    indents_counter = Counter(indents)
-    relevant_indent_levels = []
-    for indent_level in indents_counter:
-        if indents_counter[indent_level] > minimum_occurences:
-            relevant_indent_levels.append(indent_level)
-    groups = []
-    for indent_level in relevant_indent_levels:
-        lines_idxs = np.where(np.array(indents) == indent_level)[0]
-        group_lines = [lines[lines_idxs[i]] for i in range(len(lines_idxs))]
-        groups.append(group_lines)
-    return relevant_indent_levels, groups
-
-
-def characterize_indent_levels(lines, indents):
     relevant_indent_levels, groups = group_lines_by_indent_level(
         lines, indents, minimum_occurences=0
     )
@@ -175,7 +201,121 @@ def characterize_indent_levels(lines, indents):
     return result
 
 
-def tag_lines(list_lines, characterized_indent_levels):
+def group_lines_by_indent_level(
+    lines: List[str], indents: List[int], minimum_occurences: int = 0
+) -> List[List[str]]:
+    """Splits a list of line into groups of lines such that each group
+    contains all the lines that have the same level of indentation (i.e.
+    the same number of left whitespaces)
+
+    Args:
+        lines (List[str]): list of lines from the script
+        indents (List[int]): list of the number of left whitespaces for each line
+        minimum_occurences (int, optional): groups that contain a number of line inferior
+            to minimum occurences will be discarded, defaults to 0 (=never discard)
+
+    Returns:
+        List[List[str]]: groups containing all the lines with a given number
+            of indentations
+    """
+    indents_counter = Counter(indents)
+    relevant_indent_levels = []
+    for indent_level in indents_counter:
+        if indents_counter[indent_level] > minimum_occurences:
+            relevant_indent_levels.append(indent_level)
+    groups = []
+    for indent_level in relevant_indent_levels:
+        lines_idxs = np.where(np.array(indents) == indent_level)[0]
+        group_lines = [lines[lines_idxs[i]] for i in range(len(lines_idxs))]
+        groups.append(group_lines)
+    return relevant_indent_levels, groups
+
+
+def occurences_keywords_in_groups(
+    groups: List[List[str]], keywords: List[str]
+) -> List[int]:
+    """Counts the number of keywords found in each group
+
+    Args:
+        groups (List[List[str]]): list of groups of lines, the lines within each group
+            all have the same indent
+        keywords (List[str]): list of keywords specific to a label
+
+    Returns:
+        List[int]: the number of keywords found in each group
+    """
+    groups_keyword_quantity = [0 for _ in range(len(groups))]
+    for i, group in enumerate(groups):
+        group_text = "".join(group)
+        for keyword in keywords:
+            groups_keyword_quantity[i] += group_text.count(keyword)
+    return groups_keyword_quantity
+
+
+def frequency_capitalized_in_groups(groups: List[List[str]]) -> List[float]:
+    """Computes the frequency of capitalized letter over the total number
+    of letters for each group
+
+    Args:
+        groups (List[List[str]]): list of groups of lines, the lines within each group
+            all have the same indent
+
+    Returns:
+        List[float]: the ratio of capitalized letters over the total number of
+            letters, for each group
+    """
+    groups_upper_quantity = [0 for _ in range(len(groups))]
+    for i, group in enumerate(groups):
+        group_text = "".join(group)
+        total_letters = sum(
+            (letter.isupper() or letter.islower()) for letter in group_text
+        )
+        if total_letters != 0:
+            groups_upper_quantity[i] += round(
+                sum(letter.isupper() for letter in group_text) / total_letters, 2
+            )
+        else:
+            groups_upper_quantity[i] = 0
+    return groups_upper_quantity
+
+
+def mean_text_length_in_groups(groups: List[List[str]]) -> List[float]:
+    """Computes the mean lengths of the lines in each group (not counting the left
+    whitespaces)
+
+    Args:
+        groups (List[List[str]]): list of groups of lines, the lines within each group
+            all have the same indent
+
+    Returns:
+        List[float]: the mean length  for each group
+    """
+    groups_text_length = []
+    for i, group in enumerate(groups):
+        groups_text_length.append(
+            round(sum([len(line.lstrip()) for line in group]) / len(group), 2)
+        )
+    return groups_text_length
+
+
+def tag_lines(
+    list_lines: List[str], characterized_indent_levels: Dict[int, label]
+) -> List[label]:
+    """Assign a label to each line in list_lines. In most cases the label
+    assigned is the label corresponding to the label of its indentation level,
+    except for the "SCENES_BOUNDARY_AND_DESCRIPTION" label where we look at the
+    frequency of capitalized letters to decide whether the line is a scene
+    boundary or a scene description. If the indent level of the line does not
+    have a label, it is labelled as unknown.
+
+    Args:
+        list_lines (List[str]): list of lines
+        characterized_indent_levels (Dict[int, label]): a dictionnary
+            containing the label assigned to each indentation level
+
+    Returns:
+        List[label]: the list of labels for each line
+    """
     indents = get_indents_list(list_lines)
     tags = []
     for i, line in enumerate(list_lines):
@@ -196,34 +336,20 @@ def tag_lines(list_lines, characterized_indent_levels):
     return tags
 
 
-def tag_script(script_path):
-    with open(script_path) as f:
-        screenplay = f.read()
+### Functions below are only used to better visualize the parsing in order to improve it ###
 
-    lines = screenplay.split("\n")
-    scenes = find_scenes(lines)
 
-    indents = get_indents_list(lines)
-    # We remove the first and last scenes (which often contain the title of
-    # the movie etc.), then we assign a label to each indent level
-    if len(scenes) > 2:
-        middle_indents = indents[len(scenes[0]) : -len(scenes[-1])]
-        middle_lines = sum(scenes[1:-1], [])
-    else:
-        middle_indents = indents
-        middle_lines = lines
+def print_several_lists(list_labels, lists):
 
-    characterized_indent_levels = characterize_indent_levels(
-        middle_lines, middle_indents
+    maximum_length = max(
+        [max([len(str(element)) for element in sublist]) for sublist in lists]
     )
-    tags = []
-    for scene in scenes:
-        tags.append(tag_lines(scene, characterized_indent_levels))
-
-    return scenes, tags
-
-
-import os
+    for i, sublist in enumerate(lists):
+        string = f"{list_labels[i]} : ["
+        for element in sublist:
+            string += " " * (maximum_length - len(str(element))) + str(element) + ", "
+        string += "]"
+        print(string)
 
 
 def markdown_color_script(script_path, html=False):
@@ -266,5 +392,5 @@ if __name__ == "__main__":
     folder_name = "data/input/scripts_imsdb"
     script_name = choice(os.listdir(folder_name))
     print(script_name)
-    #markdown_color_script(os.path.join(folder_name, script_name))
-    print(tag_script(os.path.join(folder_name, script_name))[0][:2])
+    markdown_color_script(os.path.join(folder_name, script_name))
+    # print(tag_script(os.path.join(folder_name, script_name))[0][:2])
