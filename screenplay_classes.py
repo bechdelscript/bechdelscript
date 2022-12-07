@@ -61,6 +61,18 @@ class Script:
             if character.is_named == True:
                 character.identify_gender()
 
+    def passes_bechdel_test(self):
+        bechdel_approved = False
+        approved_scenes = []
+        for scene in self.list_scenes:
+            scene.are_characters_only_women()
+            bechdel_approved = scene.passes_bechdel_test()
+            if bechdel_approved:
+                approved_scenes.append(scene)
+                break  ## here, break because we stop once we have a passing scene
+
+        return bechdel_approved, approved_scenes
+
 
 class Scene:
     def __init__(self, list_lines, list_tags):
@@ -68,6 +80,8 @@ class Scene:
         self.list_tags = list_tags
         self.list_characters_in_scene = []
         self.list_dialogues = []
+        self.is_elligible_characters_gender = False
+        self.is_elligible_topic = False
 
     def load_dialogues(self, characters_in_movie):
         current_speech = []
@@ -126,6 +140,36 @@ class Scene:
                 return current_speaker
             search_index -= 1
         return None
+
+    def are_characters_only_women(self):
+        if self.list_characters_in_scene == []:
+            return
+        is_elligible = True
+        for character in self.list_characters_in_scene:
+            if character.gender != "f":
+                is_elligible = False
+                break
+        self.is_elligible_characters_gender = is_elligible
+
+    def are_dialogues_about_men(self, males_names):
+        if self.list_dialogues == []:
+            return
+
+        list_speak_about_men = [
+            dialogue.speaks_about_men() for dialogue in self.list_dialogues
+        ]
+        if True in list_speak_about_men:
+            is_elligible = False
+        else:
+            is_elligible = True
+        self.is_elligible_topic = is_elligible
+
+    def passes_bechdel_test(self):
+        if not self.is_elligible_characters_gender:
+            return False
+        if not self.is_elligible_topic:
+            return False
+        return True
 
 
 class Character:
