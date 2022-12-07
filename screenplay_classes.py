@@ -1,6 +1,10 @@
 from typing import List
 
 from screenplay_parsing import label, tag_script
+from topic_modeling.naive_approach import (
+    dialogue_is_mentionning_men_naive,
+    import_masculine_words,
+)
 
 
 class Script:
@@ -102,6 +106,7 @@ class Scene:
         while search_index > 0 and self.list_tags[search_index] in [
             label.CHARACTER,
             label.METADATA,
+            label.EMPTY_LINE,
         ]:
             if self.list_tags[search_index] == label.CHARACTER:
                 speaker_name = self.list_lines[search_index].lstrip()
@@ -147,13 +152,28 @@ class Character:
 
 
 class Dialogue:
-    def __init__(self, character: Character, speech: List[str]):
+    def __init__(
+        self, character: Character, speech: List[str], movie_characters: List[Character]
+    ):
         self.character = character
         self.speech_list = speech
         self.speech_text = " ".join(speech)
+        self.clean_speech_text = self.clean_text()
+        self.speaks_about_men = self.speak_about_men()
 
-    def speak_of_men(self):
-        NotImplemented
+    def speak_about_men(self, masculine_words=import_masculine_words()):
+        words = self.clean_speech_text.split(" ")
+        for word in words:
+            if word in masculine_words:
+                return True
+        return False
+
+    def clean_text(self):
+        clean_speech_text = self.speech_text.replace(
+            [".", ",", ";", "?", "!", "(", ")", ":"], ""
+        )
+        clean_speech_text = clean_speech_text.casefold()
+        return clean_speech_text
 
     def __repr__(self) -> str:
         return f"{self.character} : {self.speech_text}"
@@ -165,8 +185,13 @@ if __name__ == "__main__":
     from random import choice
 
     folder_name = "data/input/scripts_imsdb"
-    script_name = choice(os.listdir(folder_name))
+    # script_name = choice(os.listdir(folder_name))
+    script_name = "Autumn-in-New-York.txt"
 
     script = Script(os.path.join(folder_name, script_name))
 
-    print(script.list_characters[3].name, script.list_characters[3].name_variation)
+    print(script.list_characters[0].name, script.list_characters[0].name_variation)
+
+    list_list_dialogues = script.list_list_dialogues
+    # print(list_list_dialogues)
+    scenes = script.list_scenes
