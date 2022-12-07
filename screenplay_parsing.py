@@ -180,23 +180,24 @@ def characterize_indent_levels(
     result = {}
 
     for i, group in enumerate(groups):
-        if relevant_indent_levels[i] == -1:
-            result[relevant_indent_levels[i]] = label.EMPTY_LINE
+        indent_level = relevant_indent_levels[i]
+        if indent_level == -1:
+            result[indent_level] = label.EMPTY_LINE
         elif characters_keywords_occurences[i] > 0:
-            result[relevant_indent_levels[i]] = label.CHARACTER
+            result[indent_level] = label.CHARACTER
         elif scenes_beginning_keywords_occurences[i] > 0:
-            result[relevant_indent_levels[i]] = label.SCENES_BOUNDARY_AND_DESCRIPTION
+            result[indent_level] = label.SCENES_BOUNDARY_AND_DESCRIPTION
         elif scenes_ending_keywords_occurences[i] / len(group) > 0.8:
-            result[relevant_indent_levels[i]] = label.SCENES_BOUNDARY
+            result[indent_level] = label.SCENES_BOUNDARY
         elif capitalized_frequency[i] > 0.9 and mean_text_lengths[i] < 10:
-            result[relevant_indent_levels[i]] = label.CHARACTER
+            result[indent_level] = label.CHARACTER
         elif meta_keywords_occurences[i] / len(group) > 1.0:
             # usually two parenthesis per line, one is the minimum
-            result[relevant_indent_levels[i]] = label.METADATA
+            result[indent_level] = label.METADATA
         elif dialogues_keywords_occurences[i] > 0:
-            result[relevant_indent_levels[i]] = label.DIALOGUE
+            result[indent_level] = label.DIALOGUE
         else:
-            result[relevant_indent_levels[i]] = label.UNKNOWN
+            result[indent_level] = label.UNKNOWN
 
     return result
 
