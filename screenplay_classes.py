@@ -41,7 +41,7 @@ class Script:
                             already_in = True
                             break
                     if already_in == False:
-                        self.list_characters.append(Characters(scene[j].lstrip()))
+                        self.list_characters.append(Character(scene[j].lstrip()))
 
     def load_dialogues(self):
         for scene in self.list_scenes:
@@ -99,10 +99,10 @@ class Scene:
         Args:
             dialogue_beginning_index (int): index of the beginning of the dialogue whose speaker
                 we are trying to identify
-            characters_in_movie (List[Characters]): list of characters in the movie
+            characters_in_movie (List[Character]): list of characters in the movie
 
         Returns:
-            Union[Characters, None]: The speaker of the dialogue, if found, else None
+            Union[Character, None]: The speaker of the dialogue, if found, else None
         """
         # We check the line above, if it's a character name, then it is the speaker
         search_index = dialogue_beginning_index - 1
@@ -123,7 +123,7 @@ class Scene:
         return None
 
 
-class Characters:
+class Character:
     def __init__(self, name, gender=None, is_named=None):
         self.name = name
         self.name_variation = {name}
@@ -154,7 +154,7 @@ class Characters:
 
 
 class Dialogue:
-    def __init__(self, character: Characters, speech: List[str]):
+    def __init__(self, character: Character, speech: List[str]):
         self.character = character
         self.speech_list = speech
         self.speech_text = " ".join(speech)
