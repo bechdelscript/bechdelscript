@@ -1,6 +1,10 @@
 from typing import List
 
 from screenplay_parsing import label, tag_script
+from topic_modeling.naive_approach import (
+    dialogue_is_mentionning_men_naive,
+    import_masculine_words,
+)
 from gender_name import classifier, _classify, classify
 
 
@@ -12,14 +16,16 @@ class Script:
         self.script_path = script_path
         self.list_scenes: List[Scene] = []
         self.list_list_tags: List[List[label]] = []
-        self.list_characters = []
+        self.list_characters: List[Character] = []
         self.list_list_dialogues = []
+        self.male_named_characters = []
 
         self.load_scenes()
         self.identify_characters()
         self.load_dialogues()
         self.are_characters_named()
         self.identify_gender_named_chars()
+        self.load_named_males()
 
     def load_scenes(self):
         list_scenes, self.list_list_tags = tag_script(self.script_path)
@@ -27,21 +33,27 @@ class Script:
             self.list_scenes.append(Scene(scene, self.list_list_tags[i]))
 
     def identify_characters(self):
-        list_scenes, self.list_list_tags = tag_script(self.script_path)
-        for i, scene in enumerate(list_scenes):
+        for i, scene in enumerate(self.list_scenes):
             for j, lab in enumerate(self.list_list_tags[i]):
                 if lab == label.CHARACTER:
-                    name = scene[j].lstrip()
+                    name = scene.list_lines[j].lstrip()
                     already_in = False
+                    char_if_already_in = None
                     for name_og in self.list_characters:
                         if name_og.name.startswith(name) or name.startswith(
                             name_og.name
                         ):
                             name_og.add_name_variation(name)
                             already_in = True
+                            char_if_already_in = name_og
                             break
                     if already_in == False:
-                        self.list_characters.append(Character(scene[j].lstrip()))
+                        new_character = Character(scene.list_lines[j].lstrip())
+                        self.list_characters.append(new_character)
+                        scene.list_characters_in_scene.append(new_character)
+                    else:
+                        if char_if_already_in not in scene.list_characters_in_scene:
+                            scene.list_characters_in_scene.append(char_if_already_in)
 
     def load_dialogues(self):
         for scene in self.list_scenes:
@@ -57,6 +69,25 @@ class Script:
             if character.is_named == True:
                 character.identify_gender()
 
+    def load_named_males(self):
+        for character in self.list_characters:
+            if character.is_named == True:
+                if character.gender == "m":
+                    self.male_named_characters += list(character.name_variation)
+
+    def passes_bechdel_test(self):
+        bechdel_approved = False
+        approved_scenes = []
+        for scene in self.list_scenes:
+            scene.are_characters_only_women()
+            scene.are_dialogues_about_men(self.male_named_characters)
+            bechdel_approved = scene.passes_bechdel_test()
+            if bechdel_approved:
+                approved_scenes.append(scene)
+                break  ## here, break because we stop once we have a passing scene
+
+        return bechdel_approved, approved_scenes
+
 
 class Scene:
     def __init__(self, list_lines, list_tags):
@@ -64,6 +95,8 @@ class Scene:
         self.list_tags = list_tags
         self.list_characters_in_scene = []
         self.list_dialogues = []
+        self.is_elligible_characters_gender = False
+        self.is_elligible_topic = False
 
     def load_dialogues(self, characters_in_movie):
         current_speech = []
@@ -109,6 +142,7 @@ class Scene:
         while search_index > 0 and self.list_tags[search_index] in [
             label.CHARACTER,
             label.METADATA,
+            label.EMPTY_LINE,
         ]:
             if self.list_tags[search_index] == label.CHARACTER:
                 speaker_name = self.list_lines[search_index].lstrip()
@@ -121,6 +155,40 @@ class Scene:
                 return current_speaker
             search_index -= 1
         return None
+
+    def are_characters_only_women(self):
+        if len(self.list_characters_in_scene) <= 1:
+            return
+
+        is_elligible = True
+        for character in self.list_characters_in_scene:
+            if character.gender != "f":
+                is_elligible = False
+                break
+        self.is_elligible_characters_gender = is_elligible
+
+    def are_dialogues_about_men(self, males_names):
+        if self.list_dialogues == []:
+            return
+
+        list_speak_about_men = [
+            dialogue.speaks_about_men(males_names) for dialogue in self.list_dialogues
+        ]
+        if True in list_speak_about_men:
+            is_elligible = False
+        else:
+            is_elligible = True
+        self.is_elligible_topic = is_elligible
+
+    def passes_bechdel_test(self):
+        passes_bechdel = True
+        if not self.is_elligible_characters_gender:
+            print("pas de scenes avec seulement des femmes")
+            passes_bechdel = False
+        if not self.is_elligible_topic:
+            print("elles parlent d'hommes")
+            passes_bechdel = False
+        return passes_bechdel
 
 
 class Character:
@@ -154,13 +222,40 @@ class Character:
 
 
 class Dialogue:
-    def __init__(self, character: Character, speech: List[str]):
+    def __init__(
+        self,
+        character: Character,
+        speech: List[str],  # movie_characters: List[Character]
+    ):
         self.character = character
         self.speech_list = speech
         self.speech_text = " ".join(speech)
+        self.clean_speech_text = self.clean_text()
 
-    def speak_of_men(self):
-        NotImplemented
+    def speaks_about_men(
+        self, males_names: List[str], masculine_words=import_masculine_words()
+    ):
+        masculine_words = masculine_words + males_names
+        words = self.clean_speech_text.split(" ")
+        for word in words:
+            if word in masculine_words:
+                return True
+        return False
+
+    def clean_text(self):
+
+        clean_speech_text = self.speech_text.replace(".", "")
+        clean_speech_text = clean_speech_text.replace(",", "")
+        clean_speech_text = clean_speech_text.replace(";", "")
+        clean_speech_text = clean_speech_text.replace("?", "")
+        clean_speech_text = clean_speech_text.replace("!", "")
+        clean_speech_text = clean_speech_text.replace("(", "")
+        clean_speech_text = clean_speech_text.replace(")", "")
+        clean_speech_text = clean_speech_text.replace(":", "")
+
+        clean_speech_text = clean_speech_text.casefold()
+
+        return clean_speech_text
 
     def __repr__(self) -> str:
         return f"{self.character} : {self.speech_text}"
@@ -173,15 +268,36 @@ if __name__ == "__main__":
 
     folder_name = "data/input/scripts_imsdb"
     script_name = choice(os.listdir(folder_name))
+    # script_name = "Mr-Blandings-Builds-His-Dream-House.txt"
+    # script_name = "Assassins.txt"
 
     script = Script(os.path.join(folder_name, script_name))
 
     print(script_name)
 
+    print("nombres de scenes :", len(script.list_scenes))
+    print("nombres de personnages :", len(script.list_characters))
+
     char = choice(script.list_characters)
 
-    print(
-        char.name,
-        char.is_named,
-        char.gender,
-    )
+    # print(
+    #     char.name,
+    #     char.is_named,
+    #     char.gender,
+    # )
+
+    bechdel_approved, approved_scenes = script.passes_bechdel_test()
+
+    if bechdel_approved:
+        print("Le film passe le test !! <3")
+    else:
+        print("Le film passe pas :(")
+
+    print(script_name)
+
+    # print(approved_scenes[0].list_lines)
+    # print(
+    #     "persos présents dans la scene : ", approved_scenes[0].list_characters_in_scene
+    # )
+
+    print("personnages :", script.list_characters)
