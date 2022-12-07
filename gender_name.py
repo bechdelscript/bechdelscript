@@ -73,17 +73,17 @@ def _classify(name, classifier):
     if any(ele in name for ele in keywords["f"]):
         guess = "f"
         prob = 1
-        #print("%s -> %s (%.2f%%) (Mrs)" % (name, guess, prob * 100))
+        # print("%s -> %s (%.2f%%) (Mrs)" % (name, guess, prob * 100))
     elif any(ele in name for ele in keywords["m"]):
         guess = "m"
         prob = 1
-        #print("%s -> %s (%.2f%%) (Mr)" % (name, guess, prob * 100))
+        # print("%s -> %s (%.2f%%) (Mr)" % (name, guess, prob * 100))
     elif name.lower().split()[0] in gender_data["name"].values:
         guess = gender_data.loc[gender_data["name"] == name.lower().split()[0]][
             "gender"
         ].values[0]
         prob = 1
-        #print("%s -> %s (%.2f%%) (prénom dans la db)" % (name, guess, prob * 100))
+        # print("%s -> %s (%.2f%%) (prénom dans la db)" % (name, guess, prob * 100))
     else:
         _name = _gender_features(name.split()[0])
         dist = classifier.prob_classify(_name)
@@ -91,7 +91,7 @@ def _classify(name, classifier):
         d = {m: "m", f: "f", b: "f,m"}
         prob = max(m, f, b)
         guess = d[prob]
-        #print("%s -> %s (%.2f%%)" % (name, guess, prob * 100))
+        # print("%s -> %s (%.2f%%)" % (name, guess, prob * 100))
     return guess, prob
 
 
