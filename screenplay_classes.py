@@ -5,6 +5,7 @@ from topic_modeling.naive_approach import (
     dialogue_is_mentionning_men_naive,
     import_masculine_words,
 )
+from gender_name import classifier, _classify, classify
 
 
 class Script:
@@ -22,6 +23,7 @@ class Script:
         self.identify_characters()
         self.load_dialogues()
         self.are_characters_named()
+        self.identify_gender_named_chars()
 
     def load_scenes(self):
         list_scenes, self.list_list_tags = tag_script(self.script_path)
@@ -53,6 +55,11 @@ class Script:
     def are_characters_named(self):
         for character in self.list_characters:
             character.fill_is_named(self.list_list_dialogues)
+
+    def identify_gender_named_chars(self):
+        for character in self.list_characters:
+            if character.is_named == True:
+                character.identify_gender()
 
 
 class Scene:
@@ -129,7 +136,7 @@ class Character:
         self.is_named = is_named
 
     def identify_gender(self):
-        NotImplemented
+        self.gender = _classify(self.name, classifier)[0]
 
     def add_name_variation(self, other):
         self.name_variation.add(other)
@@ -153,7 +160,9 @@ class Character:
 
 class Dialogue:
     def __init__(
-        self, character: Character, speech: List[str], movie_characters: List[Character]
+        self,
+        character: Character,
+        speech: List[str],  # movie_characters: List[Character]
     ):
         self.character = character
         self.speech_list = speech
@@ -169,10 +178,18 @@ class Dialogue:
         return False
 
     def clean_text(self):
-        clean_speech_text = self.speech_text.replace(
-            [".", ",", ";", "?", "!", "(", ")", ":"], ""
-        )
+
+        clean_speech_text = self.speech_text.replace(".", "")
+        clean_speech_text = clean_speech_text.replace(",", "")
+        clean_speech_text = clean_speech_text.replace(";", "")
+        clean_speech_text = clean_speech_text.replace("?", "")
+        clean_speech_text = clean_speech_text.replace("!", "")
+        clean_speech_text = clean_speech_text.replace("(", "")
+        clean_speech_text = clean_speech_text.replace(")", "")
+        clean_speech_text = clean_speech_text.replace(":", "")
+
         clean_speech_text = clean_speech_text.casefold()
+
         return clean_speech_text
 
     def __repr__(self) -> str:
@@ -190,8 +207,12 @@ if __name__ == "__main__":
 
     script = Script(os.path.join(folder_name, script_name))
 
-    print(script.list_characters[0].name, script.list_characters[0].name_variation)
+    print(script_name)
 
-    list_list_dialogues = script.list_list_dialogues
-    # print(list_list_dialogues)
-    scenes = script.list_scenes
+    char = choice(script.list_characters)
+
+    print(
+        char.name,
+        char.is_named,
+        char.gender,
+    )
