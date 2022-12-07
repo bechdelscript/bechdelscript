@@ -1,6 +1,4 @@
-import csv
 import string
-import unicodedata
 import nltk
 import nltk.classify
 import pandas as pd
@@ -21,9 +19,11 @@ gender_data = pd.read_csv(
 
 # Clean this database by dropping na values.
 gender_data.dropna(inplace=True)
+gender_data["gender"].replace("m,f", "f,m", inplace=True)
 
 # Inspect values in gender_data
 print(gender_data["gender"].value_counts())
+# print(gender_data["language"].value_counts())
 
 
 def undersample():
@@ -109,9 +109,9 @@ def _classify(name, classifier):
     else:
         _name = _gender_features(name.split()[0])
         dist = classifier.prob_classify(_name)
-        m, f = dist.prob("m"), dist.prob("f")
-        d = {m: "m", f: "f"}
-        prob = max(m, f)
+        m, f, b = dist.prob("m"), dist.prob("f"), dist.prob("f,m")
+        d = {m: "m", f: "f", b: "f,m"}
+        prob = max(m, f, b)
         guess = d[prob]
         print("%s -> %s (%.2f%%)" % (name, guess, prob * 100))
     return guess, prob
