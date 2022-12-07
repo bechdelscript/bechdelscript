@@ -16,14 +16,16 @@ class Script:
         self.script_path = script_path
         self.list_scenes: List[Scene] = []
         self.list_list_tags: List[List[label]] = []
-        self.list_characters = []
+        self.list_characters: List[Character] = []
         self.list_list_dialogues = []
+        self.male_named_characters = []
 
         self.load_scenes()
         self.identify_characters()
         self.load_dialogues()
         self.are_characters_named()
         self.identify_gender_named_chars()
+        self.load_named_males()
 
     def load_scenes(self):
         list_scenes, self.list_list_tags = tag_script(self.script_path)
@@ -60,6 +62,12 @@ class Script:
         for character in self.list_characters:
             if character.is_named == True:
                 character.identify_gender()
+
+    def load_named_males(self):
+        for character in self.list_characters:
+            if character.is_named == True:
+                if character.gender == "m":
+                    self.male_named_characters += list(character.name_variation)
 
     def passes_bechdel_test(self):
         bechdel_approved = False
@@ -246,12 +254,14 @@ if __name__ == "__main__":
     from random import choice
 
     folder_name = "data/input/scripts_imsdb"
-    # script_name = choice(os.listdir(folder_name))
-    script_name = "Autumn-in-New-York.txt"
+    script_name = choice(os.listdir(folder_name))
+    # script_name = "Autumn-in-New-York.txt"
 
     script = Script(os.path.join(folder_name, script_name))
 
     print(script_name)
+
+    print(script.male_named_characters)
 
     char = choice(script.list_characters)
 
