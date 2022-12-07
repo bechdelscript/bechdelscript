@@ -1,6 +1,7 @@
 from typing import List
 
 from screenplay_parsing import label, tag_script
+from gender_name import classifier, _classify, classify
 
 
 class Script:
@@ -18,6 +19,7 @@ class Script:
         self.identify_characters()
         self.load_dialogues()
         self.are_characters_named()
+        self.identify_gender_named_chars()
 
     def load_scenes(self):
         list_scenes, self.list_list_tags = tag_script(self.script_path)
@@ -49,6 +51,11 @@ class Script:
     def are_characters_named(self):
         for character in self.list_characters:
             character.fill_is_named(self.list_list_dialogues)
+
+    def identify_gender_named_chars(self):
+        for character in self.list_characters:
+            if character.is_named == True:
+                character.identify_gender()
 
 
 class Scene:
@@ -124,7 +131,7 @@ class Characters:
         self.is_named = is_named
 
     def identify_gender(self):
-        NotImplemented
+        self.gender = _classify(self.name, classifier)[0]
 
     def add_name_variation(self, other):
         self.name_variation.add(other)
@@ -169,4 +176,12 @@ if __name__ == "__main__":
 
     script = Script(os.path.join(folder_name, script_name))
 
-    print(script.list_characters[3].name, script.list_characters[3].name_variation)
+    print(script_name)
+
+    char = choice(script.list_characters)
+
+    print(
+        char.name,
+        char.is_named,
+        char.gender,
+    )
