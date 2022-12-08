@@ -45,16 +45,18 @@ META_KEYWORDS = [
 DIALOGUE_KEYWORDS = [r"\?"]
 
 
-def tag_script(script_path: str) -> Tuple[List[List[str]], List[label]]:
+def tag_script(script_path: str) -> Tuple[List[List[str]], List[label], bool]:
     """Assign a label to each line of a script.
 
     Args:
         script_path (str): path of the script
 
     Returns:
-        Tuple[List[List[str]], List[label]]: First element of the tuple is
-            a list of scenes, each scene being a list of lines. The second
-            element returned is the list of labels for each line.
+        Tuple[List[List[str]], List[label], bool ]: First element of the
+            tuple is a list of scenes, each scene being a list of lines.
+            The second element returned is the list of labels for each line.
+            The last element indicates whether the parsing seems to have gone
+            well or not.
     """
     with open(script_path) as f:
         screenplay = f.read()
@@ -75,11 +77,13 @@ def tag_script(script_path: str) -> Tuple[List[List[str]], List[label]]:
     characterized_indent_levels = characterize_indent_levels(
         middle_lines, middle_indents
     )
+    coherent_parsing = check_parsing_is_coherent(characterized_indent_levels)
+
     tags = []
     for scene in scenes:
         tags.append(tag_lines(scene, characterized_indent_levels))
 
-    return scenes, tags
+    return scenes, tags, coherent_parsing
 
 
 def find_scenes(
@@ -357,6 +361,16 @@ def tag_lines(
     return tags
 
 
+def check_parsing_is_coherent(characterized_indent_levels):
+    if (
+        label.DIALOGUE not in characterized_indent_levels.values
+        or label.CHARACTER not in characterized_indent_levels.values()
+        or label.SCENES_BOUNDARY_AND_DESCRIPTION
+        not in characterized_indent_levels.values()
+    ):
+        return False
+
+
 ### Functions below are only used to better visualize the parsing in order to improve it ###
 
 
@@ -374,7 +388,7 @@ def print_several_lists(list_labels, lists):
 
 
 def markdown_color_script(script_path, html=False):
-    scenes, tags = tag_script(script_path)
+    scenes, tags, coherent = tag_script(script_path)
 
     movie_name = os.path.split(script_path)[1].split(".")[0] + (
         ".html" if html else ".md"
