@@ -1,4 +1,5 @@
 import os
+import re
 from collections import Counter
 from enum import Enum
 from typing import Dict, List, Tuple
@@ -17,11 +18,31 @@ class label(Enum):
     UNKNOWN = "?"
 
 
-CHARACTER_KEYWORDS = ["(O.S.)", "(CONT'D)", "(0.S.)", "(O. S.)", "(0. S.)", "(V.O.)"]
-BEGINNING_SCENES_KEYWORDS = ["EXT ", "EXT.", "INT ", "INT."]
-ENDING_SCENES_KEYWORDS = ["FADE IN", "FADE INTO", "CUT TO", "DISSOLVE TO"]
-META_KEYWORDS = ["(", ")"]
-DIALOGUE_KEYWORDS = ["?"]
+CHARACTER_KEYWORDS = [
+    # looks for a capitalized letter (last letter of the name of the character speaking) followed
+    # by (O.S.) eventually with a 0 instead of O and eventually with a space between the letters
+    # must be at the end of a line (or followed only by whitespaces)
+    r"[A-Z](\s)?\((O|0).\s?S.\)\s*(\n|$)",
+    # same thing for (V.O)
+    r"[A-Z](\s)?\(V\.\s?(O|0).\)\s*(\n|$)",
+    # a capital letter followed by (CONT'D) or (CONT) or (CONTD)
+    # must be at the end of a line (or followed only by whitespaces)
+    r"[A-Z](\s)?\(CONT(\')?(D)?\)\s*(\n|$)",
+]
+BEGINNING_SCENES_KEYWORDS = [r"\bEXT\b", r"\bINT\b"]
+ENDING_SCENES_KEYWORDS = [
+    r"\bFADE IN\b",
+    r"\bFADE OUT\b",
+    r"\bFADE TO\b",
+    r"\bFADE INTO\b",
+    r"\bBACK TO\b",
+    r"\bCUT TO\b",
+    r"\bDISSOLVE TO\b",
+]
+META_KEYWORDS = [
+    r"((^|\n)\s*\(+.*|.*\)($|\n))",  # looks for lines beginning or ending with parenthesis (or both)
+]
+DIALOGUE_KEYWORDS = [r"\?"]
 
 
 def tag_script(script_path: str) -> Tuple[List[List[str]], List[label]]:
@@ -85,7 +106,7 @@ def find_scenes(
     for line in lines:
         has_keyword = False
         for keyword in beginning_scenes_keywords + end_scenes_keywords:
-            if keyword in line:
+            if re.match(keyword, line):
                 if keyword in beginning_scenes_keywords:
                     scenes.append(current_scene)
                     current_scene = [line]
@@ -189,11 +210,10 @@ def characterize_indent_levels(
             result[indent_level] = label.SCENES_BOUNDARY_AND_DESCRIPTION
         elif scenes_ending_keywords_occurences[i] / len(group) > 0.8:
             result[indent_level] = label.SCENES_BOUNDARY
+        elif meta_keywords_occurences[i] / len(group) > 0.75:
+            result[indent_level] = label.METADATA
         elif capitalized_frequency[i] > 0.9 and mean_text_lengths[i] < 10:
             result[indent_level] = label.CHARACTER
-        elif meta_keywords_occurences[i] / len(group) > 1.0:
-            # usually two parenthesis per line, one is the minimum
-            result[indent_level] = label.METADATA
         elif dialogues_keywords_occurences[i] > 0:
             result[indent_level] = label.DIALOGUE
         else:
@@ -247,9 +267,9 @@ def occurences_keywords_in_groups(
     """
     groups_keyword_quantity = [0 for _ in range(len(groups))]
     for i, group in enumerate(groups):
-        group_text = "".join(group)
+        group_text = "\n".join(group)
         for keyword in keywords:
-            groups_keyword_quantity[i] += group_text.count(keyword)
+            groups_keyword_quantity[i] += len(re.findall(keyword, group_text))
     return groups_keyword_quantity
 
 
@@ -392,6 +412,7 @@ if __name__ == "__main__":
 
     folder_name = "data/input/scripts_imsdb"
     script_name = choice(os.listdir(folder_name))
+    script_name = "It-Happened-One-Nig.txt"
     print(script_name)
     markdown_color_script(os.path.join(folder_name, script_name))
     # print(tag_script(os.path.join(folder_name, script_name))[0][:2])
