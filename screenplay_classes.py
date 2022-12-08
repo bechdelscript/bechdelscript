@@ -1,10 +1,7 @@
 from typing import List
 
 from screenplay_parsing import label, tag_script
-from topic_modeling.naive_approach import (
-    dialogue_is_mentionning_men_naive,
-    import_masculine_words,
-)
+from topic_modeling.naive_approach import import_masculine_words
 from gender_name import classifier, _classify, classify
 
 
@@ -78,9 +75,10 @@ class Script:
     def passes_bechdel_test(self):
         bechdel_approved = False
         approved_scenes = []
+        masculine_words = import_masculine_words()
         for scene in self.list_scenes:
             scene.are_characters_only_women()
-            scene.are_dialogues_about_men(self.male_named_characters)
+            scene.are_dialogues_about_men(self.male_named_characters, masculine_words)
             bechdel_approved = scene.passes_bechdel_test()
             if bechdel_approved:
                 approved_scenes.append(scene)
@@ -167,12 +165,13 @@ class Scene:
                 break
         self.is_elligible_characters_gender = is_elligible
 
-    def are_dialogues_about_men(self, males_names):
+    def are_dialogues_about_men(self, males_names, masculine_words):
         if self.list_dialogues == []:
             return
 
         list_speak_about_men = [
-            dialogue.speaks_about_men(males_names) for dialogue in self.list_dialogues
+            dialogue.speaks_about_men(masculine_words, males_names)
+            for dialogue in self.list_dialogues
         ]
         if True in list_speak_about_men:
             is_elligible = False
@@ -232,9 +231,7 @@ class Dialogue:
         self.speech_text = " ".join(speech)
         self.clean_speech_text = self.clean_text()
 
-    def speaks_about_men(
-        self, males_names: List[str], masculine_words=import_masculine_words()
-    ):
+    def speaks_about_men(self, males_names: List[str], masculine_words):
         masculine_words = masculine_words + males_names
         words = self.clean_speech_text.split(" ")
         for word in words:
