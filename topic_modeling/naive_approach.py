@@ -16,7 +16,9 @@ df = pd.read_csv(path_dataset)
 
 path_scripts = list(df["path"])
 
-script = open(path_scripts[0], "r")  # for path in path_scripts :
+script = open(
+    path_scripts[0], "r"
+)  # itérer sur les scripts  (for path in path_scripts :)
 
 
 def import_masculine_words():
@@ -28,6 +30,12 @@ def import_masculine_words():
     )
     masculine_words = json.load(open(path_masculine_words))
     return masculine_words
+
+
+def clean_punctuation(word):
+    if word[-1] in [".", ",", ";", "?", "!"]:
+        word = word[:-1]
+    return word
 
 
 # masculine_words = import_masculine_words
@@ -82,47 +90,49 @@ def dialogue_is_mentionning_men_naive(
 #     else:
 #         processed = False
 
-(
-    bool,
-    lines_mentionning_men,
-    lines_not_mentionning_men,
-) = dialogue_is_mentionning_men_naive(script.readlines(), [])
 
-# print("nombre de lignes au total :", len(lines))
-# print()
-print(bool)
-print("nombre de lignes contenant mention masculine :", len(lines_mentionning_men))
-print(rd.choice(lines_mentionning_men))
-print()
+if __name__ == "__main__":
 
-print(
-    "nombre de lignes ne contenant pas de mention masculine :",
-    len(lines_not_mentionning_men),
-)
-print(rd.choice(lines_not_mentionning_men))
-print()
+    (
+        bool,
+        lines_mentionning_men,
+        lines_not_mentionning_men,
+    ) = dialogue_is_mentionning_men_naive(script.readlines(), [])
 
-test = [
-    "coucou je suis un texte qui ne parle pas d'hommes",
-    "la banane est pourrie",
-    "la vie est belle",
-    "donald trump s'est présenté à nouveaux aux élections des US",
-]
-
-(
-    bool,
-    lines_mentionning_men,
-    lines_not_mentionning_men,
-) = dialogue_is_mentionning_men_naive(test, ["donald"])
-
-print(bool)
-print("nombre de lignes contenant mention masculine :", len(lines_mentionning_men))
-if bool:
+    # print("nombre de lignes au total :", len(lines))
+    # print()
+    print(bool)
+    print("nombre de lignes contenant mention masculine :", len(lines_mentionning_men))
     print(rd.choice(lines_mentionning_men))
-print()
-print(
-    "nombre de lignes ne contenant pas de mention masculine :",
-    len(lines_not_mentionning_men),
-)
-print(rd.choice(lines_not_mentionning_men))
-print()
+    print()
+
+    print(
+        "nombre de lignes ne contenant pas de mention masculine :",
+        len(lines_not_mentionning_men),
+    )
+    print(rd.choice(lines_not_mentionning_men))
+    print()
+
+    test = [
+        "coucou je suis un texte qui ne parle pas d'hommes",
+        "la banane est pourrie",
+        "la vie est belle",
+        "donald trump s'est présenté à nouveaux aux élections des US",
+    ]
+    (
+        bool,
+        lines_mentionning_men,
+        lines_not_mentionning_men,
+    ) = dialogue_is_mentionning_men_naive(test, ["donald"])
+
+    print(bool)
+    print("nombre de lignes contenant mention masculine :", len(lines_mentionning_men))
+    if bool:
+        print(rd.choice(lines_mentionning_men))
+    print()
+    print(
+        "nombre de lignes ne contenant pas de mention masculine :",
+        len(lines_not_mentionning_men),
+    )
+    print(rd.choice(lines_not_mentionning_men))
+    print()
