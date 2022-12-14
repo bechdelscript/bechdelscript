@@ -26,11 +26,10 @@ def load_scripts():
     bechdel_approved_truths = []
     bechdel_approved_predictions = []
     for path in tqdm(list(dataset["path"])):
-        print(path)
         ground_truth = dataset[dataset["path"] == path].iloc[0]["rating"]
         script = Script(path, ground_truth=ground_truth)
         bechdel_approved, _ = script.passes_bechdel_test()
-        bechdel_approved_truths.append(ground_truth)
+        bechdel_approved_truths.append(ground_truth == 3)
         bechdel_approved_predictions.append(bechdel_approved)
 
     bechdel_approved_predictions_df = pd.Series(bechdel_approved_predictions)
@@ -50,15 +49,7 @@ def compute_confusion_matrix(bechdel_truths, bechdel_approved_predictions):
 
     conf_matrix = confusion_matrix(bechdel_truths, bechdel_approved_predictions)
 
-    if sum(conf_matrix) == len(bechdel_truths):
-        print("les chiffres matchent")
-        print("somme confusion matrix", sum(conf_matrix))
-    else:
-        print("ça matche pas")
-        print("somme confusion matrix", sum(conf_matrix))
-
     conf_matrix_percents = conf_matrix / len(bechdel_truths)
-    print("somme confusion matrix pourcentages", sum(conf_matrix_percents))
 
     return conf_matrix, conf_matrix_percents
 
@@ -132,12 +123,12 @@ if __name__ == "__main__":
 
     bechdel_truths, bechdel_predictions, dataset_with_predictions = load_scripts()
 
-    print("len ground_truth :", len(bechdel_truths))
-    print("len preds", len(bechdel_predictions))
-    print(
-        "len dataset (preds)",
-        len(dataset_with_predictions["prediction_bechdel_approved"]),
-    )
+    # print("len ground_truth :", len(bechdel_truths))
+    # print("len preds", len(bechdel_predictions))
+    # print(
+    #     "len dataset (preds)",
+    #     len(dataset_with_predictions["prediction_bechdel_approved"]),
+    # )
 
     conf_matrix, conf_matrix_percents = compute_confusion_matrix(
         bechdel_truths, bechdel_predictions
@@ -145,15 +136,12 @@ if __name__ == "__main__":
     dict_cm, accuracy = compute_accuracy(conf_matrix)
     dict_cm_p, accuracy_percents = compute_accuracy(conf_matrix_percents)
 
-    print(
-        "Faux positifs : nous prédisons que le film passe le test, alors qu'il ne passe pas"
-    )
-    print(
-        "Faux négatifs : nous prédisons que le film rate le test, alors qu'il le passe"
-    )
+    #
+    #     "Faux positifs : nous prédisons que le film passe le test, alors qu'il ne passe pas"
+    #
+    #     "Faux négatifs : nous prédisons que le film rate le test, alors qu'il le passe"
+    #
 
-    print(
-        create_results_folder(
-            dict_cm, dict_cm_p, accuracy, len(bechdel_truths), dataset_with_predictions
-        )
+    create_results_folder(
+        dict_cm, dict_cm_p, accuracy, len(bechdel_truths), dataset_with_predictions
     )
