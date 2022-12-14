@@ -120,7 +120,7 @@ def find_scenes(
     for line in lines:
         has_keyword = False
         for keyword in beginning_scenes_keywords + end_scenes_keywords:
-            if re.match(keyword, line):
+            if re.search(keyword, line):
                 if keyword in beginning_scenes_keywords:
                     scenes.append(current_scene)
                     current_scene = [line]
@@ -476,5 +476,4 @@ if __name__ == "__main__":
     folder_name = "data/input/scripts_imsdb"
     script_name = choice(os.listdir(folder_name))
     print(script_name)
-    # markdown_color_script(os.path.join(folder_name, script_name))
-    print(tag_script(os.path.join(folder_name, script_name))[0][:2])
+    markdown_color_script(os.path.join(folder_name, script_name))
