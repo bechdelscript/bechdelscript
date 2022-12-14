@@ -1,18 +1,12 @@
 from typing import List
 
 from screenplay_parsing import label, tag_script
-from topic_modeling.naive_approach import (
-    dialogue_is_mentionning_men_naive,
-    import_masculine_words,
-)
+from topic_modeling.naive_approach import import_masculine_words
 from gender_name import classifier, _classify, classify
 
 
 class Script:
-    def __init__(
-        self,
-        script_path,
-    ):
+    def __init__(self, script_path, ground_truth=None):
         self.script_path = script_path
         self.list_scenes: List[Scene] = []
         self.list_list_tags: List[List[label]] = []
@@ -20,6 +14,7 @@ class Script:
         self.list_characters: List[Character] = []
         self.list_list_dialogues: List[List[Dialogue]] = []
         self.male_named_characters = []
+        self.bechdel_ground_truth = ground_truth
 
         self.load_scenes()
         self.identify_characters()
@@ -81,15 +76,18 @@ class Script:
     def passes_bechdel_test(self):
         bechdel_approved = False
         approved_scenes = []
+        masculine_words = import_masculine_words()
         for scene in self.list_scenes:
             scene.are_characters_only_women()
-            scene.are_dialogues_about_men(self.male_named_characters)
+            scene.are_dialogues_about_men(self.male_named_characters, masculine_words)
             bechdel_approved = scene.passes_bechdel_test()
             if bechdel_approved:
                 approved_scenes.append(scene)
-                break  ## here, break because we stop once we have a passing scene
+                # break  ## here, break because we stop once we have a passing scene
 
-        return bechdel_approved, approved_scenes
+        script_bechdel_approved = len(approved_scenes) >= 1
+
+        return script_bechdel_approved, approved_scenes
 
 
 class Scene:
@@ -170,12 +168,13 @@ class Scene:
                 break
         self.is_elligible_characters_gender = is_elligible
 
-    def are_dialogues_about_men(self, males_names):
+    def are_dialogues_about_men(self, males_names, masculine_words):
         if self.list_dialogues == []:
             return
 
         list_speak_about_men = [
-            dialogue.speaks_about_men(males_names) for dialogue in self.list_dialogues
+            dialogue.speaks_about_men(masculine_words, males_names)
+            for dialogue in self.list_dialogues
         ]
         if True in list_speak_about_men:
             is_elligible = False
@@ -186,12 +185,13 @@ class Scene:
     def passes_bechdel_test(self):
         passes_bechdel = True
         if not self.is_elligible_characters_gender:
-            print("pas de scenes avec seulement des femmes")
             passes_bechdel = False
         if not self.is_elligible_topic:
-            print("elles parlent d'hommes")
             passes_bechdel = False
         return passes_bechdel
+
+    def __repr__(self) -> str:
+        return "\n".join(self.list_lines)
 
 
 class Character:
@@ -235,9 +235,7 @@ class Dialogue:
         self.speech_text = " ".join(speech)
         self.clean_speech_text = self.clean_text()
 
-    def speaks_about_men(
-        self, males_names: List[str], masculine_words=import_masculine_words()
-    ):
+    def speaks_about_men(self, males_names: List[str], masculine_words):
         masculine_words = masculine_words + males_names
         words = self.clean_speech_text.split(" ")
         for word in words:
@@ -262,45 +260,3 @@ class Dialogue:
 
     def __repr__(self) -> str:
         return f"{self.character} : {self.speech_text}"
-
-
-if __name__ == "__main__":
-
-    import os
-    from random import choice
-
-    folder_name = "data/input/scripts_imsdb"
-    script_name = choice(os.listdir(folder_name))
-    # script_name = "Mr-Blandings-Builds-His-Dream-House.txt"
-    # script_name = "Assassins.txt"
-
-    script = Script(os.path.join(folder_name, script_name))
-
-    print(script_name)
-
-    print("nombres de scenes :", len(script.list_scenes))
-    print("nombres de personnages :", len(script.list_characters))
-
-    char = choice(script.list_characters)
-
-    # print(
-    #     char.name,
-    #     char.is_named,
-    #     char.gender,
-    # )
-
-    bechdel_approved, approved_scenes = script.passes_bechdel_test()
-
-    if bechdel_approved:
-        print("Le film passe le test !! <3")
-    else:
-        print("Le film passe pas :(")
-
-    print(script_name)
-
-    # print(approved_scenes[0].list_lines)
-    # print(
-    #     "persos présents dans la scene : ", approved_scenes[0].list_characters_in_scene
-    # )
-
-    print("personnages :", script.list_characters)

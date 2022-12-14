@@ -5,21 +5,6 @@ import yaml
 import pandas as pd
 import random as rd
 
-config = yaml.safe_load(open("parameters.yaml"))
-
-
-path_dataset = os.path.join(
-    config["paths"]["input_folder_name"], config["names"]["db_name"]
-)
-
-df = pd.read_csv(path_dataset)
-
-path_scripts = list(df["path"])
-
-script = open(
-    path_scripts[0], "r"
-)  # itérer sur les scripts  (for path in path_scripts :)
-
 
 def import_masculine_words():
     config = yaml.safe_load(open("parameters.yaml"))
@@ -92,6 +77,20 @@ def dialogue_is_mentionning_men_naive(
 
 
 if __name__ == "__main__":
+
+    config = yaml.safe_load(open("parameters.yaml"))
+
+    path_dataset = os.path.join(
+        config["paths"]["input_folder_name"], config["names"]["db_name"]
+    )
+
+    df = pd.read_csv(path_dataset)
+
+    path_scripts = list(df["path"])
+
+    script = open(
+        path_scripts[0], "r"
+    )  # itérer sur les scripts  (for path in path_scripts :)
 
     (
         bool,
