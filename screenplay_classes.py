@@ -6,16 +6,14 @@ from gender_name import classifier, _classify, classify
 
 
 class Script:
-    def __init__(
-        self,
-        script_path,
-    ):
+    def __init__(self, script_path, ground_truth=None):
         self.script_path = script_path
         self.list_scenes: List[Scene] = []
         self.list_list_tags: List[List[label]] = []
         self.list_characters: List[Character] = []
         self.list_list_dialogues = []
         self.male_named_characters = []
+        self.bechdel_ground_truth = ground_truth
 
         self.load_scenes()
         self.identify_characters()
@@ -82,9 +80,11 @@ class Script:
             bechdel_approved = scene.passes_bechdel_test()
             if bechdel_approved:
                 approved_scenes.append(scene)
-                break  ## here, break because we stop once we have a passing scene
+                # break  ## here, break because we stop once we have a passing scene
 
-        return bechdel_approved, approved_scenes
+        script_bechdel_approved = len(approved_scenes) >= 1
+
+        return script_bechdel_approved, approved_scenes
 
 
 class Scene:
@@ -182,12 +182,13 @@ class Scene:
     def passes_bechdel_test(self):
         passes_bechdel = True
         if not self.is_elligible_characters_gender:
-            print("pas de scenes avec seulement des femmes")
             passes_bechdel = False
         if not self.is_elligible_topic:
-            print("elles parlent d'hommes")
             passes_bechdel = False
         return passes_bechdel
+
+    def __repr__(self) -> str:
+        return "\n".join(self.list_lines)
 
 
 class Character:
@@ -256,62 +257,3 @@ class Dialogue:
 
     def __repr__(self) -> str:
         return f"{self.character} : {self.speech_text}"
-
-
-if __name__ == "__main__":
-
-    import os
-    import yaml
-    from random import choice
-    import pandas as pd
-
-    folder_name = "data/input/scripts_imsdb"
-    # script_name = choice(os.listdir(folder_name))
-    # script_name = "Mr-Blandings-Builds-His-Dream-House.txt"
-    script_name = "Slither.txt"
-    script_name = "Capote.txt"
-
-    script_path = os.path.join(folder_name, script_name)
-    print(script_path)
-
-    script = Script(script_path)
-
-    print(script_name)
-
-    print("nombres de scenes :", len(script.list_scenes))
-    print("nombres de personnages :", len(script.list_characters))
-
-    char = choice(script.list_characters)
-
-    # print(
-    #     char.name,
-    #     char.is_named,
-    #     char.gender,
-    # )
-
-    bechdel_approved, approved_scenes = script.passes_bechdel_test()
-
-    if bechdel_approved:
-        print("Le film passe le test !! <3")
-    else:
-        print("Le film passe pas :(")
-
-    print(script_name)
-
-    print(approved_scenes[0].list_lines)
-    print(
-        "persos présents dans la scene : ", approved_scenes[0].list_characters_in_scene
-    )
-
-    print("personnages :", script.list_characters)
-
-    config = yaml.safe_load(open("parameters.yaml"))
-    path_dataset = os.path.join(
-        config["paths"]["input_folder_name"], config["names"]["db_name"]
-    )
-    df = pd.read_csv(path_dataset)
-
-    try:
-        print(df["rating", df.loc[df["path"] == script_path]])
-    except:
-        print("pas dans le dataset")
