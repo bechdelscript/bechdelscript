@@ -1,6 +1,6 @@
 from typing import List
 
-from screenplay_parsing import label, tag_script
+from script_parsing.naive_parsing import label, tag_script
 from topic_modeling.naive_approach import import_masculine_words
 from gender_name import classifier, _classify, classify
 import re
