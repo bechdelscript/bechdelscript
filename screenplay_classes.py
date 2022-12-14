@@ -1,7 +1,7 @@
 from typing import List
 
 from script_parsing.naive_parsing import label, tag_script
-from topic_modeling.naive_approach import import_masculine_words
+from topic_modeling.import_masculine_words import import_masculine_words
 from gender_name import classifier, _classify, classify
 import re
 
@@ -110,11 +110,7 @@ class Script:
         # return score = 3 le cas échéant et liste de scènes qui valident le test 3
 
     def passes_bechdel_test(self):
-        bechdel_approved = False
         approved_scenes = self.score3_scenes
-        if self.computed_score == 3:
-            bechdel_approved = True
-
         script_bechdel_approved = len(approved_scenes) >= 1
 
         return script_bechdel_approved, approved_scenes
@@ -360,7 +356,7 @@ class Dialogue:
     def __init__(
         self,
         character: Character,
-        speech: List[str],  # movie_characters: List[Character]
+        speech: List[str],
     ):
         self.character = character
         self.speech_list = speech
@@ -377,16 +373,18 @@ class Dialogue:
 
     def clean_text(self):
 
-        clean_speech_text = self.speech_text.replace(".", "")
-        clean_speech_text = clean_speech_text.replace(",", "")
-        clean_speech_text = clean_speech_text.replace(";", "")
-        clean_speech_text = clean_speech_text.replace("?", "")
-        clean_speech_text = clean_speech_text.replace("!", "")
-        clean_speech_text = clean_speech_text.replace("(", "")
-        clean_speech_text = clean_speech_text.replace(")", "")
-        clean_speech_text = clean_speech_text.replace(":", "")
+        clean_speech_text = self.speech_text.strip()
 
-        clean_speech_text = clean_speech_text.casefold()
+        clean_speech_text = clean_speech_text.replace(".", " ")
+        clean_speech_text = clean_speech_text.replace(",", " ")
+        clean_speech_text = clean_speech_text.replace(";", " ")
+        clean_speech_text = clean_speech_text.replace("?", " ")
+        clean_speech_text = clean_speech_text.replace("!", " ")
+        clean_speech_text = clean_speech_text.replace("(", " ")
+        clean_speech_text = clean_speech_text.replace(")", " ")
+        clean_speech_text = clean_speech_text.replace(":", " ")
+
+        clean_speech_text = clean_speech_text.lower()
 
         return clean_speech_text
 
