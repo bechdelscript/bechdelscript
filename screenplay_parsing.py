@@ -13,10 +13,20 @@ class label(Enum):
     SCENES_BOUNDARY = "S"
     SCENES_DESCRIPTION = "N"
     CHARACTER = "C"
+    SHORT_CAPITALIZED_TEXTS = "C?"
     DIALOGUE = "D"
     METADATA = "M"
     UNKNOWN = "?"
 
+
+LABELS_PRIORITY = [
+    label.CHARACTER,
+    label.SCENES_BOUNDARY,
+    label.METADATA,
+    label.SCENES_BOUNDARY_AND_DESCRIPTION,
+    label.DIALOGUE,
+    label.SHORT_CAPITALIZED_TEXTS,
+]
 
 CHARACTER_KEYWORDS = [
     # looks for a capitalized letter (last letter of the name of the character speaking) followed
@@ -42,7 +52,7 @@ ENDING_SCENES_KEYWORDS = [
 META_KEYWORDS = [
     r"((^|\n)\s*\(+.*|.*\)($|\n))",  # looks for lines beginning or ending with parenthesis (or both)
 ]
-DIALOGUE_KEYWORDS = [r"\?"]
+DIALOGUE_KEYWORDS = [r"\?"]  # just question marks
 
 
 def tag_script(script_path: str) -> Tuple[List[List[str]], List[label], bool]:
@@ -164,7 +174,7 @@ def get_indents_list(lines: List[str]) -> List[int]:
 
 
 def characterize_indent_levels(
-    lines: List[str], indents: List[int]
+    lines: List[str], indents: List[int], print_details: bool = False
 ) -> Dict[int, label]:
     """Given a script (or an extract of the script) as a list of lines, we try to
     identify for each level of indentation which label it should have. This method
@@ -206,22 +216,60 @@ def characterize_indent_levels(
 
     for i, group in enumerate(groups):
         indent_level = relevant_indent_levels[i]
+        result[indent_level] = []
         if indent_level == -1:
-            result[indent_level] = label.EMPTY_LINE
-        elif characters_keywords_occurences[i] > 0:
-            result[indent_level] = label.CHARACTER
-        elif scenes_beginning_keywords_occurences[i] > 0:
-            result[indent_level] = label.SCENES_BOUNDARY_AND_DESCRIPTION
-        elif scenes_ending_keywords_occurences[i] / len(group) > 0.8:
-            result[indent_level] = label.SCENES_BOUNDARY
-        elif meta_keywords_occurences[i] / len(group) > 0.75:
-            result[indent_level] = label.METADATA
-        elif capitalized_frequency[i] > 0.9 and mean_text_lengths[i] < 10:
-            result[indent_level] = label.CHARACTER
-        elif dialogues_keywords_occurences[i] > 0:
-            result[indent_level] = label.DIALOGUE
+            result[indent_level].append(label.EMPTY_LINE)
         else:
-            result[indent_level] = label.UNKNOWN
+            if characters_keywords_occurences[i] > 0:
+                result[indent_level].append(label.CHARACTER)
+            if scenes_beginning_keywords_occurences[i] > 0:
+                result[indent_level].append(label.SCENES_BOUNDARY_AND_DESCRIPTION)
+            if scenes_ending_keywords_occurences[i] / len(group) > 0.8:
+                result[indent_level].append(label.SCENES_BOUNDARY)
+            if meta_keywords_occurences[i] / len(group) > 0.75:
+                result[indent_level].append(label.METADATA)
+            if (
+                capitalized_frequency[i] > 0.9
+                and mean_text_lengths[i] < 10
+                and label.CHARACTER not in result[indent_level]
+            ):
+                result[indent_level].append(label.SHORT_CAPITALIZED_TEXTS)
+            if dialogues_keywords_occurences[i] > 0:
+                result[indent_level].append(label.DIALOGUE)
+            if len(result[indent_level]) == 0:
+                result[indent_level].append(label.UNKNOWN)
+
+        while len(result[indent_level]) > 1:
+            if LABELS_PRIORITY.index(result[indent_level][0]) > LABELS_PRIORITY.index(
+                result[indent_level][1]
+            ):
+                result[indent_level].pop(0)
+            else:
+                result[indent_level].pop(1)
+
+        result[indent_level] = result[indent_level][0]
+
+        if result[indent_level] == label.SHORT_CAPITALIZED_TEXTS:
+            if scenes_ending_keywords_occurences[i] > 1:
+                result[indent_level] = label.SCENES_BOUNDARY
+            else:
+                result[indent_level] = label.CHARACTER
+
+    if print_details:
+        all_lists = {
+            "In": relevant_indent_levels,
+            "Re": [tag.value for tag in result.values()],
+            "Le": mean_text_lengths,
+            "Nb": [len(group) for group in groups],
+            "Ca": capitalized_frequency,
+            "Ch": characters_keywords_occurences,
+            "SB": scenes_beginning_keywords_occurences,
+            "SE": scenes_ending_keywords_occurences,
+            "Me": meta_keywords_occurences,
+            "Di": dialogues_keywords_occurences,
+        }
+
+        print_several_lists(list(all_lists.keys()), all_lists.values())
 
     return result
 
@@ -363,12 +411,13 @@ def tag_lines(
 
 def check_parsing_is_coherent(characterized_indent_levels):
     if (
-        label.DIALOGUE not in characterized_indent_levels.values
+        label.DIALOGUE not in characterized_indent_levels.values()
         or label.CHARACTER not in characterized_indent_levels.values()
         or label.SCENES_BOUNDARY_AND_DESCRIPTION
         not in characterized_indent_levels.values()
     ):
         return False
+    return True
 
 
 ### Functions below are only used to better visualize the parsing in order to improve it ###
