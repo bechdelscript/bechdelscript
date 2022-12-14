@@ -13,11 +13,11 @@ class Script:
         self.coherent_parsing: bool = None
         self.list_characters: List[Character] = []
         self.list_list_dialogues: List[List[Dialogue]] = []
-        self.male_named_characters = []
-        self.bechdel_ground_truth = ground_truth
-        self.computed_score = 0
-        self.score2_scenes = []
-        self.score3_scenes = []
+        self.male_named_characters: List[Character] = []
+        self.bechdel_ground_truth: int = ground_truth
+        self.computed_score: int = 0
+        self.score2_scenes: List[int] = []
+        self.score3_scenes: List[int] = []
 
         self.load_scenes()
         self.identify_characters()
@@ -117,6 +117,100 @@ class Script:
         script_bechdel_approved = len(approved_scenes) >= 1
 
         return script_bechdel_approved, approved_scenes
+
+    def display_results(self, nb_scenes):
+        print(f"Computed score : {self.computed_score}")
+        if self.computed_score == 0:
+            print("There aren't two named women in the movie.")
+            print("List of named characters in the movie :")
+            for character in self.list_characters:
+                if character.is_named:
+                    print(f"- {character.name} ({character.gender})")
+        elif self.computed_score >= 1:
+            named_women_characters = [
+                character.name
+                for character in self.list_characters
+                if character.is_named and character.gender == "f"
+            ]
+            print(
+                f"""There is at least two women who are named : {
+                    ", ".join(named_women_characters)
+                }\n"""
+            )
+            if self.computed_score == 1:
+                print(
+                    "However, they never talk in the same scene without other men, here are some scenes where they appear :"
+                )
+                current_nb_scenes = 0
+                for i, scene in enumerate(self.list_scenes):
+                    for named_woman in named_women_characters:
+                        if (
+                            any(
+                                [
+                                    named_woman.startswith(character.name)
+                                    or character.name.startswith(named_woman)
+                                    for character in scene.list_characters_in_scene
+                                ]
+                            )
+                            > 0
+                        ):
+                            print(
+                                f"""- Scene number {i} with characters : {
+                                    ", ".join(
+                                        [
+                                            f"{character.name} ({character.gender})"
+                                            for character in scene.list_characters_in_scene
+                                        ]
+                                    )
+                                }"""
+                            )
+                            current_nb_scenes += 1
+                    if current_nb_scenes == 5:
+                        break
+            else:
+                if self.computed_score == 2:
+                    relevant_scenes = self.score2_scenes
+                    print(
+                        f"And they talk with each other in {len(self.score2_scenes)} scenes, here are some of them :"
+                    )
+                    for i in self.score2_scenes[:5]:
+                        print(
+                            f"""- Scene number {i} with characters : {
+                                ", ".join(
+                                    [
+                                        f"{character.name} ({character.gender})"
+                                        for character in self.list_scenes[i].list_characters_in_scene
+                                    ]
+                                )
+                            }"""
+                        )
+                    print("However, they talk about men in all of those scenes.")
+
+                elif self.computed_score == 3:
+                    relevant_scenes = self.score3_scenes
+                    print(
+                        f"And they talk with each other about things other than men in {len(self.score3_scenes)} scenes, here are some of them :"
+                    )
+                    for i in self.score3_scenes[:5]:
+                        print(
+                            f"""- Scene number {i} with characters : {
+                                ", ".join(
+                                    [
+                                        f"{character.name} ({character.gender})"
+                                        for character in self.list_scenes[i].list_characters_in_scene
+                                    ]
+                                )
+                            }"""
+                        )
+                nb_scenes_to_print = min(nb_scenes, len(relevant_scenes))
+                print(
+                    f"\nHere {'are' if nb_scenes_to_print > 1 else 'is'} {nb_scenes_to_print} {'scenes' if nb_scenes_to_print > 1 else 'scene'} that validate this score :"
+                )
+                for scene_id in relevant_scenes[:nb_scenes_to_print]:
+                    print(
+                        f"\n******* {str(scene_id) + 'th' if scene_id == 1 else str(scene_id) + 'st'} scene *******"
+                    )
+                    print(self.list_scenes[scene_id])
 
 
 class Scene:
