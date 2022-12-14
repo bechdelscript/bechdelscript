@@ -7,6 +7,7 @@ import yaml
 
 
 from screenplay_classes import Script
+from dataset_building.build_dataset import build_dataset
 
 
 def main(args):
@@ -15,6 +16,8 @@ def main(args):
     path_dataset = os.path.join(
         config["paths"]["input_folder_name"], config["names"]["db_name"]
     )
+    if not os.path.exists(path_dataset):
+        build_dataset()
     dataset = pd.read_csv(path_dataset)
     if args.movie_name != "":
         if args.movie_name in dataset["title"].unique():
