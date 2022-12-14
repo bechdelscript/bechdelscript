@@ -1,7 +1,7 @@
 from typing import List
 
 from script_parsing.naive_parsing import label, tag_script
-from topic_modeling.naive_approach import import_masculine_words
+from topic_modeling.import_masculine_words import import_masculine_words
 from gender_name import classifier, _classify, classify
 import re
 
@@ -110,11 +110,7 @@ class Script:
         # return score = 3 le cas échéant et liste de scènes qui valident le test 3
 
     def passes_bechdel_test(self):
-        bechdel_approved = False
         approved_scenes = self.score3_scenes
-        if self.computed_score == 3:
-            bechdel_approved = True
-
         script_bechdel_approved = len(approved_scenes) >= 1
 
         return script_bechdel_approved, approved_scenes
