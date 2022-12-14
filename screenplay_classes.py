@@ -360,7 +360,7 @@ class Dialogue:
     def __init__(
         self,
         character: Character,
-        speech: List[str],  # movie_characters: List[Character]
+        speech: List[str],
     ):
         self.character = character
         self.speech_list = speech
@@ -377,16 +377,18 @@ class Dialogue:
 
     def clean_text(self):
 
-        clean_speech_text = self.speech_text.replace(".", "")
-        clean_speech_text = clean_speech_text.replace(",", "")
-        clean_speech_text = clean_speech_text.replace(";", "")
-        clean_speech_text = clean_speech_text.replace("?", "")
-        clean_speech_text = clean_speech_text.replace("!", "")
-        clean_speech_text = clean_speech_text.replace("(", "")
-        clean_speech_text = clean_speech_text.replace(")", "")
-        clean_speech_text = clean_speech_text.replace(":", "")
+        clean_speech_text = self.speech_text.strip()
 
-        clean_speech_text = clean_speech_text.casefold()
+        clean_speech_text = clean_speech_text.replace(".", " ")
+        clean_speech_text = clean_speech_text.replace(",", " ")
+        clean_speech_text = clean_speech_text.replace(";", " ")
+        clean_speech_text = clean_speech_text.replace("?", " ")
+        clean_speech_text = clean_speech_text.replace("!", " ")
+        clean_speech_text = clean_speech_text.replace("(", " ")
+        clean_speech_text = clean_speech_text.replace(")", " ")
+        clean_speech_text = clean_speech_text.replace(":", " ")
+
+        clean_speech_text = clean_speech_text.lower()
 
         return clean_speech_text
 
