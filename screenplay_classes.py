@@ -3,6 +3,7 @@ from typing import List
 from screenplay_parsing import label, tag_script
 from topic_modeling.naive_approach import import_masculine_words
 from gender_name import classifier, _classify, classify
+import re
 
 
 class Script:
@@ -323,6 +324,14 @@ class Character:
         self.name_variation = {name}
         self.gender = gender
         self.is_named = is_named
+        self.clean_name()
+
+    def clean_name(self):
+        self.name = self.name.rstrip()
+        # remove parenthesis after name
+        parenthesis = re.search(r"\s*?\(.+\)", self.name)
+        if parenthesis:
+            self.name = self.name[: parenthesis.span()[0]]
 
     def identify_gender(self):
         self.gender = _classify(self.name, classifier)[0]
