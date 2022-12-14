@@ -10,8 +10,9 @@ class Script:
         self.script_path = script_path
         self.list_scenes: List[Scene] = []
         self.list_list_tags: List[List[label]] = []
+        self.coherent_parsing: bool = None
         self.list_characters: List[Character] = []
-        self.list_list_dialogues = []
+        self.list_list_dialogues: List[List[Dialogue]] = []
         self.male_named_characters = []
         self.bechdel_ground_truth = ground_truth
 
@@ -23,7 +24,9 @@ class Script:
         self.load_named_males()
 
     def load_scenes(self):
-        list_scenes, self.list_list_tags = tag_script(self.script_path)
+        list_scenes, self.list_list_tags, self.coherent_parsing = tag_script(
+            self.script_path
+        )
         for i, scene in enumerate(list_scenes):
             self.list_scenes.append(Scene(scene, self.list_list_tags[i]))
 
