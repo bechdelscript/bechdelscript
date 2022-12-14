@@ -1,5 +1,6 @@
 paths :
     input_folder_name : data/input/
+    output_folder_name : data/output/
     path_to_kaggle_scripts : data/input/scripts_kaggle/
     path_to_imsdb_scripts : data/input/scripts_imsdb/
     topic_modeling_folder : topic_modeling/

@@ -197,7 +197,7 @@ def tag_lines(list_lines, characterized_indent_levels):
 
 
 def tag_script(script_path):
-    with open(script_path) as f:
+    with open(script_path, errors="ignore") as f:
         screenplay = f.read()
 
     lines = screenplay.split("\n")
