@@ -96,7 +96,6 @@ class Script:
                 )
                 if scene.is_elligible_characters_gender:
                     self.score2_scenes.append(index)
-                    print(index)
         # return score = 2 le cas échéant et liste de scènes qui valident le test 2
 
     def load_score_3(self):
