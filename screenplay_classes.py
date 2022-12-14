@@ -261,14 +261,20 @@ class Dialogue:
 if __name__ == "__main__":
 
     import os
+    import yaml
     from random import choice
+    import pandas as pd
 
     folder_name = "data/input/scripts_imsdb"
-    script_name = choice(os.listdir(folder_name))
+    # script_name = choice(os.listdir(folder_name))
     # script_name = "Mr-Blandings-Builds-His-Dream-House.txt"
-    # script_name = "Assassins.txt"
+    script_name = "Slither.txt"
+    script_name = "Capote.txt"
 
-    script = Script(os.path.join(folder_name, script_name))
+    script_path = os.path.join(folder_name, script_name)
+    print(script_path)
+
+    script = Script(script_path)
 
     print(script_name)
 
@@ -292,9 +298,20 @@ if __name__ == "__main__":
 
     print(script_name)
 
-    # print(approved_scenes[0].list_lines)
-    # print(
-    #     "persos présents dans la scene : ", approved_scenes[0].list_characters_in_scene
-    # )
+    print(approved_scenes[0].list_lines)
+    print(
+        "persos présents dans la scene : ", approved_scenes[0].list_characters_in_scene
+    )
 
     print("personnages :", script.list_characters)
+
+    config = yaml.safe_load(open("parameters.yaml"))
+    path_dataset = os.path.join(
+        config["paths"]["input_folder_name"], config["names"]["db_name"]
+    )
+    df = pd.read_csv(path_dataset)
+
+    try:
+        print(df["rating", df.loc[df["path"] == script_path]])
+    except:
+        print("pas dans le dataset")

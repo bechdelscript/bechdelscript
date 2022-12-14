@@ -26,12 +26,14 @@
     "Father",
     "father",
     "FATHER",
+    "fathers",
     "Dad",
     "dad",
     "DAD",
     "Brother",
     "brother",
     "BROTHER",
+    "brothers",
     "Bro",
     "bro",
     "BRO",
@@ -40,5 +42,10 @@
     "MISTER",
     "Mr.",
     "MR.",
-    "mr."
+    "mr.",
+    "Sir",
+    "boyfriend",
+    "boyfriends",
+    "husband",
+    "husbands"
 ]
