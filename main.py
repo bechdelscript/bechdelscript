@@ -7,6 +7,7 @@ import yaml
 
 
 from screenplay_classes import Script
+from dataset_building.build_dataset import build_dataset
 
 
 def main(args):
@@ -15,6 +16,8 @@ def main(args):
     path_dataset = os.path.join(
         config["paths"]["input_folder_name"], config["names"]["db_name"]
     )
+    if not os.path.exists(path_dataset):
+        build_dataset()
     dataset = pd.read_csv(path_dataset)
     if args.movie_name != "":
         if args.movie_name in dataset["title"].unique():
@@ -51,26 +54,7 @@ def main(args):
         "Score d'après le dataset :",
         dataset[dataset["path"] == script_path].iloc[0]["rating"],
     )
-
-    bechdel_approved, approved_scenes = script.passes_bechdel_test()
-
-    if bechdel_approved:
-        print("\nLe film passe le test !! <3")
-        print("Nombre de scènes passant le test :", len(approved_scenes))
-        for i in range(1, min(args.nb_scenes, len(approved_scenes)) + 1):
-            print(
-                f"\n******* {str(i) + 'ère' if i == 1 else str(i) + 'ème'} scène *******"
-            )
-            print(approved_scenes[i - 1])
-            print(
-                "Personnages présents dans la scène : ",
-                [
-                    f"{char.name} ({char.gender})"
-                    for char in approved_scenes[0].list_characters_in_scene
-                ],
-            )
-    else:
-        print("\nLe film passe pas :(")
+    script.display_results(args.nb_scenes)
 
 
 parser = argparse.ArgumentParser()
