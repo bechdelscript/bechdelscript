@@ -330,7 +330,7 @@ class Character:
         self.name = self.name.rstrip()
         # remove parenthesis after name
         parenthesis = re.search(r"\s*?\(.+\)", self.name)
-        if parenthesis:
+        if parenthesis and parenthesis.span()[0] != 0:
             self.name = self.name[: parenthesis.span()[0]]
 
     def identify_gender(self):
