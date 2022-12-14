@@ -15,6 +15,9 @@ class Script:
         self.list_list_dialogues: List[List[Dialogue]] = []
         self.male_named_characters = []
         self.bechdel_ground_truth = ground_truth
+        self.computed_score = 0
+        self.score2_scenes = []
+        self.score3_scenes = []
 
         self.load_scenes()
         self.identify_characters()
@@ -22,6 +25,9 @@ class Script:
         self.are_characters_named()
         self.identify_gender_named_chars()
         self.load_named_males()
+        self.load_score_1()
+        self.load_score_2()
+        self.load_score_3()
 
     def load_scenes(self):
         list_scenes, self.list_list_tags, self.coherent_parsing = tag_script(
@@ -73,17 +79,41 @@ class Script:
                 if character.gender == "m":
                     self.male_named_characters += list(character.name_variation)
 
+    def load_score_1(self):
+        females = [
+            character
+            for character in self.list_characters
+            if character.is_named == True and character.gender == "f"
+        ]
+        self.computed_score += len(females) >= 2
+
+    def load_score_2(self):
+        if self.computed_score == 1:
+            for index, scene in enumerate(self.list_scenes):
+                scene.are_characters_only_women()
+                self.computed_score = min(
+                    self.computed_score + scene.is_elligible_characters_gender, 2
+                )
+                if scene.is_elligible_characters_gender:
+                    self.score2_scenes.append(index)
+                    print(index)
+        # return score = 2 le cas échéant et liste de scènes qui valident le test 2
+
+    def load_score_3(self):
+        masculine_words = import_masculine_words()
+        for index in self.score2_scenes:
+            scene = self.list_scenes[index]
+            scene.are_dialogues_about_men(self.male_named_characters, masculine_words)
+            self.computed_score = min(self.computed_score + scene.is_elligible_topic, 3)
+            if scene.is_elligible_topic:
+                self.score3_scenes.append(index)
+        # return score = 3 le cas échéant et liste de scènes qui valident le test 3
+
     def passes_bechdel_test(self):
         bechdel_approved = False
-        approved_scenes = []
-        masculine_words = import_masculine_words()
-        for scene in self.list_scenes:
-            scene.are_characters_only_women()
-            scene.are_dialogues_about_men(self.male_named_characters, masculine_words)
-            bechdel_approved = scene.passes_bechdel_test()
-            if bechdel_approved:
-                approved_scenes.append(scene)
-                # break  ## here, break because we stop once we have a passing scene
+        approved_scenes = self.score3_scenes
+        if self.computed_score == 3:
+            bechdel_approved = True
 
         script_bechdel_approved = len(approved_scenes) >= 1
 

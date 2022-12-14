@@ -51,6 +51,7 @@ def main(args):
         "Score d'après le dataset :",
         dataset[dataset["path"] == script_path].iloc[0]["rating"],
     )
+    print("Score d'après notre code :", script.computed_score)
 
     bechdel_approved, approved_scenes = script.passes_bechdel_test()
 
@@ -62,13 +63,13 @@ def main(args):
                 f"\n******* {str(i) + 'ère' if i == 1 else str(i) + 'ème'} scène *******"
             )
             print(approved_scenes[i - 1])
-            print(
-                "Personnages présents dans la scène : ",
-                [
-                    f"{char.name} ({char.gender})"
-                    for char in approved_scenes[0].list_characters_in_scene
-                ],
-            )
+            # print(
+            #     "Personnages présents dans la scène : ",
+            #     [
+            #         f"{char.name} ({char.gender})"
+            #         for char in approved_scenes[0].list_characters_in_scene
+            #     ],
+            # )
     else:
         print("\nLe film passe pas :(")
 
