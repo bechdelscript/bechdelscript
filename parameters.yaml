@@ -3,6 +3,7 @@ paths :
     path_to_kaggle_scripts : data/input/scripts_kaggle/
     path_to_imsdb_scripts : data/input/scripts_imsdb/
     topic_modeling_folder : topic_modeling/
+    script_parsing_folder : script_parsing/
 
 names :
     kaggle_db_name : bechdel_script_kaggle.csv
@@ -11,6 +12,8 @@ names :
     bechdel_db_name : bechdel_db.csv
     db_name : dataset.csv
     list_of_words_about_men : keywords.json
+    coherently_parsed_scripts : coherent_parsing.csv
+    tagged_lines : tagged_lines.csv
 
 merge_dataset :
     keep : imsdb ## imsdb ou kaggle
