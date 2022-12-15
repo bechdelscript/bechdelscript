@@ -22,6 +22,7 @@ class Script:
 
         self.load_scenes()
         self.identify_characters()
+        self.check_parsing_is_coherent()
         self.load_dialogues()
         self.are_characters_named()
         self.identify_gender_named_chars()
@@ -31,9 +32,7 @@ class Script:
         self.load_score_3()
 
     def load_scenes(self):
-        list_scenes, self.list_list_tags, self.coherent_parsing = tag_script(
-            self.script_path
-        )
+        list_scenes, self.list_list_tags = tag_script(self.script_path)
         for i, scene in enumerate(list_scenes):
             self.list_scenes.append(Scene(scene, self.list_list_tags[i]))
 
@@ -212,6 +211,21 @@ class Script:
                         f"\n******* {str(scene_id) + 'th' if scene_id == 1 else str(scene_id) + 'st'} scene *******"
                     )
                     print(self.list_scenes[scene_id])
+
+    def check_parsing_is_coherent(self):
+        all_tags = sum(self.list_list_tags, [])
+        self.coherent_parsing = True
+        if (
+            label.DIALOGUE not in all_tags
+            or label.CHARACTER not in all_tags
+            or label.SCENES_DESCRIPTION not in all_tags
+            or label.SCENES_BOUNDARY not in all_tags
+        ):
+            self.coherent_parsing = False
+        if len(self.list_characters) > 1000:
+            self.coherent_parsing = False
+        if len(self.list_scenes) == 1:
+            self.coherent_parsing = False
 
 
 class Scene:

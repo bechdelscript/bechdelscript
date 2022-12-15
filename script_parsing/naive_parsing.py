@@ -87,13 +87,12 @@ def tag_script(script_path: str) -> Tuple[List[List[str]], List[label], bool]:
     characterized_indent_levels = characterize_indent_levels(
         middle_lines, middle_indents
     )
-    coherent_parsing = check_parsing_is_coherent(characterized_indent_levels)
 
     tags = []
     for scene in scenes:
         tags.append(tag_lines(scene, characterized_indent_levels))
 
-    return scenes, tags, coherent_parsing
+    return scenes, tags
 
 
 def find_scenes(
@@ -407,17 +406,6 @@ def tag_lines(
             tags.append(label.UNKNOWN)
 
     return tags
-
-
-def check_parsing_is_coherent(characterized_indent_levels):
-    if (
-        label.DIALOGUE not in characterized_indent_levels.values()
-        or label.CHARACTER not in characterized_indent_levels.values()
-        or label.SCENES_BOUNDARY_AND_DESCRIPTION
-        not in characterized_indent_levels.values()
-    ):
-        return False
-    return True
 
 
 ### Functions below are only used to better visualize the parsing in order to improve it ###
