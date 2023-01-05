@@ -18,6 +18,12 @@ names :
 merge_dataset :
     keep : imsdb ## imsdb ou kaggle
 
+script_parsing_model:
+    pretrained_model_name: bert-base-uncased
+    batch_size: 2
+    fully_connected_hidden_layers : [1024, 512, 128]
+    nb_output_classes : 6
+
 urls : 
     bechdel_test_api : http://bechdeltest.com/api/v1/getAllMovies
     imsdb_base_url : http://www.imsdb.com

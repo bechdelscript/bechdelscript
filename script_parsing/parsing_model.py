@@ -54,7 +54,7 @@ class BertClassifier(nn.Module):
 if __name__ == "__main__":
     import yaml
 
-    config = yaml.safe_load(open("config.yaml", "r"))
+    config = yaml.safe_load(open("parameters.yaml", "r"))
     bert_classifier = BertClassifier(config)
     output = bert_classifier(["Ceci est une phrase de test."])
     print(output)
