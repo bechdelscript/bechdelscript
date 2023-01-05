@@ -96,7 +96,7 @@ def get_dataset(config):
     dummies = pd.get_dummies(lines_and_tags["tags"])
     lines_and_tags["labels"] = dummies.agg(list, axis=1)
     lines_and_labels = lines_and_tags.drop(columns="tags")
-    lines_and_labels["labels"].apply(torch.Tensor)
+    lines_and_labels["labels"] = lines_and_labels["labels"].apply(torch.Tensor)
 
     return TaggedLines(lines_and_labels)
 
