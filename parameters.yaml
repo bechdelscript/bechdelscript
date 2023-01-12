@@ -4,6 +4,7 @@ paths :
     path_to_imsdb_scripts : data/input/scripts_imsdb/
     topic_modeling_folder : topic_modeling/
     script_parsing_folder : script_parsing/
+    script_parsing_experiments_folder : script_parsing/experiments
 
 names :
     kaggle_db_name : bechdel_script_kaggle.csv
@@ -20,9 +21,15 @@ merge_dataset :
 
 script_parsing_model:
     pretrained_model_name: bert-base-uncased
-    batch_size: 2
     fully_connected_hidden_layers : [1024, 512, 128]
     nb_output_classes : 6
+    validation_dataset_proportion: 0.3
+    test_dataset_proportion: 0.1
+    seed: 42
+    batch_size : 50
+    learning_rate : 0.01
+    nb_epochs : 2
+    
 
 urls : 
     bechdel_test_api : http://bechdeltest.com/api/v1/getAllMovies
