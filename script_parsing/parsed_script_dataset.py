@@ -1,12 +1,12 @@
 import os
+from typing import List, Tuple, Union
 
 import pandas as pd
-from tqdm import tqdm
 import torch
-from typing import Union, Tuple, List
+from tqdm import tqdm
 
 from screenplay_classes import Script
-from script_parsing.naive_parsing import tag_script, label
+from script_parsing.naive_parsing import label, tag_script
 
 
 def get_df_coherent_scripts(
@@ -130,8 +130,9 @@ class TaggedLines(torch.utils.data.Dataset):
 
 
 if __name__ == "__main__":
-    import yaml
     import time
+
+    import yaml
 
     config = yaml.safe_load(open("parameters.yaml"))
     tic = time.time()

@@ -1,7 +1,8 @@
+from collections import OrderedDict
+
 import torch
 import torch.nn as nn
 from transformers import BertModel, BertTokenizer
-from collections import OrderedDict
 
 
 class BertClassifier(nn.Module):
