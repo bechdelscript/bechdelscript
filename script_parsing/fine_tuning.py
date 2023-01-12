@@ -147,6 +147,16 @@ def get_dataloaders(config):
     )
 
     batch_size = config["script_parsing_model"]["batch_size"]
+
+    if (
+        len(train_dataset) == 0
+        or len(validation_dataset) == 0
+        or len(test_dataset) == 0
+    ):
+        raise ValueError(
+            "The dataset is too small to be split correctly in a training, validation and test \
+            dataset. Please consider increasing the value of the script_parsing_model.dataset_percentage parameter."
+        )
     train_loader = DataLoader(
         dataset=train_dataset,
         batch_size=batch_size,

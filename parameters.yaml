@@ -21,6 +21,7 @@ merge_dataset :
 
 script_parsing_model:
     pretrained_model_name: bert-base-uncased
+    dataset_percentage: 0.1
     fully_connected_hidden_layers : [1024, 512, 128]
     nb_output_classes : 6
     validation_dataset_proportion: 0.3

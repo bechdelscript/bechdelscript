@@ -98,7 +98,13 @@ def get_dataset(config):
     lines_and_labels = lines_and_tags.drop(columns="tags")
     lines_and_labels["labels"] = lines_and_labels["labels"].apply(torch.Tensor)
 
-    return TaggedLines(lines_and_labels)
+    # keep only a percentage of the dataset
+    sample_lines_and_labels = lines_and_labels.sample(
+        frac=config["script_parsing_model"]["dataset_percentage"],
+        random_state=config["script_parsing_model"]["seed"],
+    )
+
+    return TaggedLines(sample_lines_and_labels)
 
 
 class TaggedLines(torch.utils.data.Dataset):
