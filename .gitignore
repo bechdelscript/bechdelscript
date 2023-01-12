@@ -164,6 +164,7 @@ cython_debug/
 
 # Ignored folders : 
 data/
+script_parsing/experiments
 
 # Extensions : 
 *.csv
