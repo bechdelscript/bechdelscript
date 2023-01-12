@@ -8,7 +8,7 @@ import yaml
 from torch.utils.data import DataLoader, random_split
 
 from script_parsing.parsed_script_dataset import TaggedLines, get_dataset
-from script_parsing.parsing_model import BertClassifier
+from script_parsing.parsing_model import get_model
 
 
 class AverageMeter(object):
@@ -79,7 +79,7 @@ def fine_tune_parsing_model(config):
     else:
         device = torch.device("cpu")
 
-    model = BertClassifier(config, device)
+    model = get_model(config, device)
     model.to(device)
     nb_epochs = config["script_parsing_model"]["nb_epochs"]
 

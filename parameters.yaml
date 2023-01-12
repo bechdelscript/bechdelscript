@@ -17,13 +17,16 @@ names :
     tagged_lines : tagged_lines.csv
 
 merge_dataset :
-    keep : imsdb ## imsdb ou kaggle
+    keep : imsdb # imsdb or kaggle
 
 script_parsing_model:
-    pretrained_model_name: bert-base-uncased
+    model_architecture : 
+        use_sentence_transformer: true
+        bert_pretrained_model_name: bert-base-uncased
+        sentence_transformer_pretrained_model_name: all-MiniLM-L6-v2
+        fully_connected_hidden_layers : [1024, 512, 128]
+        nb_output_classes : 6
     dataset_percentage: 0.1
-    fully_connected_hidden_layers : [1024, 512, 128]
-    nb_output_classes : 6
     validation_dataset_proportion: 0.3
     test_dataset_proportion: 0.1
     seed: 42
