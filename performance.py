@@ -78,6 +78,48 @@ def compute_accuracy(conf_matrix):
     return dict_conf_matrix, accuracy
 
 
+def create_results(
+    date,
+    dict_conf_matrix,
+    dict_conf_matrix_percents,
+    accuracy,
+    nb_of_scripts,
+    config,
+):
+    results = {}
+
+    results["date"] = date
+    sha, message = get_git_info()
+    results["commit_sha"] = sha
+    results["commit_message"] = message
+
+    config = yaml.safe_load(open("parameters.yaml"))
+    results["config"] = {}
+    results["config"]["bechdel_test_rules"] = config["bechdel_test_rules"]
+    results["metrics"] = {}
+    results["metrics"]["number_of_scripts"] = nb_of_scripts
+
+    results["metrics"]["binary_performance"] = {}
+    results["metrics"]["binary_performance"]["confusion_matrix"] = dict_conf_matrix
+    results["metrics"]["binary_performance"][
+        "confusion_matrix_percents"
+    ] = dict_conf_matrix_percents
+    results["metrics"]["binary_performance"]["accuracy"] = accuracy
+    results["metrics"]["binary_performance"]["accuracy_percents"] = (
+        accuracy / nb_of_scripts
+    )
+
+    results["metrics"]["score_metrics"] = {}  ## TODO : remplir les infos sur les scores
+    results["metrics"]["score_metrics"]["confusion_matrix"] = dict_conf_matrix
+    results["metrics"]["score_metrics"][
+        "confusion_matrix_percents"
+    ] = dict_conf_matrix_percents
+    results["metrics"]["score_metrics"]["accuracy"] = accuracy
+    results["metrics"]["score_metrics"]["accuracy_percents"] = accuracy / nb_of_scripts
+
+    return results
+
+
 def create_results_folder(
     dict_conf_matrix,
     dict_conf_matrix_percents,
@@ -85,28 +127,22 @@ def create_results_folder(
     nb_of_scripts,
     dataset_with_predictions,
 ):
-
-    results = {}
     date = format_date(datetime.now())
-    results["date"] = date
-    sha, message = get_git_info()
-    results["commit_sha"] = sha
-    results["commit_message"] = message
-    results["metrics"] = {}
-    results["metrics"]["number_of_scripts"] = nb_of_scripts
-    results["metrics"]["confusion_matrix"] = dict_conf_matrix
-    results["metrics"]["confusion_matrix_percents"] = dict_conf_matrix_percents
-    results["metrics"]["accuracy"] = accuracy
-    results["metrics"]["accuracy_percents"] = accuracy / nb_of_scripts
 
     config = yaml.safe_load(open("parameters.yaml"))
 
-    results["config"] = {}
-    results["config"]["bechdel_test_rules"] = config["bechdel_test_rules"]
+    results = create_results(
+        date,
+        dict_conf_matrix,
+        dict_conf_matrix_percents,
+        accuracy,
+        nb_of_scripts,
+        config,
+    )
 
     path_new_directory = os.path.join(config["paths"]["output_folder_name"], date)
     os.mkdir(path_new_directory)
-    path_json = os.path.join(path_new_directory, "results.json")
+    path_json = os.path.join(path_new_directory, "binary_results.json")
     path_dataset = os.path.join(path_new_directory, "dataset_preds.csv")
 
     dataset_with_predictions.to_csv(path_dataset, index=False)
