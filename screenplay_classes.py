@@ -1,9 +1,10 @@
 from typing import List
+import re
+import yaml
 
 from script_parsing.naive_parsing import label, tag_script
 from topic_modeling.import_masculine_words import import_masculine_words
 from gender_name import classifier, _classify, classify
-import re
 
 
 class Script:
@@ -19,6 +20,7 @@ class Script:
         self.computed_score: int = 0
         self.score2_scenes: List[int] = []
         self.score3_scenes: List[int] = []
+        self.bechdel_rules = self.load_bechdel_rules_config()
 
         self.load_scenes()
         self.identify_characters()
@@ -29,6 +31,10 @@ class Script:
         self.load_score_1()
         self.load_score_2()
         self.load_score_3()
+
+    def load_bechdel_rules_config(self, parameters="parameters.yaml"):
+        config = yaml.safe_load(open(parameters))
+        return config["bechdel_test_rules"]
 
     def load_scenes(self):
         list_scenes, self.list_list_tags, self.coherent_parsing = tag_script(
@@ -91,7 +97,10 @@ class Script:
     def load_score_2(self):
         if self.computed_score == 1:
             for index, scene in enumerate(self.list_scenes):
-                scene.are_characters_only_women()
+                scene.is_elligible_characters_gender_method(
+                    self.bechdel_rules["only_women_in_whole_scene"],
+                    self.bechdel_rules["lines_of_dialogues_in_a_row"],
+                )
                 self.computed_score = min(
                     self.computed_score + scene.is_elligible_characters_gender, 2
                 )
@@ -103,7 +112,12 @@ class Script:
         masculine_words = import_masculine_words()
         for index in self.score2_scenes:
             scene = self.list_scenes[index]
-            scene.are_dialogues_about_men(self.male_named_characters, masculine_words)
+            scene.is_elligible_topic_method(
+                self.male_named_characters,
+                masculine_words,
+                self.bechdel_rules["whole_discussion_not_about_men"],
+                self.bechdel_rules["lines_of_dialogues_in_a_row"],
+            )
             self.computed_score = min(self.computed_score + scene.is_elligible_topic, 3)
             if scene.is_elligible_topic:
                 self.score3_scenes.append(index)
@@ -277,21 +291,85 @@ class Scene:
             search_index -= 1
         return None
 
-    def are_characters_only_women(self):
+    def is_elligible_characters_gender_method(
+        self,
+        only_women: bool,
+        number_of_lines_in_a_row: int,
+    ):
         if len(self.list_characters_in_scene) <= 1:
             return
 
+        if only_women:
+            self.is_elligible_characters_gender = self.are_characters_only_women()
+        else:
+            self.is_elligible_characters_gender = (
+                self.are_characters_at_least_two_women(number_of_lines_in_a_row)
+            )
+
+    # Hard criteria : no men in scene at all
+    def are_characters_only_women(self):
         is_elligible = True
         for character in self.list_characters_in_scene:
             if character.gender != "f":
                 is_elligible = False
                 break
-        self.is_elligible_characters_gender = is_elligible
+        return is_elligible
 
-    def are_dialogues_about_men(self, males_names, masculine_words):
+    # Soft criteria :
+    # Here, only two women in dialogue are sufficient to validate criteria 2,
+    # as long as they exchange at least X lines (no matter which topic)
+    def are_characters_at_least_two_women(self, number_of_lines_in_a_row):
+        at_least_2_women = False
+        female_count = 0
+        for character in self.list_characters_in_scene:
+            if character.gender == "f":
+                female_count += 1
+            if female_count >= 2:
+                at_least_2_women = True
+                break
+        if not at_least_2_women:
+            return False
+
+        is_elligible = False
+        characters_in_talking_order = [
+            dialogue.character for dialogue in self.list_dialogues
+        ]
+        count_successive_false = 0
+        last_person_talking = ""
+        for character in characters_in_talking_order:
+            #  A woman is talking, who is different that the last character speaking
+            if character.gender == "f" and character.name != last_person_talking:
+                count_successive_false += 1
+            else:
+                count_successive_false = 0
+            last_person_talking = character.name
+            # the number of successive feminine lines is reached
+            if count_successive_false >= number_of_lines_in_a_row:
+                is_elligible = True
+                break
+        return is_elligible
+
+    def is_elligible_topic_method(
+        self,
+        males_names,
+        masculine_words,
+        whole_discussion: bool,
+        number_of_lines_in_a_row: int,
+    ):
         if self.list_dialogues == []:
             return
 
+        if whole_discussion:
+            self.is_elligible_topic = self.are_dialogues_about_men(
+                males_names, masculine_words
+            )
+        else:
+            self.is_elligible_topic = self.are_two_successive_lines_about_men(
+                males_names, masculine_words, number_of_lines_in_a_row
+            )
+
+    # Hard criteria : no mentionning of men in all scene
+    def are_dialogues_about_men(self, males_names, masculine_words):
         list_speak_about_men = [
             dialogue.speaks_about_men(masculine_words, males_names)
             for dialogue in self.list_dialogues
@@ -300,9 +378,44 @@ class Scene:
             is_elligible = False
         else:
             is_elligible = True
-        self.is_elligible_topic = is_elligible
+        return is_elligible
 
-    def passes_bechdel_test(self):
+    # Soft Criteria :
+    # Here, only two successive dialogue lines are sufficient to validate criteria 3 of the bechdel test
+    def are_two_successive_lines_about_men(
+        self,
+        males_names,
+        masculine_words,
+        number_of_lines_in_a_row,
+    ):
+        list_speak_about_men = [
+            (
+                dialogue.speaks_about_men(masculine_words, males_names),
+                dialogue.character,
+            )
+            for dialogue in self.list_dialogues
+        ]
+        is_elligible = False
+        count_successive_false = 0
+        last_person_talking = ""
+        for about_men, character in list_speak_about_men:
+            # about_men is False, said by a women, who is differnet that the last character talking
+            if (
+                not about_men
+                and character.gender == "f"
+                and character.name != last_person_talking
+            ):
+                count_successive_false += 1
+            else:  # about_men is True, they're talking about men
+                count_successive_false = 0
+            last_person_talking = character.name
+            # the number of successive feminine lines is reached
+            if count_successive_false >= number_of_lines_in_a_row:
+                is_elligible = True
+                break
+        return is_elligible
+
+    def passes_bechdel_test(self):  ## fonction non utilisée
         passes_bechdel = True
         if not self.is_elligible_characters_gender:
             passes_bechdel = False
