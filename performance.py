@@ -25,7 +25,7 @@ def load_scripts():
     )
     bechdel_approved_truths = []
     bechdel_approved_predictions = []
-    for path in tqdm(list(dataset["path"])[:20]):
+    for path in tqdm(list(dataset["path"])):
         ground_truth = dataset[dataset["path"] == path].iloc[0]["rating"]
         script = Script(path, ground_truth=ground_truth)
         bechdel_approved, _ = script.passes_bechdel_test()
@@ -101,6 +101,9 @@ def create_results_folder(
 
     config = yaml.safe_load(open("parameters.yaml"))
 
+    results["config"] = {}
+    results["config"]["bechdel_test_rules"] = config["bechdel_test_rules"]
+
     path_new_directory = os.path.join(config["paths"]["output_folder_name"], date)
     os.mkdir(path_new_directory)
     path_json = os.path.join(path_new_directory, "results.json")
@@ -123,13 +126,6 @@ if __name__ == "__main__":
 
     bechdel_truths, bechdel_predictions, dataset_with_predictions = load_scripts()
 
-    # print("len ground_truth :", len(bechdel_truths))
-    # print("len preds", len(bechdel_predictions))
-    # print(
-    #     "len dataset (preds)",
-    #     len(dataset_with_predictions["prediction_bechdel_approved"]),
-    # )
-
     conf_matrix, conf_matrix_percents = compute_confusion_matrix(
         bechdel_truths, bechdel_predictions
     )
@@ -137,9 +133,9 @@ if __name__ == "__main__":
     dict_cm_p, accuracy_percents = compute_accuracy(conf_matrix_percents)
 
     #
-    #     "Faux positifs : nous prédisons que le film passe le test, alors qu'il ne passe pas"
+    #     False positives : we predict the movie passes the test, while it doesn't.
     #
-    #     "Faux négatifs : nous prédisons que le film rate le test, alors qu'il le passe"
+    #     False negatives : we predict the movie fails the test, while it passes.
     #
 
     create_results_folder(
