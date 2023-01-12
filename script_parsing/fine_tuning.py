@@ -104,9 +104,14 @@ def fine_tune_parsing_model(config):
         )
         monitor.plot_data()
         monitor.log_data()
-        if val_top1.avg == max(monitor.all_data[3]) : 
-            torch.save(model.state_dict(), os.path.join(experiment_folder_path, "best_model.pth"))
-        torch.save(model.state_dict(), os.path.join(experiment_folder_path, "last_model.pth"))
+        if val_top1.avg == max(monitor.all_data[3]):
+            torch.save(
+                model.state_dict(),
+                os.path.join(experiment_folder_path, "best_model.pth"),
+            )
+        torch.save(
+            model.state_dict(), os.path.join(experiment_folder_path, "last_model.pth")
+        )
 
 
 def get_experiment_folder_name(config):
