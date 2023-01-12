@@ -6,7 +6,7 @@ from transformers import BertModel, BertTokenizer
 
 
 class BertClassifier(nn.Module):
-    def __init__(self, config):
+    def __init__(self, config, device):
         super(BertClassifier, self).__init__()
 
         pretrained_model_name = config["script_parsing_model"]["pretrained_model_name"]
@@ -21,6 +21,7 @@ class BertClassifier(nn.Module):
             self.output_embeddings_dim,
             config["script_parsing_model"]["nb_output_classes"],
         )
+        self.device = device
 
     def build_fully_connected(self, config, input_dim, output_dim):
         dimension_list = (
@@ -40,6 +41,7 @@ class BertClassifier(nn.Module):
 
     def forward(self, list_sentences):
         tokenized_sentences = self.tokenizer(list_sentences)
+        tokenized_sentences = tokenized_sentences.to(self.device)
         # model_output dimensions : batch_size * nb tokens * bert_output_dim (=768)
         model_output = self.bert(**tokenized_sentences).last_hidden_state.detach()
 

@@ -31,11 +31,15 @@ class AverageMeter(object):
 
 
 class Monitor:
-    def __init__(self):
-        self.all_data = None
+    def __init__(self, data_names, folder_name):
+        self.all_data: List[List[float]] = None
+        self.data_names = data_names
+        self.folder_name = folder_name
 
-    def update_data(self, new_data):
+    def update_data(self, new_data: List[float]):
         if self.all_data is None:
+            if len(new_data) != len(self.data_names):
+                raise ValueError("There must be as many plot names as data lists.")
             self.all_data = [[value] for value in new_data]
         else:
             if len(self.all_data) != len(new_data):
@@ -45,14 +49,23 @@ class Monitor:
             for i, value in enumerate(new_data):
                 self.all_data[i].append(value)
 
-    def plot_data(self, plot_names, folder_name):
-        if self.all_data is None or len(self.all_data) != len(plot_names):
-            raise ValueError("There must be as many plot names as data lists.")
+    def plot_data(self):
         for i, data in enumerate(self.all_data):
             plt.figure()
             plt.plot([j for j in range(len(data))], data)
             plt.xlabel("Epochs")
-            plt.savefig(os.path.join(folder_name, f"{plot_names[i]}.png"))
+            plt.savefig(os.path.join(self.folder_name, f"{self.data_names[i]}.png"))
+
+    def log_data(self, file_name="log.txt"):
+        text = ""
+        for j in range(len(self.all_data[0])):
+            text += f"Epoch: {j} \t"
+            for i in range(len(self.all_data)):
+                text += f"{self.data_names[i]}: {self.all_data[i][j]:.3f} \t"
+            text += "\n"
+
+        with open(os.path.join(self.folder_name, file_name), "w+") as f:
+            f.write(text)
 
 
 def fine_tune_parsing_model(config):
@@ -61,7 +74,13 @@ def fine_tune_parsing_model(config):
 
     train_loader, validation_loader, test_loader = get_dataloaders(config)
 
-    model = BertClassifier(config)
+    if torch.cuda.is_available():
+        device = torch.device(f"cuda:{torch.cuda.current_device()}")
+    else:
+        device = torch.device("cpu")
+
+    model = BertClassifier(config, device)
+    model.to(device)
     nb_epochs = config["script_parsing_model"]["nb_epochs"]
 
     optimizer = torch.optim.SGD(
@@ -69,22 +88,25 @@ def fine_tune_parsing_model(config):
     )
 
     criterion = torch.nn.CrossEntropyLoss()
+    criterion = criterion.to(device)
 
-    monitor = Monitor()
+    monitor = Monitor(
+        ["train_loss", "train_top1", "val_loss", "val_top1"], experiment_folder_path
+    )
 
     for epoch in range(nb_epochs):
         train_loss, train_top1 = train_one_epoch(
-            model, train_loader, optimizer, criterion
+            model, train_loader, optimizer, criterion, device
         )
-        val_loss, val_top1 = validate(model, validation_loader, criterion)
+        val_loss, val_top1 = validate(model, validation_loader, criterion, device)
         monitor.update_data(
             [train_loss.avg, train_top1.avg, val_loss.avg, val_top1.avg]
         )
-        monitor.plot_data(
-            ["train_loss", "train_top1", "val_loss", "val_top1"], experiment_folder_path
-        )
-
-    torch.save(model.eval(), os.path.join(experiment_folder_path, "model.pt"))
+        monitor.plot_data()
+        monitor.log_data()
+        if val_top1.avg == max(monitor.all_data[3]) : 
+            torch.save(model.state_dict(), os.path.join(experiment_folder_path, "best_model.pth"))
+        torch.save(model.state_dict(), os.path.join(experiment_folder_path, "last_model.pth"))
 
 
 def get_experiment_folder_name(config):
@@ -143,6 +165,7 @@ def train_one_epoch(
     train_loader: DataLoader,
     optimizer: torch.optim.SGD,
     criterion: torch.nn.CrossEntropyLoss,
+    device: torch.device,
     print_freq: int = 10,
 ) -> Tuple[AverageMeter, AverageMeter]:
 
@@ -154,6 +177,8 @@ def train_one_epoch(
 
     for batch_idx, batch in enumerate(train_loader):
         sentences, labels = batch
+        labels = labels.to(device)
+        # sentences = sentences.to(device)
         batch_size = len(sentences)
 
         # compute output
@@ -173,7 +198,7 @@ def train_one_epoch(
 
         if batch_idx % print_freq == 0:
             print(
-                "Test: [{0}/{1}]\t"
+                "Train: [{0}/{1}]\t"
                 "Loss {loss.avg:.4f}\t"
                 "Prec@1 {top1.avg:.3f}\t"
                 "Prec@3 {top3.avg:.3f}".format(
@@ -184,7 +209,6 @@ def train_one_epoch(
                     top3=top3,
                 )
             )
-        break
 
     return losses, top1
 
@@ -193,6 +217,7 @@ def validate(
     model: torch.nn.Module,
     validation_loader: DataLoader,
     criterion: torch.optim.SGD,
+    device: torch.device,
     print_freq: int = 10,
 ) -> Tuple[AverageMeter, AverageMeter]:
 
@@ -204,6 +229,8 @@ def validate(
 
     for batch_idx, batch in enumerate(validation_loader):
         sentences, labels = batch
+        labels = labels.to(device)
+        # sentences = sentences.to(device)
         batch_size = len(sentences)
 
         # compute output
@@ -229,8 +256,6 @@ def validate(
                     top3=top3,
                 )
             )
-
-        break
 
     return losses, top1
 
