@@ -71,6 +71,8 @@ def create_lines_and_tags_df(config):
     # removing empty lines
     lines_and_tags = lines_and_tags[~(lines_and_tags["tags"] == label.EMPTY_LINE)]
 
+    lines_and_tags["lines"] = lines_and_tags["lines"].apply(lambda x: x.lstrip())
+
     lines_and_tags["tags"] = lines_and_tags["tags"].apply(lambda x: x.name)
 
     lines_and_tags.to_csv(
