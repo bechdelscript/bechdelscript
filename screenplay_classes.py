@@ -4,7 +4,9 @@ import yaml
 
 from script_parsing.naive_parsing import label, tag_script
 from topic_modeling.import_masculine_words import import_masculine_words
-from gender_name import classifier, _classify, classify
+from gender_name import classifier, _classify, gender_data
+from pronouns.narrative_approach import import_gender_tokens
+import nltk
 
 
 class Script:
@@ -15,6 +17,7 @@ class Script:
         self.coherent_parsing: bool = None
         self.list_characters: List[Character] = []
         self.list_list_dialogues: List[List[Dialogue]] = []
+        self.list_narration: All_Narration = []
         self.male_named_characters: List[Character] = []
         self.bechdel_ground_truth: int = ground_truth
         self.computed_score: int = 0
@@ -25,6 +28,7 @@ class Script:
         self.load_scenes()
         self.identify_characters()
         self.load_dialogues()
+        self.load_narration()
         self.are_characters_named()
         self.identify_gender_named_chars()
         self.load_named_males()
@@ -71,14 +75,28 @@ class Script:
             scene.load_dialogues(self.list_characters)
             self.list_list_dialogues.append(scene.list_dialogues)
 
+    def load_narration(self):
+        narration = []
+        for scene in self.list_scenes:
+            scene.load_narration()
+            narration+=scene.list_narration
+        self.list_narration = All_Narration(narration)
+
     def are_characters_named(self):
         for character in self.list_characters:
             character.fill_is_named(self.list_list_dialogues)
 
     def identify_gender_named_chars(self):
+        parameters="parameters.yaml"
+        config = yaml.safe_load(open(parameters))
+        para = config["used_methods"]["character_gender_method"]
+        if para == "classify" :
+            function = lambda x : _classify(x, classifier)[0]
+        elif para == "narrative" :
+            function = lambda x : self.list_narration.character_narrative_gender(x)
         for character in self.list_characters:
             if character.is_named == True:
-                character.identify_gender()
+                character.identify_gender(function)
 
     def load_named_males(self):
         for character in self.list_characters:
@@ -230,6 +248,7 @@ class Scene:
         self.list_tags = list_tags
         self.list_characters_in_scene = []
         self.list_dialogues = []
+        self.list_narration = []
         self.is_elligible_characters_gender = False
         self.is_elligible_topic = False
 
@@ -259,6 +278,25 @@ class Scene:
                         )
                     current_speaker = None
                     current_speech = []
+
+    def load_narration(self):
+        current_narration = ''
+        for i, line in enumerate(self.list_lines):
+            if self.list_tags[i] == label.SCENES_DESCRIPTION:
+                # new narrative passage
+                current_narration+=line.lstrip()
+
+            elif self.list_tags[i] == label.METADATA:
+                pass  # we simply ignore metadata
+
+            elif self.list_tags[i] == label.SCENES_BOUNDARY:
+                pass  # we simply ignore boundaries
+
+            # if label is not narration nor metadata, then the ongoing narration is over
+            else:
+                if current_narration != '':
+                    self.list_narration.append(current_narration)
+                    current_narration = ''
 
     def find_speaker(self, dialogue_beginning_index: int, characters_in_movie: List):
         """Searches a line tagged character before the dialogue beginning index, and
@@ -442,8 +480,9 @@ class Character:
         if parenthesis and parenthesis.span()[0] != 0:
             self.name = self.name[: parenthesis.span()[0]]
 
-    def identify_gender(self):
-        self.gender = _classify(self.name, classifier)[0]
+    def identify_gender(self, function):
+        #_classify(self.name, classifier)[0]
+        self.gender = function(self.name)
 
     def add_name_variation(self, other):
         self.name_variation.add(other)
@@ -503,3 +542,36 @@ class Dialogue:
 
     def __repr__(self) -> str:
         return f"{self.character} : {self.speech_text}"
+
+
+class All_Narration:
+    def __init__(self, list_contents: List[str]):
+        self.list_contents = list_contents
+
+    def character_narrative_gender(self, name: str):
+        if name.lower().split()[0] in gender_data["name"].values:
+            res = gender_data.loc[gender_data["name"] == name.lower().split()[0]][
+                "gender"
+            ].values[0]
+        else:
+            tokens = import_gender_tokens()
+            #name = char.name
+            freq_gender = {"m": 0, "f": 0, "nb": 0}
+            paragraphs = [para for para in self.list_contents if name in para]
+            for para in paragraphs:
+                freq_tokens = dict.fromkeys(tokens[0], 0)
+                freq = {}
+                for word in nltk.word_tokenize(para):
+                    for token in tokens[0]:
+                        if token == word.lower():
+                            freq_tokens[token] += 1
+                for key in freq_tokens.keys():
+                    gen = tokens.loc[ tokens[0] == key ][1].values[0]
+                    value = freq_tokens[key]
+                    try:
+                        freq[gen] += value
+                    except:
+                        freq[gen] = value
+                freq_gender[max(freq, key=lambda k: freq[k])] += 1
+            res = max(freq_gender, key=lambda k: freq_gender[k])
+        return res

@@ -4,6 +4,7 @@ paths :
     path_to_kaggle_scripts : data/input/scripts_kaggle/
     path_to_imsdb_scripts : data/input/scripts_imsdb/
     topic_modeling_folder : topic_modeling/
+    pronoun_folder : pronouns/
 
 names :
     kaggle_db_name : bechdel_script_kaggle.csv
@@ -12,6 +13,7 @@ names :
     bechdel_db_name : bechdel_db.csv
     db_name : dataset.csv
     list_of_words_about_men : keywords.json
+    list_pronoun_tokens : pronouns.csv
 
 merge_dataset :
     keep : imsdb  # imsdb ou kaggle
@@ -28,3 +30,6 @@ bechdel_test_rules :
     # "lines_of_dialogues_in_a_row" is a parameter that indicates the number of successive feminie lines to validate 
     # criteria 2 or 3 when they are set to soft
     lines_of_dialogues_in_a_row : 2 # minimum 2
+
+used_methods :
+    character_gender_method : narrative # can also be classify
