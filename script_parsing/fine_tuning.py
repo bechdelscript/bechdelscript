@@ -118,16 +118,17 @@ def get_experiment_folder_name(config):
     results_folder = config["paths"]["script_parsing_experiments_folder"]
     os.makedirs(results_folder, exist_ok=True)
     for subfolder in os.listdir(results_folder):
-        for filename in os.listdir(os.path.join(results_folder, subfolder)):
-            if filename[-5:] == ".yaml":
-                previous_config = yaml.safe_load(
-                    open(os.path.join(results_folder, subfolder, filename), "r")
-                )
-                if previous_config == config:
-                    print(
-                        f"Warning : same experiment was already launched in folder {subfolder}"
+        if os.path.isdir(subfolder):
+            for filename in os.listdir(os.path.join(results_folder, subfolder)):
+                if filename[-5:] == ".yaml":
+                    previous_config = yaml.safe_load(
+                        open(os.path.join(results_folder, subfolder, filename), "r")
                     )
-                    break
+                    if previous_config == config:
+                        print(
+                            f"Warning : same experiment was already launched in folder {subfolder}"
+                        )
+                        break
     new_folder_path = os.path.join(
         results_folder, datetime.now().strftime("%y-%m-%d_%H:%M:%S")
     )
