@@ -2,70 +2,13 @@ import os
 from datetime import datetime
 from typing import List, Tuple
 
-import matplotlib.pyplot as plt
 import torch
 import yaml
-from torch.utils.data import DataLoader, random_split
+from torch.utils.data import DataLoader
 
-from script_parsing.parsed_script_dataset import TaggedLines, get_dataset
+from script_parsing.monitoring import AverageMeter, Monitor
+from script_parsing.parsed_script_dataset import get_dataloaders
 from script_parsing.parsing_model import get_model
-
-
-class AverageMeter(object):
-    """Computes and stores the average and current value"""
-
-    def __init__(self):
-        self.reset()
-
-    def reset(self):
-        self.val = 0
-        self.avg = 0
-        self.sum = 0
-        self.count = 0
-
-    def update(self, val, n=1):
-        self.val = val
-        self.sum += val * n
-        self.count += n
-        self.avg = self.sum / self.count
-
-
-class Monitor:
-    def __init__(self, data_names, folder_name):
-        self.all_data: List[List[float]] = None
-        self.data_names = data_names
-        self.folder_name = folder_name
-
-    def update_data(self, new_data: List[float]):
-        if self.all_data is None:
-            if len(new_data) != len(self.data_names):
-                raise ValueError("There must be as many plot names as data lists.")
-            self.all_data = [[value] for value in new_data]
-        else:
-            if len(self.all_data) != len(new_data):
-                raise ValueError(
-                    "New data to be monitored should have the same size as previously given data"
-                )
-            for i, value in enumerate(new_data):
-                self.all_data[i].append(value)
-
-    def plot_data(self):
-        for i, data in enumerate(self.all_data):
-            plt.figure()
-            plt.plot([j for j in range(len(data))], data)
-            plt.xlabel("Epochs")
-            plt.savefig(os.path.join(self.folder_name, f"{self.data_names[i]}.png"))
-
-    def log_data(self, file_name="log.txt"):
-        text = ""
-        for j in range(len(self.all_data[0])):
-            text += f"Epoch: {j} \t"
-            for i in range(len(self.all_data)):
-                text += f"{self.data_names[i]}: {self.all_data[i][j]:.3f} \t"
-            text += "\n"
-
-        with open(os.path.join(self.folder_name, file_name), "w+") as f:
-            f.write(text)
 
 
 def fine_tune_parsing_model(config):
@@ -135,45 +78,6 @@ def get_experiment_folder_name(config):
     os.makedirs(new_folder_path)
     yaml.dump(config, open(os.path.join(new_folder_path, "parameters.yaml"), "w+"))
     return new_folder_path
-
-
-def get_dataloaders(config):
-    dataset: TaggedLines = get_dataset(config)
-    val_prop = config["script_parsing_model"]["validation_dataset_proportion"]
-    test_prop = config["script_parsing_model"]["test_dataset_proportion"]
-    train_dataset, validation_dataset, test_dataset = random_split(
-        dataset,
-        [1 - val_prop - test_prop, val_prop, test_prop],
-        generator=torch.Generator().manual_seed(config["script_parsing_model"]["seed"]),
-    )
-
-    batch_size = config["script_parsing_model"]["batch_size"]
-
-    if (
-        len(train_dataset) == 0
-        or len(validation_dataset) == 0
-        or len(test_dataset) == 0
-    ):
-        raise ValueError(
-            "The dataset is too small to be split correctly in a training, validation and test \
-            dataset. Please consider increasing the value of the script_parsing_model.dataset_percentage parameter."
-        )
-    train_loader = DataLoader(
-        dataset=train_dataset,
-        batch_size=batch_size,
-        shuffle=True,
-    )
-    validation_loader = DataLoader(
-        dataset=validation_dataset,
-        batch_size=batch_size,
-        shuffle=True,
-    )
-    test_loader = DataLoader(
-        dataset=test_dataset,
-        batch_size=batch_size,
-        shuffle=True,
-    )
-    return train_loader, validation_loader, test_loader
 
 
 def train_one_epoch(

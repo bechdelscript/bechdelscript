@@ -3,6 +3,7 @@ from typing import List, Tuple, Union
 
 import pandas as pd
 import torch
+from torch.utils.data import DataLoader, random_split
 from tqdm import tqdm
 
 from screenplay_classes import Script
@@ -135,6 +136,54 @@ class TaggedLines(torch.utils.data.Dataset):
             self.data.loc[idx][self.lines_column_name],
             self.data.loc[idx][self.labels_column_name],
         )
+
+    def truncate_beginning(self, start_index: int):
+        """Removes the beginning of the dataset, so that dataset[start index]
+        is the new first element.
+
+        Args:
+            start_index (int): the index of the new first element
+        """
+        self.data = self.data[start_index:]
+
+
+def get_dataloaders(config, shuffle=True):
+    dataset: TaggedLines = get_dataset(config)
+    val_prop = config["script_parsing_model"]["validation_dataset_proportion"]
+    test_prop = config["script_parsing_model"]["test_dataset_proportion"]
+    train_dataset, validation_dataset, test_dataset = random_split(
+        dataset,
+        [1 - val_prop - test_prop, val_prop, test_prop],
+        generator=torch.Generator().manual_seed(config["script_parsing_model"]["seed"]),
+    )
+
+    batch_size = config["script_parsing_model"]["batch_size"]
+
+    if (
+        len(train_dataset) == 0
+        or len(validation_dataset) == 0
+        or len(test_dataset) == 0
+    ):
+        raise ValueError(
+            "The dataset is too small to be split correctly in a training, validation and test \
+            dataset. Please consider increasing the value of the script_parsing_model.dataset_percentage parameter."
+        )
+    train_loader = DataLoader(
+        dataset=train_dataset,
+        batch_size=batch_size,
+        shuffle=shuffle,
+    )
+    validation_loader = DataLoader(
+        dataset=validation_dataset,
+        batch_size=batch_size,
+        shuffle=shuffle,
+    )
+    test_loader = DataLoader(
+        dataset=test_dataset,
+        batch_size=batch_size,
+        shuffle=shuffle,
+    )
+    return train_loader, validation_loader, test_loader
 
 
 if __name__ == "__main__":
