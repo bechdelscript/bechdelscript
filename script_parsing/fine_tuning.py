@@ -6,25 +6,42 @@ import torch
 import yaml
 from torch.utils.data import DataLoader
 
+from script_parsing.intermediate_forward import (
+    LinesEmbeddingsDataset,
+    freeze_pretrained_model_part,
+    get_intermediate_dataset,
+)
 from script_parsing.monitoring import AverageMeter, Monitor
-from script_parsing.parsed_script_dataset import get_dataloaders
+from script_parsing.parsed_script_dataset import (
+    TaggedLines,
+    get_dataloaders,
+    get_dataset,
+)
 from script_parsing.parsing_model import get_model
 
 
 def fine_tune_parsing_model(config):
-
-    experiment_folder_path = get_experiment_folder_name(config)
-
-    train_loader, validation_loader, test_loader = get_dataloaders(config)
 
     if torch.cuda.is_available():
         device = torch.device(f"cuda:{torch.cuda.current_device()}")
     else:
         device = torch.device("cpu")
 
+    intermediate_forward = config["script_parsing_model"]["intermediate_forward"]
+
     model = get_model(config, device)
     model.to(device)
-    nb_epochs = config["script_parsing_model"]["nb_epochs"]
+    if intermediate_forward:
+        freeze_pretrained_model_part(model)
+
+    if intermediate_forward:
+        dataset: LinesEmbeddingsDataset = get_intermediate_dataset(
+            config, model, device
+        )
+    else:
+        dataset: TaggedLines = get_dataset(config)
+
+    train_loader, validation_loader, _ = get_dataloaders(config, dataset)
 
     optimizer = torch.optim.SGD(
         model.parameters(), config["script_parsing_model"]["learning_rate"]
@@ -33,15 +50,21 @@ def fine_tune_parsing_model(config):
     criterion = torch.nn.CrossEntropyLoss()
     criterion = criterion.to(device)
 
+    experiment_folder_path = get_experiment_folder_name(config)
     monitor = Monitor(
         ["train_loss", "train_top1", "val_loss", "val_top1"], experiment_folder_path
     )
 
+    nb_epochs = config["script_parsing_model"]["nb_epochs"]
+
     for epoch in range(nb_epochs):
+
         train_loss, train_top1 = train_one_epoch(
-            model, train_loader, optimizer, criterion, device
+            model, train_loader, optimizer, criterion, device, intermediate_forward
         )
-        val_loss, val_top1 = validate(model, validation_loader, criterion, device)
+        val_loss, val_top1 = validate(
+            model, validation_loader, criterion, device, intermediate_forward
+        )
         monitor.update_data(
             [train_loss.avg, train_top1.avg, val_loss.avg, val_top1.avg]
         )
@@ -52,6 +75,7 @@ def fine_tune_parsing_model(config):
                 model.state_dict(),
                 os.path.join(experiment_folder_path, "best_model.pth"),
             )
+
         torch.save(
             model.state_dict(), os.path.join(experiment_folder_path, "last_model.pth")
         )
@@ -86,6 +110,7 @@ def train_one_epoch(
     optimizer: torch.optim.SGD,
     criterion: torch.nn.CrossEntropyLoss,
     device: torch.device,
+    intermediate_forward: bool,
     print_freq: int = 10,
 ) -> Tuple[AverageMeter, AverageMeter]:
 
@@ -96,13 +121,22 @@ def train_one_epoch(
     model.train()  # switch to train mode
 
     for batch_idx, batch in enumerate(train_loader):
-        sentences, labels = batch
-        labels = labels.to(device)
-        # sentences = sentences.to(device)
-        batch_size = len(sentences)
+        if not intermediate_forward:
+            sentences, labels = batch
+            labels = labels.to(device)
+            batch_size = len(sentences)
 
-        # compute output
-        predictions = model(sentences)
+            # compute output
+            predictions = model(sentences)
+        else:
+            embeddings, labels = batch
+            labels = labels.to(device)
+            embeddings = embeddings.to(device)
+            batch_size = embeddings.shape[0]
+
+            # compute output
+            predictions = model.fully_connected_forward(embeddings)
+
         loss = criterion(predictions, labels)
 
         # compute accuracy
@@ -138,6 +172,7 @@ def validate(
     validation_loader: DataLoader,
     criterion: torch.optim.SGD,
     device: torch.device,
+    intermediate_forward: bool,
     print_freq: int = 10,
 ) -> Tuple[AverageMeter, AverageMeter]:
 
@@ -148,13 +183,22 @@ def validate(
     model.eval()  # switch to eval mode
 
     for batch_idx, batch in enumerate(validation_loader):
-        sentences, labels = batch
-        labels = labels.to(device)
-        # sentences = sentences.to(device)
-        batch_size = len(sentences)
+        if not intermediate_forward:
+            sentences, labels = batch
+            labels = labels.to(device)
+            batch_size = len(sentences)
 
-        # compute output
-        predictions = model(sentences)
+            # compute output
+            predictions = model(sentences)
+        else:
+            embeddings, labels = batch
+            labels = labels.to(device)
+            embeddings = embeddings.to(device)
+            batch_size = embeddings.shape[0]
+
+            # compute output
+            predictions = model.fully_connected_forward(embeddings)
+
         loss = criterion(predictions, labels)
 
         # compute accuracy
@@ -201,8 +245,12 @@ def accuracy(output, target, topk=(1,)) -> List[float]:
 
 
 if __name__ == "__main__":
+    import time
+
     config = yaml.safe_load(open("parameters.yaml", "r"))
+
+    start = time.time()
 
     fine_tune_parsing_model(config)
 
-    print("Done")
+    print("Done. Time :", time.time() - start)

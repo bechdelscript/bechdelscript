@@ -2,8 +2,8 @@ from collections import OrderedDict
 
 import torch
 import torch.nn as nn
-from transformers import BertModel, BertTokenizer
 from sentence_transformers import SentenceTransformer
+from transformers import BertModel, BertTokenizer
 
 
 def get_model(config, device=None):
@@ -55,6 +55,21 @@ class BertClassifier(nn.Module):
 
         return model_output
 
+    def intermediate_forward(self, list_sentences):
+        tokenized_sentences = self.tokenizer(list_sentences)
+        if self.device is not None:
+            tokenized_sentences = tokenized_sentences.to(self.device)
+
+        # model_output dimensions : batch_size * nb tokens * bert_output_dim (=768)
+        model_output = self.bert(**tokenized_sentences).last_hidden_state.detach()
+
+        # to give the embeddings to a fully connected layer we need them all to have the same
+        # dimension : we apply a mean over the dimension that has the size of nb tokens (~= nb of words)
+        return torch.mean(model_output, dim=1)
+
+    def fully_connected_forward(self, embeddings):
+        return self.fully_connected(embeddings)
+
 
 class SentenceTransformerClassifier(nn.Module):
     def __init__(self, config, device=None):
@@ -92,6 +107,12 @@ class SentenceTransformerClassifier(nn.Module):
 
         return model_output
 
+    def intermediate_forward(self, list_sentences):
+        return self.sentence_bert.encode(list_sentences, convert_to_tensor=True)
+
+    def fully_connected_forward(self, embeddings):
+        return self.fully_connected(embeddings)
+
 
 def build_fully_connected(fully_connected_hidden_layers, input_dim, output_dim):
     dimension_list = [input_dim] + fully_connected_hidden_layers + [output_dim]
@@ -106,6 +127,6 @@ if __name__ == "__main__":
     import yaml
 
     config = yaml.safe_load(open("parameters.yaml", "r"))
-    bert_classifier = BertClassifier(config)
+    bert_classifier = SentenceTransformerClassifier(config)
     output = bert_classifier(["Ceci est une phrase de test."])
     print(output)

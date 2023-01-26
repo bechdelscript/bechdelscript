@@ -14,7 +14,8 @@ names :
     db_name : dataset.csv
     list_of_words_about_men : keywords.json
     coherently_parsed_scripts : coherent_parsing.csv
-    tagged_lines : tagged_lines.csv
+    tagged_lines : tagged_lstripped_lines.csv
+    dataset_embeddings : dataset_embeddings.pt
 
 merge_dataset :
     keep : imsdb # imsdb or kaggle
@@ -26,13 +27,14 @@ script_parsing_model:
         sentence_transformer_pretrained_model_name: all-MiniLM-L6-v2
         fully_connected_hidden_layers : [1024, 512, 128]
         nb_output_classes : 6
+    intermediate_forward: true 
     dataset_percentage: 0.1
     validation_dataset_proportion: 0.3
     test_dataset_proportion: 0.1
     seed: 42
     batch_size : 50
     learning_rate : 0.01
-    nb_epochs : 2
+    nb_epochs : 10
     
 
 urls : 

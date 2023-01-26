@@ -145,10 +145,10 @@ class TaggedLines(torch.utils.data.Dataset):
             start_index (int): the index of the new first element
         """
         self.data = self.data[start_index:]
+        self.data = self.data.reset_index()
 
 
-def get_dataloaders(config, shuffle=True):
-    dataset: TaggedLines = get_dataset(config)
+def get_dataloaders(config, dataset, shuffle=True):
     val_prop = config["script_parsing_model"]["validation_dataset_proportion"]
     test_prop = config["script_parsing_model"]["test_dataset_proportion"]
     train_dataset, validation_dataset, test_dataset = random_split(
