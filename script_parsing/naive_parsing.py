@@ -68,7 +68,7 @@ def tag_script(script_path: str) -> Tuple[List[List[str]], List[label], bool]:
             The last element indicates whether the parsing seems to have gone
             well or not.
     """
-    with open(script_path) as f:
+    with open(script_path, errors="ignore") as f:
         screenplay = f.read()
 
     lines = screenplay.split("\n")
