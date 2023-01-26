@@ -399,7 +399,7 @@ class Scene:
         count_successive_false = 0
         last_person_talking = ""
         for about_men, character in list_speak_about_men:
-            # about_men is False, said by a women, who is differnet that the last character talking
+            # about_men is False, said by a women, who is different that the last character talking
             if (
                 not about_men
                 and character.gender == "f"
