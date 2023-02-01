@@ -62,10 +62,21 @@ def fine_tune_parsing_model(config):
     for epoch in range(nb_epochs):
 
         train_loss, train_top1 = train_one_epoch(
-            model, train_loader, optimizer, criterion, device, intermediate_forward
+            model,
+            train_loader,
+            optimizer,
+            criterion,
+            device,
+            intermediate_forward,
+            epoch,
         )
         val_loss, val_top1 = validate(
-            model, validation_loader, criterion, device, intermediate_forward
+            model,
+            validation_loader,
+            criterion,
+            device,
+            intermediate_forward,
+            epoch,
         )
         monitor.update_data(
             [train_loss.avg, train_top1.avg, val_loss.avg, val_top1.avg]
@@ -113,6 +124,7 @@ def train_one_epoch(
     criterion: torch.nn.CrossEntropyLoss,
     device: torch.device,
     intermediate_forward: bool,
+    epoch: int,
     print_freq: int = 10,
 ) -> Tuple[AverageMeter, AverageMeter]:
 
@@ -154,12 +166,14 @@ def train_one_epoch(
 
         if batch_idx % print_freq == 0:
             print(
+                "[{epoch}]\t"
                 "Train: [{0}/{1}]\t"
                 "Loss {loss.avg:.4f}\t"
                 "Prec@1 {top1.avg:.3f}\t"
                 "Prec@3 {top3.avg:.3f}".format(
                     batch_idx,
                     len(train_loader),
+                    epoch=epoch,
                     loss=losses,
                     top1=top1,
                     top3=top3,
@@ -175,6 +189,7 @@ def validate(
     criterion: torch.optim.SGD,
     device: torch.device,
     intermediate_forward: bool,
+    epoch: int,
     print_freq: int = 10,
 ) -> Tuple[AverageMeter, AverageMeter]:
 
@@ -211,12 +226,14 @@ def validate(
 
         if batch_idx % print_freq == 0:
             print(
+                "[{epoch}]\t"
                 "Validation: [{0}/{1}]\t"
                 "Loss {loss.avg:.4f}\t"
                 "Prec@1 {top1.avg:.3f}\t"
                 "Prec@3 {top3.avg:.3f}".format(
                     batch_idx,
                     len(validation_loader),
+                    epoch=epoch,
                     loss=losses,
                     top1=top1,
                     top3=top3,

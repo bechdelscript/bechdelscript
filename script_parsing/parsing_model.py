@@ -118,7 +118,19 @@ def build_fully_connected(fully_connected_hidden_layers, input_dim, output_dim):
     dimension_list = [input_dim] + fully_connected_hidden_layers + [output_dim]
     layers = OrderedDict()
     for i in range(len(dimension_list) - 1):
-        layers[f"fc{i}"] = nn.Linear(dimension_list[i], dimension_list[i + 1])
+        if dimension_list[i] == "relu":
+            layers[f"relu{i}"] = nn.ReLU()
+        elif isinstance(dimension_list[i], int):
+            j = 1
+            while not isinstance(dimension_list[i + j], int):
+                j += 1
+            layers[f"fc{i}"] = nn.Linear(dimension_list[i], dimension_list[i + j])
+        else:
+            raise ValueError(
+                f"Got invalid value in fully_connected_hidden_layers parameter : only ints \
+                and 'relu' are accepted but got {dimension_list[i]} of type {type(dimension_list[i])}."
+            )
+
     fully_connected = nn.Sequential(layers)
     return fully_connected
 
