@@ -50,6 +50,7 @@ def load_scripts():
         bechdel_approved_predictions,
         bechdel_approved_truths,
         dataset_with_predictions,
+        config,
     )
 
 
@@ -62,7 +63,7 @@ def compute_confusion_matrix(bechdel_truths, bechdel_approved_predictions):
     return conf_matrix, conf_matrix_percents
 
 
-def compute_accuracy_binary(conf_matrix):
+def compute_dict_conf_matrix_binary(conf_matrix):
     if conf_matrix.dtype == "int64":
         true_pos = int(conf_matrix[1, 1])
         true_neg = int(conf_matrix[0, 0])
@@ -81,12 +82,18 @@ def compute_accuracy_binary(conf_matrix):
         "true_neg": true_neg,
     }
 
+    #
+    #     False positive : we predict the movie passes the test, while it doesn't.
+    #
+    #     False negative : we predict the movie fails the test, while it passes.
+    #
+
     nb_correctly_classified_scripts = true_pos + true_neg
 
     return dict_conf_matrix, nb_correctly_classified_scripts
 
 
-def compute_accuracy_scores(conf_matrix):
+def compute_dict_conf_matrix_scores(conf_matrix):
     if conf_matrix.dtype == "int64":
         true_score_0 = [int(el) for el in conf_matrix[0]]
         true_score_1 = [int(el) for el in conf_matrix[1]]
@@ -114,15 +121,24 @@ def compute_accuracy_scores(conf_matrix):
 
 def create_results(
     date,
-    dict_conf_matrix_b,
-    dict_conf_matrix_percents_b,
-    accuracy_b,
-    dict_conf_matrix_s,
-    dict_conf_matrix_percents_s,
-    accuracy_s,
+    conf_matrix_binary,
+    conf_matrix_percents_binary,
+    conf_matrix_scores,
+    conf_matrix_percents_scores,
     nb_of_scripts,
     config,
+    path_json,
 ):
+    dict_cm_b, nb_correctly_classified_scripts_b = compute_dict_conf_matrix_binary(
+        conf_matrix_binary
+    )
+    dict_cm_p_b, _ = compute_dict_conf_matrix_binary(conf_matrix_percents_binary)
+
+    dict_cm_s, nb_correctly_classified_scripts_s = compute_dict_conf_matrix_scores(
+        conf_matrix_scores
+    )
+    dict_cm_p_s, _ = compute_dict_conf_matrix_scores(conf_matrix_percents_scores)
+
     results = {}
 
     results["date"] = date
@@ -130,9 +146,8 @@ def create_results(
     results["commit_sha"] = sha
     results["commit_message"] = message
 
-    config = yaml.safe_load(open("parameters.yaml"))
     results["config"] = {}
-    # Register in results.config the appropriate categories
+    # Register in results.config the appro ate categories
     results["config"]["bechdel_test_rules"] = config["bechdel_test_rules"]
     results["config"]["used_methods"] = config["used_methods"]
 
@@ -140,72 +155,120 @@ def create_results(
     results["metrics"]["number_of_scripts"] = nb_of_scripts
 
     results["metrics"]["binary_performance"] = {}
-    results["metrics"]["binary_performance"]["confusion_matrix"] = dict_conf_matrix_b
-    results["metrics"]["binary_performance"][
-        "confusion_matrix_percents"
-    ] = dict_conf_matrix_percents_b
+    results["metrics"]["binary_performance"]["confusion_matrix"] = dict_cm_b
+    results["metrics"]["binary_performance"]["confusion_matrix_percents"] = dict_cm_p_b
     results["metrics"]["binary_performance"][
         "nb_correctly_classified_scripts"
-    ] = accuracy_b
+    ] = nb_correctly_classified_scripts_b
     results["metrics"]["binary_performance"]["accuracy"] = round(
-        accuracy_b / nb_of_scripts, 4
+        nb_correctly_classified_scripts_b / nb_of_scripts, 4
     )
 
     results["metrics"]["score_metrics"] = {}
-    results["metrics"]["score_metrics"]["confusion_matrix"] = dict_conf_matrix_s
+    results["metrics"]["score_metrics"]["confusion_matrix"] = dict_cm_s
+    results["metrics"]["score_metrics"]["confusion_matrix_percents"] = dict_cm_p_s
     results["metrics"]["score_metrics"][
-        "confusion_matrix_percents"
-    ] = dict_conf_matrix_percents_s
-    results["metrics"]["score_metrics"]["nb_correctly_classified_scripts"] = accuracy_s
+        "nb_correctly_classified_scripts"
+    ] = nb_correctly_classified_scripts_s
     results["metrics"]["score_metrics"]["accuracy"] = round(
-        accuracy_s / nb_of_scripts, 4
+        nb_correctly_classified_scripts_s / nb_of_scripts, 4
     )
-
-    return results
-
-
-def create_results_folder(
-    dict_conf_matrix_b,
-    dict_conf_matrix_percents_b,
-    accuracy_b,
-    dict_conf_matrix_s,
-    dict_conf_matrix_percents_s,
-    accuracy_s,
-    nb_of_scripts,
-    dataset_with_predictions,
-):
-    date = format_date(datetime.now())
-
-    config = yaml.safe_load(open("parameters.yaml"))
-
-    results = create_results(
-        date,
-        dict_conf_matrix_b,
-        dict_conf_matrix_percents_b,
-        accuracy_b,
-        dict_conf_matrix_s,
-        dict_conf_matrix_percents_s,
-        accuracy_s,
-        nb_of_scripts,
-        config,
-    )
-
-    path_new_directory = os.path.join(config["paths"]["output_folder_name"], date)
-    os.mkdir(path_new_directory)
-    path_json = os.path.join(path_new_directory, "results.json")
-    path_dataset = os.path.join(path_new_directory, "dataset_preds.csv")
-
-    dataset_with_predictions.to_csv(path_dataset, index=False)
 
     with open(path_json, "w+") as f:
         json.dump(results, f)
 
-    return results
+
+def create_confusion_matrix_csv(conf_matrix, path, binary=False):
+
+    if binary:
+        df = pd.DataFrame(
+            conf_matrix,
+            index=["reality_false", "reality_true"],
+            columns=[
+                "predicted_false",
+                "predicted_true",
+            ],
+        ).T
+    else:
+        df = pd.DataFrame(
+            conf_matrix,
+            index=["true_score_0", "true_score_1", "true_score_2", "true_score_3"],
+            columns=[
+                "predicted_score_0",
+                "predicted_score_1",
+                "predicted_score_2",
+                "predicted_score_3",
+            ],
+        ).T
+    df.to_csv(path, index=True)
+
+
+def create_confusion_matrix_folder(
+    path_csv_dir,
+    conf_matrix_binary,
+    conf_matrix_percents_binary,
+    conf_matrix_scores,
+    conf_matrix_percents_scores,
+):
+    create_confusion_matrix_csv(
+        conf_matrix_binary, os.path.join(path_csv_dir, "predictions.csv"), binary=True
+    )
+    create_confusion_matrix_csv(
+        conf_matrix_percents_binary,
+        os.path.join(path_csv_dir, "predictions_%.csv"),
+        binary=True,
+    )
+    create_confusion_matrix_csv(
+        conf_matrix_scores, os.path.join(path_csv_dir, "scores.csv")
+    )
+    create_confusion_matrix_csv(
+        conf_matrix_percents_scores, os.path.join(path_csv_dir, "scores_%.csv")
+    )
 
 
 def format_date(date):
     formatted_date = date.strftime("%Y-%m-%d_%H%M%S")
     return formatted_date
+
+
+def create_results_folder(
+    conf_matrix_binary,
+    conf_matrix_percents_binary,
+    conf_matrix_scores,
+    conf_matrix_percents_scores,
+    nb_of_scripts,
+    dataset_with_predictions,
+    config,
+):
+    date = format_date(datetime.now())
+
+    path_new_directory = os.path.join(config["paths"]["output_folder_name"], date)
+    os.mkdir(path_new_directory)
+    path_json = os.path.join(path_new_directory, "results.json")
+    path_dataset = os.path.join(path_new_directory, "dataset_preds.csv")
+    path_csv_dir = os.path.join(path_new_directory, "confusion_matrices")
+    os.mkdir(path_csv_dir)
+
+    create_results(
+        date,
+        conf_matrix_binary,
+        conf_matrix_percents_binary,
+        conf_matrix_scores,
+        conf_matrix_percents_scores,
+        nb_of_scripts,
+        config,
+        path_json,
+    )
+
+    dataset_with_predictions.to_csv(path_dataset, index=False)
+
+    create_confusion_matrix_folder(
+        path_csv_dir,
+        conf_matrix_binary,
+        conf_matrix_percents_binary,
+        conf_matrix_scores,
+        conf_matrix_percents_scores,
+    )
 
 
 def main():
@@ -215,10 +278,10 @@ def main():
         bechdel_predictions,
         bechdel_truths,
         dataset_with_predictions,
+        config,
     ) = load_scripts()
 
-    print(bechdel_predicted_scores, "predicted")
-    print(bechdel_true_scores, "truth")
+    nb_of_scripts = len(bechdel_truths)
 
     conf_matrix_binary, conf_matrix_percents_binary = compute_confusion_matrix(
         bechdel_truths, bechdel_predictions
@@ -228,33 +291,14 @@ def main():
         bechdel_true_scores, bechdel_predicted_scores
     )
 
-    print(conf_matrix_scores)
-
-    dict_cm_b, accuracy_b = compute_accuracy_binary(conf_matrix_binary)
-    dict_cm_p_b, accuracy_percents_b = compute_accuracy_binary(
-        conf_matrix_percents_binary
-    )
-
-    dict_cm_s, accuracy_s = compute_accuracy_scores(conf_matrix_scores)
-    dict_cm_p_s, accuracy_percents_s = compute_accuracy_scores(
-        conf_matrix_percents_scores
-    )
-
-    #
-    #     False positive : we predict the movie passes the test, while it doesn't.
-    #
-    #     False negative : we predict the movie fails the test, while it passes.
-    #
-
     create_results_folder(
-        dict_cm_b,
-        dict_cm_p_b,
-        accuracy_b,
-        dict_cm_s,
-        dict_cm_p_s,
-        accuracy_s,
-        len(bechdel_truths),
+        conf_matrix_binary,
+        conf_matrix_percents_binary,
+        conf_matrix_scores,
+        conf_matrix_percents_scores,
+        nb_of_scripts,
         dataset_with_predictions,
+        config,
     )
 
 
