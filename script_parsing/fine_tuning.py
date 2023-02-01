@@ -31,6 +31,8 @@ def fine_tune_parsing_model(config):
 
     model = get_model(config, device)
     model.to(device)
+    if config["script_parsing_model"]["load_checkpoint"]:
+        model = load_model_from_checkpoint(config, model)
     if intermediate_forward:
         freeze_pretrained_model_part(model)
 
@@ -222,6 +224,27 @@ def validate(
             )
 
     return losses, top1
+
+
+def load_model_from_checkpoint(config, model):
+    checkpoint_path = config["script_parsing_model"]["checkpoint_path"]
+    if not os.path.exists(checkpoint_path):
+        raise ValueError(f"Given checkpoint path does not exist : {checkpoint_path}")
+    if checkpoint_path[-4:] == ".pth":
+        model.load_state_dict(torch.load(checkpoint_path))
+        return model
+    elif checkpoint_path[-3:] == ".pt":
+        loaded_model = torch.load(checkpoint_path)
+        if type(model) != type(loaded_model):
+            raise ValueError(
+                f"Checkpoint model is not the same as the model indicated \
+                in the parameters ({type(loaded_model)} vs. {type(model)}))"
+            )
+        return loaded_model
+    else:
+        raise ValueError(
+            f"Checkpoint path is not a valid .pth or .pt file : {checkpoint_path}"
+        )
 
 
 def accuracy(output, target, topk=(1,)) -> List[float]:

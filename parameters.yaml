@@ -30,6 +30,8 @@ script_parsing_model:
         sentence_transformer_pretrained_model_name: all-MiniLM-L6-v2
         fully_connected_hidden_layers : [1024, 512, 128]
         nb_output_classes : 6
+    load_checkpoint: false
+    checkpoint_path: ""
     intermediate_forward: true 
     dataset_percentage: 0.1
     validation_dataset_proportion: 0.3
