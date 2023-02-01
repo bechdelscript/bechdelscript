@@ -3,7 +3,8 @@ import os
 import pandas as pd
 import yaml
 from tqdm import tqdm
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import confusion_matrix, precision_recall_fscore_support
+
 from screenplay_classes import Script
 import json
 from datetime import datetime
@@ -60,7 +61,16 @@ def compute_confusion_matrix(bechdel_truths, bechdel_approved_predictions):
 
     conf_matrix_percents = conf_matrix * 100 / len(bechdel_truths)
 
-    return conf_matrix, conf_matrix_percents
+    metrics = [
+        round(array[-1], 4)
+        for array in precision_recall_fscore_support(
+            bechdel_truths, bechdel_approved_predictions
+        )[:-1]
+    ]
+
+    print(metrics)
+
+    return conf_matrix, conf_matrix_percents, metrics
 
 
 def compute_dict_conf_matrix_binary(conf_matrix):
@@ -123,8 +133,10 @@ def create_results(
     date,
     conf_matrix_binary,
     conf_matrix_percents_binary,
+    metrics_binary,
     conf_matrix_scores,
     conf_matrix_percents_scores,
+    metrics_scores,
     nb_of_scripts,
     config,
     path_json,
@@ -163,6 +175,9 @@ def create_results(
     results["metrics"]["binary_performance"]["accuracy"] = round(
         nb_correctly_classified_scripts_b / nb_of_scripts, 4
     )
+    results["metrics"]["binary_performance"]["precision"] = metrics_binary[0]
+    results["metrics"]["binary_performance"]["recall"] = metrics_binary[1]
+    results["metrics"]["binary_performance"]["f1-score"] = metrics_binary[2]
 
     results["metrics"]["score_metrics"] = {}
     results["metrics"]["score_metrics"]["confusion_matrix"] = dict_cm_s
@@ -173,6 +188,9 @@ def create_results(
     results["metrics"]["score_metrics"]["accuracy"] = round(
         nb_correctly_classified_scripts_s / nb_of_scripts, 4
     )
+    results["metrics"]["score_metrics"]["precision"] = metrics_scores[0]
+    results["metrics"]["score_metrics"]["recall"] = metrics_scores[1]
+    results["metrics"]["score_metrics"]["f1-score"] = metrics_scores[2]
 
     with open(path_json, "w+") as f:
         json.dump(results, f)
@@ -188,7 +206,7 @@ def create_confusion_matrix_csv(conf_matrix, path, binary=False):
                 "predicted_false",
                 "predicted_true",
             ],
-        ).T
+        ).T.apply(lambda x: round(x, 2))
     else:
         df = pd.DataFrame(
             conf_matrix,
@@ -199,7 +217,7 @@ def create_confusion_matrix_csv(conf_matrix, path, binary=False):
                 "predicted_score_2",
                 "predicted_score_3",
             ],
-        ).T
+        ).T.apply(lambda x: round(x, 2))
     df.to_csv(path, index=True)
 
 
@@ -234,8 +252,10 @@ def format_date(date):
 def create_results_folder(
     conf_matrix_binary,
     conf_matrix_percents_binary,
+    metrics_binary,
     conf_matrix_scores,
     conf_matrix_percents_scores,
+    metrics_scores,
     nb_of_scripts,
     dataset_with_predictions,
     config,
@@ -253,8 +273,10 @@ def create_results_folder(
         date,
         conf_matrix_binary,
         conf_matrix_percents_binary,
+        metrics_binary,
         conf_matrix_scores,
         conf_matrix_percents_scores,
+        metrics_scores,
         nb_of_scripts,
         config,
         path_json,
@@ -283,19 +305,25 @@ def main():
 
     nb_of_scripts = len(bechdel_truths)
 
-    conf_matrix_binary, conf_matrix_percents_binary = compute_confusion_matrix(
-        bechdel_truths, bechdel_predictions
-    )
+    (
+        conf_matrix_binary,
+        conf_matrix_percents_binary,
+        metrics_binary,  ## here average = binary for true
+    ) = compute_confusion_matrix(bechdel_truths, bechdel_predictions)
 
-    conf_matrix_scores, conf_matrix_percents_scores = compute_confusion_matrix(
-        bechdel_true_scores, bechdel_predicted_scores
-    )
+    (
+        conf_matrix_scores,
+        conf_matrix_percents_scores,
+        metrics_scores,  ## TODO : average = micro
+    ) = compute_confusion_matrix(bechdel_true_scores, bechdel_predicted_scores)
 
     create_results_folder(
         conf_matrix_binary,
         conf_matrix_percents_binary,
+        metrics_binary,
         conf_matrix_scores,
         conf_matrix_percents_scores,
+        metrics_scores,
         nb_of_scripts,
         dataset_with_predictions,
         config,
