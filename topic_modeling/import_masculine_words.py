@@ -3,8 +3,7 @@ import os
 import yaml
 
 
-def import_masculine_words():
-    config = yaml.safe_load(open("parameters.yaml"))
+def import_masculine_words(config):
 
     path_masculine_words = os.path.join(
         config["paths"]["topic_modeling_folder"],

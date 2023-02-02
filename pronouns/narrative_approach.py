@@ -7,8 +7,8 @@ import yaml
 paragraphs where the character's name appears. Then, we use the most frequent gender associated with narrative passages as our
 prediction."""
 
-def import_gender_tokens():
-    config = yaml.safe_load(open("parameters.yaml"))
+
+def import_gender_tokens(config):
 
     path = os.path.join(
         config["paths"]["pronoun_folder"],
