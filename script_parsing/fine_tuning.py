@@ -4,8 +4,8 @@ from typing import List, Tuple
 
 import torch
 import yaml
-from torch.utils.data import DataLoader
 from torch.optim.lr_scheduler import ReduceLROnPlateau
+from torch.utils.data import DataLoader
 
 from script_parsing.intermediate_forward import (
     LinesEmbeddingsDataset,
@@ -52,7 +52,11 @@ def fine_tune_parsing_model(config):
         weight_decay=config["script_parsing_model"]["weight_decay"],
     )
     if config["script_parsing_model"]["learning_rate"]["decrease_on_plateau"]:
-        scheduler = ReduceLROnPlateau(optimizer, "min", patience=config["script_parsing_model"]["learning_rate"]["patience"])
+        scheduler = ReduceLROnPlateau(
+            optimizer,
+            "min",
+            patience=config["script_parsing_model"]["learning_rate"]["patience"],
+        )
 
     criterion = torch.nn.CrossEntropyLoss()
     criterion = criterion.to(device)

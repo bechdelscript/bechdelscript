@@ -4,6 +4,7 @@ import torch
 import torch.nn as nn
 from sentence_transformers import SentenceTransformer
 from transformers import BertModel, BertTokenizer
+
 from script_parsing.naive_parsing import label
 
 
