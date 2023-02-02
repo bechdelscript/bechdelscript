@@ -6,6 +6,7 @@ from script_parsing.naive_parsing import label, tag_script
 from topic_modeling.import_masculine_words import import_masculine_words
 from gender_name import classifier, _classify, gender_data
 from pronouns.narrative_approach import import_gender_tokens
+from pronouns.neural_coref import list_pronouns_coref
 import nltk
 
 
@@ -79,7 +80,7 @@ class Script:
         narration = []
         for scene in self.list_scenes:
             scene.load_narration()
-            narration+=scene.list_narration
+            narration += scene.list_narration
         self.list_narration = All_Narration(narration)
 
     def are_characters_named(self):
@@ -87,13 +88,15 @@ class Script:
             character.fill_is_named(self.list_list_dialogues)
 
     def identify_gender_named_chars(self):
-        parameters="parameters.yaml"
+        parameters = "parameters.yaml"
         config = yaml.safe_load(open(parameters))
         para = config["used_methods"]["character_gender_method"]
-        if para == "classify" :
-            function = lambda x : _classify(x, classifier)[0]
-        elif para == "narrative" :
-            function = lambda x : self.list_narration.character_narrative_gender(x)
+        if para == "classify":
+            function = lambda x: _classify(x, classifier)[0]
+        elif para == "narrative":
+            function = lambda x: self.list_narration.character_narrative_gender(x)
+        elif para == "coref":
+            function = lambda x: self.list_narration.character_coref_gender(x)
         for character in self.list_characters:
             if character.is_named == True:
                 character.identify_gender(function)
@@ -280,11 +283,11 @@ class Scene:
                     current_speech = []
 
     def load_narration(self):
-        current_narration = ''
+        current_narration = ""
         for i, line in enumerate(self.list_lines):
             if self.list_tags[i] == label.SCENES_DESCRIPTION:
                 # new narrative passage
-                current_narration+=line.lstrip()
+                current_narration += line.lstrip()
 
             elif self.list_tags[i] == label.METADATA:
                 pass  # we simply ignore metadata
@@ -294,9 +297,9 @@ class Scene:
 
             # if label is not narration nor metadata, then the ongoing narration is over
             else:
-                if current_narration != '':
+                if current_narration != "":
                     self.list_narration.append(current_narration)
-                    current_narration = ''
+                    current_narration = ""
 
     def find_speaker(self, dialogue_beginning_index: int, characters_in_movie: List):
         """Searches a line tagged character before the dialogue beginning index, and
@@ -481,7 +484,7 @@ class Character:
             self.name = self.name[: parenthesis.span()[0]]
 
     def identify_gender(self, function):
-        #_classify(self.name, classifier)[0]
+        # _classify(self.name, classifier)[0]
         self.gender = function(self.name)
 
     def add_name_variation(self, other):
@@ -547,6 +550,8 @@ class Dialogue:
 class All_Narration:
     def __init__(self, list_contents: List[str]):
         self.list_contents = list_contents
+        self.pronouns = list_pronouns_coref(self.list_contents)
+        self.tokens = import_gender_tokens()
 
     def character_narrative_gender(self, name: str):
         if name.lower().split()[0] in gender_data["name"].values:
@@ -555,7 +560,7 @@ class All_Narration:
             ].values[0]
         else:
             tokens = import_gender_tokens()
-            #name = char.name
+            # name = char.name
             freq_gender = {"m": 0, "f": 0, "nb": 0}
             paragraphs = [para for para in self.list_contents if name in para]
             for para in paragraphs:
@@ -566,7 +571,7 @@ class All_Narration:
                         if token == word.lower():
                             freq_tokens[token] += 1
                 for key in freq_tokens.keys():
-                    gen = tokens.loc[ tokens[0] == key ][1].values[0]
+                    gen = tokens.loc[tokens[0] == key][1].values[0]
                     value = freq_tokens[key]
                     try:
                         freq[gen] += value
@@ -574,4 +579,34 @@ class All_Narration:
                         freq[gen] = value
                 freq_gender[max(freq, key=lambda k: freq[k])] += 1
             res = max(freq_gender, key=lambda k: freq_gender[k])
+        return res
+
+    def character_coref_gender(self, name: str):
+        if name.lower().split()[0] in gender_data["name"].values:
+            res = gender_data.loc[gender_data["name"] == name.lower().split()[0]][
+                "gender"
+            ].values[0]
+        else:
+            freq = {}
+            clean_name = None
+            for key in self.pronouns.keys():
+                if str(key).lower() == name.lower():
+                    clean_name = key
+            if clean_name:
+                for key in self.pronouns[clean_name]:
+                    if str(key).lower() in self.tokens[0].values:
+                        gen = self.tokens.loc[self.tokens[0] == str(key).lower()][
+                            1
+                        ].values[0]
+                        try:
+                            freq[gen] += 1
+                        except:
+                            freq[gen] = 1
+                if freq == {}:
+                    res = None
+                else:
+                    res = max(freq, key=lambda k: freq[k])
+            else:
+                print(self.pronouns.keys(), name)
+                res = None
         return res

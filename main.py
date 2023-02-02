@@ -54,6 +54,7 @@ def main(args):
         "Score d'après le dataset :",
         dataset[dataset["path"] == script_path].iloc[0]["rating"],
     )
+
     script.display_results(args.nb_scenes)
 
 

@@ -32,4 +32,4 @@ bechdel_test_rules :
     lines_of_dialogues_in_a_row : 2 # minimum 2
 
 used_methods :
-    character_gender_method : narrative # can also be classify
+    character_gender_method : coref # can also be classify or coref or narrative
