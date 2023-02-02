@@ -5,6 +5,7 @@ from typing import List, Tuple
 import torch
 import yaml
 from torch.utils.data import DataLoader
+from torch.optim.lr_scheduler import ReduceLROnPlateau
 
 from script_parsing.intermediate_forward import (
     LinesEmbeddingsDataset,
@@ -46,15 +47,20 @@ def fine_tune_parsing_model(config):
     train_loader, validation_loader, _ = get_dataloaders(config, dataset)
 
     optimizer = torch.optim.SGD(
-        model.parameters(), config["script_parsing_model"]["learning_rate"]
+        model.parameters(),
+        lr=config["script_parsing_model"]["learning_rate"]["initial_value"],
+        weight_decay=config["script_parsing_model"]["weight_decay"],
     )
+    if config["script_parsing_model"]["learning_rate"]["decrease_on_plateau"]:
+        scheduler = ReduceLROnPlateau(optimizer, "min", patience=config["script_parsing_model"]["learning_rate"]["patience"])
 
     criterion = torch.nn.CrossEntropyLoss()
     criterion = criterion.to(device)
 
     experiment_folder_path = get_experiment_folder_name(config)
     monitor = Monitor(
-        ["train_loss", "train_top1", "val_loss", "val_top1"], experiment_folder_path
+        ["train_loss", "train_top1", "val_loss", "val_top1", "learning_rate"],
+        experiment_folder_path,
     )
 
     nb_epochs = config["script_parsing_model"]["nb_epochs"]
@@ -78,8 +84,17 @@ def fine_tune_parsing_model(config):
             intermediate_forward,
             epoch,
         )
+        if config["script_parsing_model"]["learning_rate"]["decrease_on_plateau"]:
+            scheduler.step(val_loss.avg)
+
         monitor.update_data(
-            [train_loss.avg, train_top1.avg, val_loss.avg, val_top1.avg]
+            [
+                train_loss.avg,
+                train_top1.avg,
+                val_loss.avg,
+                val_top1.avg,
+                optimizer.param_groups[0]["lr"],
+            ]
         )
         monitor.plot_data()
         monitor.log_data()

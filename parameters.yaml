@@ -28,7 +28,7 @@ script_parsing_model:
         use_sentence_transformer: true
         bert_pretrained_model_name: bert-base-uncased
         sentence_transformer_pretrained_model_name: all-MiniLM-L6-v2
-        fully_connected_hidden_layers : [1024, 512, 128]
+        fully_connected_hidden_layers : [2048, "relu", 1024, "relu", 512, "relu", 256, "relu", 128]
         nb_output_classes : 6
     load_checkpoint: false
     checkpoint_path: ""
@@ -38,8 +38,12 @@ script_parsing_model:
     test_dataset_proportion: 0.1
     seed: 42
     batch_size : 50
-    learning_rate : 0.01
-    nb_epochs : 10
+    learning_rate : 
+        initial_value: 0.01
+        decrease_on_plateau: true
+        patience: 3
+    weight_decay: 0.0001
+    nb_epochs : 50
     
 urls : 
     bechdel_test_api : http://bechdeltest.com/api/v1/getAllMovies
