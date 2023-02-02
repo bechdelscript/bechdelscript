@@ -38,12 +38,22 @@ class Script:
         self.load_score_2()
         self.load_score_3()
 
-    def load_scenes(self):
-        list_scenes, self.list_list_tags = tag_script(self.script_path)
+    def load_scenes(self, with_ml: bool = False):
+        if not with_ml:
+            list_scenes, self.list_list_tags = tag_script(self.script_path)
+        else:
+            # imported here because of circular import issue
+            from script_parsing.ml_parsing import tag_script_with_ml
+
+            list_scenes, self.list_list_tags = tag_script_with_ml(
+                self.config, self.script_path
+            )
+        self.list_scenes = []
         for i, scene in enumerate(list_scenes):
             self.list_scenes.append(Scene(scene, self.list_list_tags[i]))
 
     def identify_characters(self):
+        self.list_characters = []
         for i, scene in enumerate(self.list_scenes):
             for j, lab in enumerate(self.list_list_tags[i]):
                 if lab == label.CHARACTER:
@@ -249,6 +259,10 @@ class Script:
             self.coherent_parsing = False
         if len(self.list_scenes) == 1:
             self.coherent_parsing = False
+
+        if self.config["used_methods"]["reparse_with_ml"]:
+            self.load_scenes(with_ml=True)
+            self.identify_characters()
 
 
 class Scene:
