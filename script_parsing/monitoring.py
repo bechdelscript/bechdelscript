@@ -24,6 +24,10 @@ class AverageMeter(object):
 
 
 class Monitor:
+    """Stores the evolution of several metrics along the epochs, plots
+    and stores the plots in the experiment folder.
+    """
+
     def __init__(self, data_names, folder_name):
         self.all_data: List[List[float]] = None
         self.data_names = data_names

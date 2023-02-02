@@ -1,15 +1,25 @@
 from collections import OrderedDict
+from typing import List
 
 import torch
 import torch.nn as nn
-from typing import List
 from sentence_transformers import SentenceTransformer
 from transformers import BertModel, BertTokenizer
 
 from script_parsing.naive_parsing import label
 
 
-def get_model(config, device=None):
+def get_model(config: dict, device: torch.device | None = None) -> nn.Module:
+    """Builds the model according to the parameters found in the config file.
+
+    Args:
+        config (dict): config yaml file imported as a dict
+        device (torch.device | None, optional): can be 'cpu' or 'cuda:i' according to gpus available. Defaults to None.
+
+    Returns:
+        SentenceTransformer | BertClassifier: model returned
+    """
+
     if config["script_parsing_model"]["model_architecture"]["use_sentence_transformer"]:
         return SentenceTransformerClassifier(config, device)
     else:
@@ -60,6 +70,7 @@ class BertClassifier(nn.Module):
         return model_output
 
     def intermediate_forward(self, list_sentences):
+        """Computes the embeddings of the bert model"""
         tokenized_sentences = self.tokenizer(list_sentences)
         if self.device is not None:
             tokenized_sentences = tokenized_sentences.to(self.device)
@@ -71,10 +82,16 @@ class BertClassifier(nn.Module):
         # dimension : we apply a mean over the dimension that has the size of nb tokens (~= nb of words)
         return torch.mean(model_output, dim=1)
 
+    def fully_connected_forward(self, embeddings):
+        """Computes the output of the model, given the embeddings of the sentence bert model"""
+        return self.fully_connected(embeddings)
+
     def predict(self, sentence: str) -> label:
+        """Returns the predicted label given a sentence"""
         return self.predict_batch_with_empty_lines([sentence])[0]
 
     def predict_rough_batch(self, sentences: List[str]) -> List[label]:
+        """Returns a list of the predicted labels given a batch of sentence"""
         stripped_sentences = [sentence.lstrip() for sentence in sentences]
         output = self.forward(sentences)
         label_ids = output.max(axis=1).indices.tolist()
@@ -123,15 +140,19 @@ class SentenceTransformerClassifier(nn.Module):
         return model_output
 
     def intermediate_forward(self, list_sentences):
+        """Computes the embeddings of the sentence bert model"""
         return self.sentence_bert.encode(list_sentences, convert_to_tensor=True)
 
     def fully_connected_forward(self, embeddings):
+        """Computes the output of the model, given the embeddings of the sentence bert model"""
         return self.fully_connected(embeddings)
 
     def predict(self, sentence: str) -> label:
+        """Returns the predicted label given a sentence"""
         return self.predict_batch_with_empty_lines([sentence])[0]
 
     def predict_rough_batch(self, sentences: List[str]) -> List[label]:
+        """Returns a list of the predicted labels given a batch of sentence"""
         stripped_sentences = [sentence.lstrip() for sentence in sentences]
         output = self.forward(sentences)
         label_ids = output.max(axis=1).indices.tolist()

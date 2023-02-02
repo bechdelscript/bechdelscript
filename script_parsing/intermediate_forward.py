@@ -14,6 +14,23 @@ def get_intermediate_dataset(
     device: torch.device,
     save_freq: int = 100,
 ):
+    """Returns a dataset of embeddings. If the dataset is already saved, it
+    is loaded and returned, else it is built by feeding the lines to the first
+    half of the model (intermediate_forward), i.e. the bert/sentence bert part.
+    Given the computing of this dataset can be quite long, it is regularly saved
+    such as if for whatever reason the program is stopped while building this dataset,
+    the computations will start from where it was stopped during the next launch.
+
+    Args:
+        config (dict): config yaml file imported as a dict
+        model (SentenceTransformerClassifier | BertClassifier): model used to
+            compute the embeddings
+        device (torch.device): can be 'cpu' or 'cuda:i' according to gpus available
+        save_freq (int, optional): Saves the results every save_freq embeddings. Defaults to 100.
+
+    Returns:
+        _type_: _description_
+    """
     tagged_lines: TaggedLines = get_dataset(config)
     batch_size = config["script_parsing_model"]["batch_size"]
 
@@ -70,6 +87,8 @@ def get_intermediate_dataset(
 
 
 class LinesEmbeddingsDataset(torch.utils.data.Dataset):
+    """Dataset containing the embeddings of the coherent script's lines and their labels."""
+
     def __init__(
         self,
         embeddings: torch.Tensor,
@@ -101,7 +120,18 @@ class LinesEmbeddingsDataset(torch.utils.data.Dataset):
         )
 
 
-def freeze_pretrained_model_part(model):
+def freeze_pretrained_model_part(
+    model: SentenceTransformerClassifier | BertClassifier,
+) -> None:
+    """Prevents the weights of the bert model contained in our model
+    to be updated during the backpropagation.
+
+    Args:
+        model (SentenceTransformerClassifier | BertClassifier): model to freeze
+
+    Raises:
+        ValueError: model is not a SentenceTransformerClassifier or BertClassifier
+    """
     if isinstance(model, BertClassifier):
         model.bert.requires_grad_(False)
     elif isinstance(model, SentenceTransformerClassifier):
@@ -112,7 +142,20 @@ def freeze_pretrained_model_part(model):
         )
 
 
-def unfreeze_pretrained_model_part(model):
+# Currently this function is unused as we never need to perform backprop
+# after disabling it but it could be useful one day
+def unfreeze_pretrained_model_part(
+    model: SentenceTransformerClassifier | BertClassifier,
+) -> None:
+    """Reauthotize the updating of the weights of the bert model
+    contained in our model.
+
+    Args:
+        model (SentenceTransformerClassifier | BertClassifier): model to freeze
+
+    Raises:
+        ValueError: model is not a SentenceTransformerClassifier or BertClassifier
+    """
     if isinstance(model, BertClassifier):
         model.bert.requires_grad_(True)
     elif isinstance(model, SentenceTransformerClassifier):

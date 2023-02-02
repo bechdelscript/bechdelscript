@@ -1,19 +1,35 @@
 import os
-import torch
-
 from typing import List, Tuple
+
+import torch
 from torch.utils.data import DataLoader
 
 from script_parsing.fine_tuning import (
-    load_model_from_checkpoint,
     fine_tune_parsing_model,
+    load_model_from_checkpoint,
 )
-from script_parsing.parsing_model import get_model
-from script_parsing.naive_parsing import label, clean_scenes
+from script_parsing.naive_parsing import clean_scenes, label
+from script_parsing.parsing_model import (
+    BertClassifier,
+    SentenceTransformerClassifier,
+    get_model,
+)
 
 
-def tag_script_with_ml(config, script_path):
+def tag_script_with_ml(
+    config: dict, script_path: str
+) -> Tuple[List[List[str]], List[List[label]]]:
+    """Using predictions from a trained model, assign a label to each line of a script.
 
+    Args:
+        script_path (str): path of the script
+        config (dict) :
+
+    Returns:
+        Tuple[List[List[str]], List[List[label]] ]: First element of the
+            tuple is a list of scenes, each scene being a list of lines.
+            The second element returned is the list of labels for each line.
+    """
     with open(script_path, "r") as f:
         script_text = f.read()
 
@@ -27,7 +43,22 @@ def tag_script_with_ml(config, script_path):
     return scenes_lines, scenes_tags
 
 
-def predict_tag_of_lines(config, model, list_lines):
+def predict_tag_of_lines(
+    config: dict,
+    model: BertClassifier | SentenceTransformerClassifier,
+    list_lines: List[str],
+) -> List[label]:
+    """Given a list of lines and a trained model, assign a label to each line.
+
+    Args:
+        config (dict): config yaml file imported as a dict
+        model (BertClassifier | SentenceTransformerClassifier): model trained to
+            classify a line of text into the six available labels.
+        list_lines (List[str]): list of string, each element being a line from a script
+
+    Returns:
+        List[label]: _description_
+    """
     list_tags = []
     dataloader = DataLoader(
         dataset=list_lines, batch_size=config["script_parsing_model"]["batch_size"]
@@ -41,19 +72,18 @@ def find_scenes(
     lines: List[str],
     tags: List[label],
 ) -> Tuple[List[List[str]], List[List[str]]]:
-    """Splits the list of lines into sublists corresponding to the different scenes.
-    The delimitation between the scenes is found thanks to specific keywords marking
-    the beginning and the end of the keywords.
+    """Divides a list of lines and labels into sublists corresponding to each
+    scene. The beginning of the scenes is determined by the presence of the
+    SCENES_BOUNDARY label.
 
     Args:
-        lines (List[str]): _description_
-        beginning_scenes_keywords (List[str], optional): list of keywords usually found
-            to mark the beginning of a scene. Defaults to BEGINNING_SCENES_KEYWORDS.
-        end_scenes_keywords (List[str], optional): list of keywords usually found
-            to mark the end of a scene. Defaults to ENDING_SCENES_KEYWORDS.
+        lines (List[str]): list of string representing the lines in a script
+        tags (List[label]): list of labels associated to each line in the script
 
     Returns:
-        List[List[str]]: List of scenes, each scene being a list of lines.
+        Tuple[List[List[str]], List[List[str]]]: First element of the
+            tuple is a list of scenes, each scene being a list of lines.
+            The second element returned is the list of labels for each line.
     """
     scenes_lines = []
     current_scene_lines = []
@@ -71,7 +101,19 @@ def find_scenes(
     return scenes_lines, scenes_tags
 
 
-def get_trained_model(config):
+def get_trained_model(config: dict) -> BertClassifier | SentenceTransformerClassifier:
+    """Returns a classification model trained to find the label of a line
+    in a script. If the weights of the model are already saved as a .pth file,
+    they are loaded as is, else the model is trained according to the conditions
+    found in the config file, and its weights are savec as a .pth file for further
+    use.
+
+    Args:
+        config (dict): config yaml file imported as a dict
+
+    Returns:
+        BertClassifier | SentenceTransformerClassifier : the trained model
+    """
     checkpoint_path = os.path.join(
         config["paths"]["input_folder_name"], config["names"]["parsing_model"]
     )
@@ -92,9 +134,10 @@ def get_trained_model(config):
 
 
 if __name__ == "__main__":
-    import yaml
-    import pandas as pd
     from random import choice
+
+    import pandas as pd
+    import yaml
 
     config = yaml.safe_load(open("parameters.yaml", "r"))
     scripts = pd.read_csv("script_parsing/coherent_parsing.csv")

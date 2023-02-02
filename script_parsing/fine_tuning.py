@@ -18,10 +18,25 @@ from script_parsing.parsed_script_dataset import (
     get_dataloaders,
     get_dataset,
 )
-from script_parsing.parsing_model import get_model
+from script_parsing.parsing_model import (
+    BertClassifier,
+    SentenceTransformerClassifier,
+    get_model,
+)
 
 
-def fine_tune_parsing_model(config):
+def fine_tune_parsing_model(
+    config: dict,
+) -> BertClassifier | SentenceTransformerClassifier:
+    """Creates a model and trains it on a dataset according to the parameters found
+    in the config file.
+
+    Args:
+        config (dict): config yaml file imported as a dict
+
+    Returns:
+        BertClassifier| SentenceTransformerClassifier: the trained model
+    """
 
     if torch.cuda.is_available():
         device = torch.device(f"cuda:{torch.cuda.current_device()}")
@@ -122,7 +137,18 @@ def fine_tune_parsing_model(config):
     return model
 
 
-def get_experiment_folder_name(config):
+def get_experiment_folder_name(config: dict) -> str:
+    """Creates a folder into which the files monitoring the fine-tuning will be kept, and
+    returns the path of this folder. The folder's name is the current date (yy-mm-dd_hh:mm:ss).
+    The function also issues a warning if the results of a similar experiment are already
+    stored in the experiments folder.
+
+    Args:
+        config (dict): config yaml file imported as a dict
+
+    Returns:
+        str: path of the folder meant to contain the fine tuning results
+    """
     results_folder = config["paths"]["script_parsing_experiments_folder"]
     os.makedirs(results_folder, exist_ok=True)
     for subfolder in os.listdir(results_folder):
@@ -155,6 +181,25 @@ def train_one_epoch(
     epoch: int,
     print_freq: int = 10,
 ) -> Tuple[AverageMeter, AverageMeter]:
+    """Trains the model on the training dataset once (one epoch) and returns the metrics
+    on this epoch.
+
+    Args:
+        model (torch.nn.Module): model to be trained
+        train_loader (DataLoader): dataloader containing training data
+        optimizer (torch.optim.SGD): optimizer performing the stochastic gradient descent
+        criterion (torch.nn.CrossEntropyLoss): criterion that computes the loss
+        device (torch.device): can be 'cpu' or 'cuda:i' according to gpus available
+        intermediate_forward (bool): if true, means the dataloader contains the sentences, in which case
+            the model's complete forward is used (bert to compute the embeddings + classifier), if
+            false, the dataloader should contain directly the embeddings, meaning only the forward of
+            the classifier of the model is used (fully_connected_forward).
+        epoch (int): number of epochs already computed
+        print_freq (int, optional): printing the metrics every print_freq batches. Defaults to 10.
+
+    Returns:
+        Tuple[AverageMeter, AverageMeter]: the loss and the top1 accuracy
+    """
 
     losses = AverageMeter()
     top1 = AverageMeter()
@@ -220,6 +265,23 @@ def validate(
     epoch: int,
     print_freq: int = 10,
 ) -> Tuple[AverageMeter, AverageMeter]:
+    """Computes the metrics on the validation dataset.
+
+    Args:
+        model (torch.nn.Module): model to be trained
+        validation_loader (DataLoader): dataloader containing validation data
+        criterion (torch.optim.SGD): criterion that computes the loss
+        device (torch.device): can be 'cpu' or 'cuda:i' according to gpus available
+        intermediate_forward (bool): if true, means the dataloader contains the sentences, in which case
+            the model's complete forward is used (bert to compute the embeddings + classifier), if
+            false, the dataloader should contain directly the embeddings, meaning only the forward of
+            the classifier of the model is used (fully_connected_forward).
+        epoch (int): number of epochs already computed
+        print_freq (int, optional): printing the metrics every print_freq batches. Defaults to 10.
+
+    Returns:
+        Tuple[AverageMeter, AverageMeter]: the loss and the top1 accuracy
+    """
 
     losses = AverageMeter()
     top1 = AverageMeter()
@@ -271,7 +333,21 @@ def validate(
     return losses, top1
 
 
-def load_model_from_checkpoint(model, checkpoint_path):
+def load_model_from_checkpoint(
+    model: BertClassifier | SentenceTransformerClassifier, checkpoint_path: str
+) -> None:
+    """Loads the weight of the model from a saved checkpoint file.
+
+    Args:
+        model (BertClassifier | SentenceTransformerClassifier): model onto which the weights will be loaded
+        checkpoint_path (str): the path of the saved file, can be a '.pt'
+            or a '.pth' file.
+
+    Raises:
+        ValueError: the file given in checkpoint_path does not exist
+        ValueError: the file given in checkpoint_path is not a '.pt' or a '.pth'
+        ValueError: the model loaded in the .pt file is not of the same type as model
+    """
     if not os.path.exists(checkpoint_path):
         raise ValueError(f"Given checkpoint path does not exist : {checkpoint_path}")
     if checkpoint_path[-4:] == ".pth":
@@ -291,8 +367,19 @@ def load_model_from_checkpoint(model, checkpoint_path):
         )
 
 
-def accuracy(output, target, topk=(1,)) -> List[float]:
-    """Computes the precision@k for the specified values of k"""
+def accuracy(output: torch.Tensor, target: torch.Tensor, topk=(1,)) -> List[float]:
+    """Computes the precision@k for the specified values of k
+
+    Args:
+        output (torch.Tensor): output of the model
+        target (torch.Tensor): label found in the dataset corresponding to the
+            input fed into the model
+        topk (tuple, optional): a tuple containing the values of k. Defaults to (1,).
+
+    Returns:
+        List[float]: list of precision@k
+    """
+
     maxk = max(topk)
     batch_size = target.size(0)
 
