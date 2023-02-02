@@ -96,7 +96,8 @@ class Script:
         elif para == "narrative":
             function = lambda x: self.list_narration.character_narrative_gender(x)
         elif para == "coref":
-            function = lambda x: self.list_narration.character_coref_gender(x)
+            pronouns = list_pronouns_coref(self.list_narration.list_contents)
+            function = lambda x: self.list_narration.character_coref_gender(x, pronouns)
         for character in self.list_characters:
             if character.is_named == True:
                 character.identify_gender(function)
@@ -550,7 +551,6 @@ class Dialogue:
 class All_Narration:
     def __init__(self, list_contents: List[str]):
         self.list_contents = list_contents
-        self.pronouns = list_pronouns_coref(self.list_contents)
         self.tokens = import_gender_tokens()
 
     def character_narrative_gender(self, name: str):
@@ -559,19 +559,18 @@ class All_Narration:
                 "gender"
             ].values[0]
         else:
-            tokens = import_gender_tokens()
             # name = char.name
             freq_gender = {"m": 0, "f": 0, "nb": 0}
             paragraphs = [para for para in self.list_contents if name in para]
             for para in paragraphs:
-                freq_tokens = dict.fromkeys(tokens[0], 0)
+                freq_tokens = dict.fromkeys(self.tokens[0], 0)
                 freq = {}
                 for word in nltk.word_tokenize(para):
-                    for token in tokens[0]:
+                    for token in self.tokens[0]:
                         if token == word.lower():
                             freq_tokens[token] += 1
                 for key in freq_tokens.keys():
-                    gen = tokens.loc[tokens[0] == key][1].values[0]
+                    gen = self.tokens.loc[self.tokens[0] == key][1].values[0]
                     value = freq_tokens[key]
                     try:
                         freq[gen] += value
@@ -581,7 +580,8 @@ class All_Narration:
             res = max(freq_gender, key=lambda k: freq_gender[k])
         return res
 
-    def character_coref_gender(self, name: str):
+    def character_coref_gender(self, name: str, pronouns):
+        res = None
         if name.lower().split()[0] in gender_data["name"].values:
             res = gender_data.loc[gender_data["name"] == name.lower().split()[0]][
                 "gender"
@@ -589,11 +589,11 @@ class All_Narration:
         else:
             freq = {}
             clean_name = None
-            for key in self.pronouns.keys():
-                if str(key).lower() == name.lower():
+            for key in pronouns.keys():
+                if name.lower() in str(key).lower():
                     clean_name = key
             if clean_name:
-                for key in self.pronouns[clean_name]:
+                for key in pronouns[clean_name]:
                     if str(key).lower() in self.tokens[0].values:
                         gen = self.tokens.loc[self.tokens[0] == str(key).lower()][
                             1
@@ -602,11 +602,8 @@ class All_Narration:
                             freq[gen] += 1
                         except:
                             freq[gen] = 1
-                if freq == {}:
-                    res = None
-                else:
+                if freq != {}:
                     res = max(freq, key=lambda k: freq[k])
-            else:
-                print(self.pronouns.keys(), name)
-                res = None
+        if res == None:
+            res = self.character_narrative_gender(name)
         return res
