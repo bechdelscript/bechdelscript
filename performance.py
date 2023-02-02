@@ -28,7 +28,7 @@ def load_scripts():
     bechdel_true_scores = []
     bechdel_approved_predictions = []
     bechdel_approved_truths = []
-    for path in tqdm(list(dataset["path"])[:10]):
+    for path in tqdm(list(dataset["path"])):
         ground_truth = dataset[dataset["path"] == path].iloc[0]["rating"]
         script = Script(path, ground_truth=ground_truth)
         score = int(script.computed_score)
@@ -55,16 +55,16 @@ def load_scripts():
     )
 
 
-def compute_confusion_matrix(bechdel_truths, bechdel_approved_predictions):
+def compute_confusion_matrix(bechdel_truths, bechdel_approved_predictions, average):
 
     conf_matrix = confusion_matrix(bechdel_truths, bechdel_approved_predictions)
 
     conf_matrix_percents = conf_matrix * 100 / len(bechdel_truths)
 
     metrics = [
-        round(array[-1], 4)
+        round(array, 4)
         for array in precision_recall_fscore_support(
-            bechdel_truths, bechdel_approved_predictions
+            bechdel_truths, bechdel_approved_predictions, average=average
         )[:-1]
     ]
 
@@ -308,14 +308,16 @@ def main():
     (
         conf_matrix_binary,
         conf_matrix_percents_binary,
-        metrics_binary,  ## here average = binary for true
-    ) = compute_confusion_matrix(bechdel_truths, bechdel_predictions)
+        metrics_binary,
+    ) = compute_confusion_matrix(bechdel_truths, bechdel_predictions, average="binary")
 
     (
         conf_matrix_scores,
         conf_matrix_percents_scores,
-        metrics_scores,  ## TODO : average = micro
-    ) = compute_confusion_matrix(bechdel_true_scores, bechdel_predicted_scores)
+        metrics_scores,
+    ) = compute_confusion_matrix(
+        bechdel_true_scores, bechdel_predicted_scores, average="macro"  # or weighted
+    )
 
     create_results_folder(
         conf_matrix_binary,
