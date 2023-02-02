@@ -3,6 +3,7 @@ from typing import List, Tuple
 
 import torch
 from torch.utils.data import DataLoader
+from typing import Union
 
 from script_parsing.fine_tuning import (
     fine_tune_parsing_model,
@@ -45,14 +46,14 @@ def tag_script_with_ml(
 
 def predict_tag_of_lines(
     config: dict,
-    model: BertClassifier | SentenceTransformerClassifier,
+    model: Union[BertClassifier, SentenceTransformerClassifier],
     list_lines: List[str],
 ) -> List[label]:
     """Given a list of lines and a trained model, assign a label to each line.
 
     Args:
         config (dict): config yaml file imported as a dict
-        model (BertClassifier | SentenceTransformerClassifier): model trained to
+        model (Union[BertClassifier, SentenceTransformerClassifier]): model trained to
             classify a line of text into the six available labels.
         list_lines (List[str]): list of string, each element being a line from a script
 
@@ -101,7 +102,9 @@ def find_scenes(
     return scenes_lines, scenes_tags
 
 
-def get_trained_model(config: dict) -> BertClassifier | SentenceTransformerClassifier:
+def get_trained_model(
+    config: dict,
+) -> Union[BertClassifier, SentenceTransformerClassifier]:
     """Returns a classification model trained to find the label of a line
     in a script. If the weights of the model are already saved as a .pth file,
     they are loaded as is, else the model is trained according to the conditions
@@ -112,7 +115,7 @@ def get_trained_model(config: dict) -> BertClassifier | SentenceTransformerClass
         config (dict): config yaml file imported as a dict
 
     Returns:
-        BertClassifier | SentenceTransformerClassifier : the trained model
+        Union[BertClassifier, SentenceTransformerClassifier] : the trained model
     """
     checkpoint_path = os.path.join(
         config["paths"]["input_folder_name"], config["names"]["parsing_model"]

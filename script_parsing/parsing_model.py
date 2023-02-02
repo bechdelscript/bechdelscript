@@ -3,13 +3,14 @@ from typing import List
 
 import torch
 import torch.nn as nn
+from typing import Union
 from sentence_transformers import SentenceTransformer
 from transformers import BertModel, BertTokenizer
 
 from script_parsing.naive_parsing import label
 
 
-def get_model(config: dict, device: torch.device | None = None) -> nn.Module:
+def get_model(config: dict, device: Union[torch.device, None] = None) -> nn.Module:
     """Builds the model according to the parameters found in the config file.
 
     Args:

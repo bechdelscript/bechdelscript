@@ -6,6 +6,7 @@ import torch
 import yaml
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torch.utils.data import DataLoader
+from typing import Union
 
 from script_parsing.intermediate_forward import (
     LinesEmbeddingsDataset,
@@ -27,7 +28,7 @@ from script_parsing.parsing_model import (
 
 def fine_tune_parsing_model(
     config: dict,
-) -> BertClassifier | SentenceTransformerClassifier:
+) -> Union[BertClassifier, SentenceTransformerClassifier]:
     """Creates a model and trains it on a dataset according to the parameters found
     in the config file.
 
@@ -334,12 +335,12 @@ def validate(
 
 
 def load_model_from_checkpoint(
-    model: BertClassifier | SentenceTransformerClassifier, checkpoint_path: str
+    model: Union[BertClassifier, SentenceTransformerClassifier], checkpoint_path: str
 ) -> None:
     """Loads the weight of the model from a saved checkpoint file.
 
     Args:
-        model (BertClassifier | SentenceTransformerClassifier): model onto which the weights will be loaded
+        model (Union[BertClassifier, SentenceTransformerClassifier]): model onto which the weights will be loaded
         checkpoint_path (str): the path of the saved file, can be a '.pt'
             or a '.pth' file.
 

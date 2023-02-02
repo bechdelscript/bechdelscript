@@ -3,6 +3,7 @@ import os
 import pandas as pd
 import torch
 from torch.utils.data import DataLoader
+from typing import Union
 
 from script_parsing.parsed_script_dataset import TaggedLines, get_dataset
 from script_parsing.parsing_model import BertClassifier, SentenceTransformerClassifier
@@ -10,7 +11,7 @@ from script_parsing.parsing_model import BertClassifier, SentenceTransformerClas
 
 def get_intermediate_dataset(
     config: dict,
-    model: SentenceTransformerClassifier | BertClassifier,
+    model: Union[SentenceTransformerClassifier, BertClassifier],
     device: torch.device,
     save_freq: int = 100,
 ):
@@ -23,7 +24,7 @@ def get_intermediate_dataset(
 
     Args:
         config (dict): config yaml file imported as a dict
-        model (SentenceTransformerClassifier | BertClassifier): model used to
+        model (Union[SentenceTransformerClassifier, BertClassifier]): model used to
             compute the embeddings
         device (torch.device): can be 'cpu' or 'cuda:i' according to gpus available
         save_freq (int, optional): Saves the results every save_freq embeddings. Defaults to 100.
@@ -121,13 +122,13 @@ class LinesEmbeddingsDataset(torch.utils.data.Dataset):
 
 
 def freeze_pretrained_model_part(
-    model: SentenceTransformerClassifier | BertClassifier,
+    model: Union[SentenceTransformerClassifier, BertClassifier],
 ) -> None:
     """Prevents the weights of the bert model contained in our model
     to be updated during the backpropagation.
 
     Args:
-        model (SentenceTransformerClassifier | BertClassifier): model to freeze
+        model (Union[SentenceTransformerClassifier, BertClassifier]): model to freeze
 
     Raises:
         ValueError: model is not a SentenceTransformerClassifier or BertClassifier
@@ -145,13 +146,13 @@ def freeze_pretrained_model_part(
 # Currently this function is unused as we never need to perform backprop
 # after disabling it but it could be useful one day
 def unfreeze_pretrained_model_part(
-    model: SentenceTransformerClassifier | BertClassifier,
+    model: Union[SentenceTransformerClassifier, BertClassifier],
 ) -> None:
     """Reauthotize the updating of the weights of the bert model
     contained in our model.
 
     Args:
-        model (SentenceTransformerClassifier | BertClassifier): model to freeze
+        model (Union[SentenceTransformerClassifier, BertClassifier]): model to freeze
 
     Raises:
         ValueError: model is not a SentenceTransformerClassifier or BertClassifier
