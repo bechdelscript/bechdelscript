@@ -8,10 +8,10 @@ import requests
 # https://github.com/ellisbrown/name2gender/tree/master/naive_bayes
 # On utilise la base de données de prénom obtenue sur datagouv au lien suivant : https://www.data.gouv.fr/fr/datasets/liste-de-prenoms/
 
-if 'Prenoms.csv' not in "data/input/":
-    url = 'https://www.data.gouv.fr/fr/datasets/r/55cd803a-998d-4a5c-9741-4cd0ee0a7699'
+if "Prenoms.csv" not in "data/input/":
+    url = "https://www.data.gouv.fr/fr/datasets/r/55cd803a-998d-4a5c-9741-4cd0ee0a7699"
     r = requests.get(url, allow_redirects=True)
-    open('data/input/Prenoms.csv', 'wb').write(r.content)
+    open("data/input/Prenoms.csv", "wb").write(r.content)
 
 
 # Read the original gender database

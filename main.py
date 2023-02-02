@@ -44,7 +44,7 @@ def main(args):
     else:
         script_path = choice(dataset["path"])
 
-    script = Script(script_path)
+    script = Script(script_path, config)
 
     print("Nom du script :", script_path.split("/")[-1])
 

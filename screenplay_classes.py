@@ -11,8 +11,9 @@ import nltk
 
 
 class Script:
-    def __init__(self, script_path, ground_truth=None):
+    def __init__(self, script_path, config, ground_truth=None):
         self.script_path = script_path
+        self.config = config
         self.list_scenes: List[Scene] = []
         self.list_list_tags: List[List[label]] = []
         self.coherent_parsing: bool = None
@@ -24,7 +25,7 @@ class Script:
         self.computed_score: int = 0
         self.score2_scenes: List[int] = []
         self.score3_scenes: List[int] = []
-        self.bechdel_rules = self.load_bechdel_rules_config()
+        self.bechdel_rules = self.config["bechdel_test_rules"]
 
         self.load_scenes()
         self.identify_characters()
@@ -36,10 +37,6 @@ class Script:
         self.load_score_1()
         self.load_score_2()
         self.load_score_3()
-
-    def load_bechdel_rules_config(self, parameters="parameters.yaml"):
-        config = yaml.safe_load(open(parameters))
-        return config["bechdel_test_rules"]
 
     def load_scenes(self):
         list_scenes, self.list_list_tags, self.coherent_parsing = tag_script(
@@ -81,16 +78,14 @@ class Script:
         for scene in self.list_scenes:
             scene.load_narration()
             narration += scene.list_narration
-        self.list_narration = All_Narration(narration)
+        self.list_narration = All_Narration(narration, self.config)
 
     def are_characters_named(self):
         for character in self.list_characters:
             character.fill_is_named(self.list_list_dialogues)
 
     def identify_gender_named_chars(self):
-        parameters = "parameters.yaml"
-        config = yaml.safe_load(open(parameters))
-        para = config["used_methods"]["character_gender_method"]
+        para = self.config["used_methods"]["character_gender_method"]
         if para == "classify":
             function = lambda x: _classify(x, classifier)[0]
         elif para == "narrative":
@@ -131,7 +126,7 @@ class Script:
         # return score = 2 le cas échéant et liste de scènes qui valident le test 2
 
     def load_score_3(self):
-        masculine_words = import_masculine_words()
+        masculine_words = import_masculine_words(self.config)
         for index in self.score2_scenes:
             scene = self.list_scenes[index]
             scene.is_elligible_topic_method(
@@ -441,7 +436,7 @@ class Scene:
         count_successive_false = 0
         last_person_talking = ""
         for about_men, character in list_speak_about_men:
-            # about_men is False, said by a women, who is differnet that the last character talking
+            # about_men is False, said by a women, who is different that the last character talking
             if (
                 not about_men
                 and character.gender == "f"
@@ -549,9 +544,10 @@ class Dialogue:
 
 
 class All_Narration:
-    def __init__(self, list_contents: List[str]):
+    def __init__(self, list_contents: List[str], config):
         self.list_contents = list_contents
-        self.tokens = import_gender_tokens()
+        self.config = config
+        self.tokens = import_gender_tokens(self.config)
 
     def character_narrative_gender(self, name: str):
         if name.lower().split()[0] in gender_data["name"].values:
