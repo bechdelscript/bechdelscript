@@ -4,6 +4,7 @@ import torch
 import torch.nn as nn
 from sentence_transformers import SentenceTransformer
 from transformers import BertModel, BertTokenizer
+from script_parsing.naive_parsing import label
 
 
 def get_model(config, device=None):
@@ -33,6 +34,7 @@ class BertClassifier(nn.Module):
             config["script_parsing_model"]["model_architecture"]["nb_output_classes"],
         )
         self.device = device
+        self.tensor_to_label_dict = {str(e.tensor): e for e in label}
 
     def tokenizer(self, list_sentences):
         return self.pretrained_tokenizer(
@@ -70,6 +72,11 @@ class BertClassifier(nn.Module):
     def fully_connected_forward(self, embeddings):
         return self.fully_connected(embeddings)
 
+    def predict(self, sentence):
+        output = self.forward(sentence)
+        tensor = ((output == max(output)) * 1).tolist()
+        return self.tensor_to_label_dict[str(tensor)]
+
 
 class SentenceTransformerClassifier(nn.Module):
     def __init__(self, config, device=None):
@@ -91,6 +98,7 @@ class SentenceTransformerClassifier(nn.Module):
             config["script_parsing_model"]["model_architecture"]["nb_output_classes"],
         )
         self.device = device
+        self.tensor_to_label_dict = {str(e.tensor): e for e in label}
 
     def tokenizer(self, list_sentences):
         return self.pretrained_tokenizer(
@@ -112,6 +120,11 @@ class SentenceTransformerClassifier(nn.Module):
 
     def fully_connected_forward(self, embeddings):
         return self.fully_connected(embeddings)
+
+    def predict(self, sentence):
+        output = self.forward(sentence)
+        tensor = ((output == max(output)) * 1).tolist()
+        return self.tensor_to_label_dict[str(tensor)]
 
 
 def build_fully_connected(fully_connected_hidden_layers, input_dim, output_dim):

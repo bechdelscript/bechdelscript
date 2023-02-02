@@ -96,8 +96,10 @@ def get_dataset(config):
         lines_and_tags = create_lines_and_tags_df(config)
 
     # one hot encoding of tags
-    dummies = pd.get_dummies(lines_and_tags["tags"])
-    lines_and_tags["labels"] = dummies.agg(list, axis=1)
+    label_to_tensor_dict = {e.name: e.tensor for e in label}
+    lines_and_tags["labels"] = lines_and_tags["tags"].apply(
+        lambda x: label_to_tensor_dict[x], axis=1
+    )
     lines_and_labels = lines_and_tags.drop(columns="tags")
     lines_and_labels["labels"] = lines_and_labels["labels"].apply(torch.Tensor)
 

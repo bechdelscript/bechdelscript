@@ -8,15 +8,32 @@ import numpy as np
 
 
 class label(Enum):
-    EMPTY_LINE = "E"
-    SCENES_BOUNDARY_AND_DESCRIPTION = "SN"
-    SCENES_BOUNDARY = "S"
-    SCENES_DESCRIPTION = "N"
-    CHARACTER = "C"
-    SHORT_CAPITALIZED_TEXTS = "C?"
-    DIALOGUE = "D"
-    METADATA = "M"
-    UNKNOWN = "?"
+    EMPTY_LINE = "E", None
+    SCENES_BOUNDARY_AND_DESCRIPTION = "SN", None
+    SCENES_BOUNDARY = "S", [0, 0, 0, 1, 0, 0]
+    SCENES_DESCRIPTION = "N", [0, 0, 0, 0, 1, 0]
+    CHARACTER = "C", [1, 0, 0, 0, 0, 0]
+    SHORT_CAPITALIZED_TEXTS = "C?", None
+    DIALOGUE = "D", [0, 1, 0, 0, 0, 0]
+    METADATA = "M", [0, 0, 1, 0, 0, 0]
+    UNKNOWN = "?", [0, 0, 0, 0, 0, 1]
+
+    def __new__(cls, *args, **kwds):
+        obj = object.__new__(cls)
+        obj._value_ = args[0]
+        return obj
+
+    # ignore the first param since it's already set by __new__
+    def __init__(self, _: str, tensor: list = None):
+        self._tensor_ = tensor
+
+    def __str__(self):
+        return self.value
+
+    # this makes sure that the description is read-only
+    @property
+    def tensor(self):
+        return self._tensor_
 
 
 LABELS_PRIORITY = [
@@ -424,14 +441,19 @@ def print_several_lists(list_labels, lists):
         print(string)
 
 
-def markdown_color_script(script_path, html=False):
-    scenes, tags, coherent = tag_script(script_path)
+def markdown_color_script(script_path, scenes=None, tags=None, html=False, suffix=None):
+    if scenes is None or tags is None:
+        scenes, tags = tag_script(script_path)
 
-    movie_name = os.path.split(script_path)[1].split(".")[0] + (
-        ".html" if html else ".md"
+    movie_name = (
+        os.path.split(script_path)[1].split(".")[0]
+        + (suffix if suffix is not None else "")
+        + (".html" if html else ".md")
     )
     with open(
-        os.path.join("data", "intermediate", "colored_scripts", movie_name), "w+"
+        # os.path.join("data", "intermediate", "colored_scripts", movie_name), "w+"
+        os.path.join("data", "intermediate", "incoherent_test", movie_name),
+        "w+",
     ) as f:
         for scene_idx, scene in enumerate(scenes):
             for line_idx, line in enumerate(scene):
@@ -463,5 +485,6 @@ if __name__ == "__main__":
 
     folder_name = "data/input/scripts_imsdb"
     script_name = choice(os.listdir(folder_name))
+    script_name = "Duck-Soup.txt"
     print(script_name)
     markdown_color_script(os.path.join(folder_name, script_name))
