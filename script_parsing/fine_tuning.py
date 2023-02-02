@@ -33,7 +33,9 @@ def fine_tune_parsing_model(config):
     model = get_model(config, device)
     model.to(device)
     if config["script_parsing_model"]["load_checkpoint"]:
-        model = load_model_from_checkpoint(config, model)
+        model = load_model_from_checkpoint(
+            model, config["script_parsing_model"]["checkpoint_path"]
+        )
     if intermediate_forward:
         freeze_pretrained_model_part(model)
 
@@ -111,6 +113,13 @@ def fine_tune_parsing_model(config):
         torch.save(
             model.state_dict(), os.path.join(experiment_folder_path, "last_model.pth")
         )
+
+    # load best model to return it
+    model = load_model_from_checkpoint(
+        model,
+        checkpoint_path=os.path.join(experiment_folder_path, "best_model.pth"),
+    )
+    return model
 
 
 def get_experiment_folder_name(config):
@@ -262,8 +271,7 @@ def validate(
     return losses, top1
 
 
-def load_model_from_checkpoint(config, model):
-    checkpoint_path = config["script_parsing_model"]["checkpoint_path"]
+def load_model_from_checkpoint(model, checkpoint_path):
     if not os.path.exists(checkpoint_path):
         raise ValueError(f"Given checkpoint path does not exist : {checkpoint_path}")
     if checkpoint_path[-4:] == ".pth":

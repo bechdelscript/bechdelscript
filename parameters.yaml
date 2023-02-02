@@ -19,6 +19,7 @@ names :
     coherently_parsed_scripts : coherent_parsing.csv
     tagged_lines : tagged_lstripped_lines.csv
     dataset_embeddings : dataset_embeddings.pt
+    parsing_model : parsing_model.pth
 
 merge_dataset :
     keep : imsdb  # 'imsdb' or 'kaggle'

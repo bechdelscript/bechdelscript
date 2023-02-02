@@ -7,16 +7,17 @@ from typing import Dict, List, Tuple
 import numpy as np
 
 
+# labels and ids are in alphabetical orders
 class label(Enum):
-    EMPTY_LINE = "E", None
-    SCENES_BOUNDARY_AND_DESCRIPTION = "SN", None
-    SCENES_BOUNDARY = "S", [0, 0, 0, 1, 0, 0]
-    SCENES_DESCRIPTION = "N", [0, 0, 0, 0, 1, 0]
-    CHARACTER = "C", [1, 0, 0, 0, 0, 0]
-    SHORT_CAPITALIZED_TEXTS = "C?", None
-    DIALOGUE = "D", [0, 1, 0, 0, 0, 0]
-    METADATA = "M", [0, 0, 1, 0, 0, 0]
-    UNKNOWN = "?", [0, 0, 0, 0, 0, 1]
+    EMPTY_LINE = "E"  # no labels or id because can't be predicted by the model
+    SCENES_BOUNDARY_AND_DESCRIPTION = "SN"
+    SCENES_BOUNDARY = "S", [0, 0, 0, 1, 0, 0], 3
+    SCENES_DESCRIPTION = "N", [0, 0, 0, 0, 1, 0], 4
+    CHARACTER = "C", [1, 0, 0, 0, 0, 0], 0
+    SHORT_CAPITALIZED_TEXTS = "C?"
+    DIALOGUE = "D", [0, 1, 0, 0, 0, 0], 1
+    METADATA = "M", [0, 0, 1, 0, 0, 0], 2
+    UNKNOWN = "?", [0, 0, 0, 0, 0, 1], 5
 
     def __new__(cls, *args, **kwds):
         obj = object.__new__(cls)
@@ -24,8 +25,9 @@ class label(Enum):
         return obj
 
     # ignore the first param since it's already set by __new__
-    def __init__(self, _: str, tensor: list = None):
+    def __init__(self, _: str, tensor: list = None, label_id: int = None):
         self._tensor_ = tensor
+        self._label_id_ = label_id
 
     def __str__(self):
         return self.value
@@ -34,6 +36,10 @@ class label(Enum):
     @property
     def tensor(self):
         return self._tensor_
+
+    @property
+    def label_id(self):
+        return self._label_id_
 
 
 LABELS_PRIORITY = [

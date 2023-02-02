@@ -2,6 +2,7 @@ from collections import OrderedDict
 
 import torch
 import torch.nn as nn
+from typing import List
 from sentence_transformers import SentenceTransformer
 from transformers import BertModel, BertTokenizer
 
@@ -35,7 +36,7 @@ class BertClassifier(nn.Module):
             config["script_parsing_model"]["model_architecture"]["nb_output_classes"],
         )
         self.device = device
-        self.tensor_to_label_dict = {str(e.tensor): e for e in label}
+        self.id_to_label_dict = {str(e.label_id): e for e in label}
 
     def tokenizer(self, list_sentences):
         return self.pretrained_tokenizer(
@@ -70,13 +71,18 @@ class BertClassifier(nn.Module):
         # dimension : we apply a mean over the dimension that has the size of nb tokens (~= nb of words)
         return torch.mean(model_output, dim=1)
 
-    def fully_connected_forward(self, embeddings):
-        return self.fully_connected(embeddings)
+    def predict(self, sentence: str) -> label:
+        return self.predict_batch_with_empty_lines([sentence])[0]
 
-    def predict(self, sentence):
-        output = self.forward(sentence)
-        tensor = ((output == max(output)) * 1).tolist()
-        return self.tensor_to_label_dict[str(tensor)]
+    def predict_rough_batch(self, sentences: List[str]) -> List[label]:
+        stripped_sentences = [sentence.lstrip() for sentence in sentences]
+        output = self.forward(sentences)
+        label_ids = output.max(axis=1).indices.tolist()
+        list_labels = [self.id_to_label_dict[str(label_id)] for label_id in label_ids]
+        for i, stripped_sentence in enumerate(stripped_sentences):
+            if len(stripped_sentence) == 0:
+                list_labels[i] = label.EMPTY_LINE
+        return list_labels
 
 
 class SentenceTransformerClassifier(nn.Module):
@@ -99,7 +105,7 @@ class SentenceTransformerClassifier(nn.Module):
             config["script_parsing_model"]["model_architecture"]["nb_output_classes"],
         )
         self.device = device
-        self.tensor_to_label_dict = {str(e.tensor): e for e in label}
+        self.id_to_label_dict = {str(e.label_id): e for e in label}
 
     def tokenizer(self, list_sentences):
         return self.pretrained_tokenizer(
@@ -122,10 +128,18 @@ class SentenceTransformerClassifier(nn.Module):
     def fully_connected_forward(self, embeddings):
         return self.fully_connected(embeddings)
 
-    def predict(self, sentence):
-        output = self.forward(sentence)
-        tensor = ((output == max(output)) * 1).tolist()
-        return self.tensor_to_label_dict[str(tensor)]
+    def predict(self, sentence: str) -> label:
+        return self.predict_batch_with_empty_lines([sentence])[0]
+
+    def predict_rough_batch(self, sentences: List[str]) -> List[label]:
+        stripped_sentences = [sentence.lstrip() for sentence in sentences]
+        output = self.forward(sentences)
+        label_ids = output.max(axis=1).indices.tolist()
+        list_labels = [self.id_to_label_dict[str(label_id)] for label_id in label_ids]
+        for i, stripped_sentence in enumerate(stripped_sentences):
+            if len(stripped_sentence) == 0:
+                list_labels[i] = label.EMPTY_LINE
+        return list_labels
 
 
 def build_fully_connected(fully_connected_hidden_layers, input_dim, output_dim):
