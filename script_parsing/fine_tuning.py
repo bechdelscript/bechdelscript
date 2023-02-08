@@ -1,11 +1,12 @@
 import os
 from datetime import datetime
-from typing import List, Tuple
+from typing import Tuple, Dict
 
 import torch
 import yaml
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torch.utils.data import DataLoader
+from torchmetrics.classification import MulticlassAccuracy
 from typing import Union
 
 from script_parsing.intermediate_forward import (
@@ -79,6 +80,11 @@ def fine_tune_parsing_model(
     criterion = torch.nn.CrossEntropyLoss()
     criterion = criterion.to(device)
 
+    metrics = {
+        "top1": MulticlassAccuracy(num_classes=6, top_k=1, average="micro"),
+        "top3": MulticlassAccuracy(num_classes=6, top_k=3, average="micro"),
+    }
+
     experiment_folder_path = get_experiment_folder_name(config)
     monitor = Monitor(
         ["train_loss", "train_top1", "val_loss", "val_top1", "learning_rate"],
@@ -88,12 +94,12 @@ def fine_tune_parsing_model(
     nb_epochs = config["script_parsing_model"]["nb_epochs"]
 
     for epoch in range(nb_epochs):
-
         train_loss, train_top1 = train_one_epoch(
             model,
             train_loader,
             optimizer,
             criterion,
+            metrics,
             device,
             intermediate_forward,
             epoch,
@@ -102,6 +108,7 @@ def fine_tune_parsing_model(
             model,
             validation_loader,
             criterion,
+            metrics,
             device,
             intermediate_forward,
             epoch,
@@ -163,6 +170,7 @@ def train_one_epoch(
     train_loader: DataLoader,
     optimizer: torch.optim.SGD,
     criterion: torch.nn.CrossEntropyLoss,
+    metrics: Dict[MulticlassAccuracy],
     device: torch.device,
     intermediate_forward: bool,
     epoch: int,
@@ -214,7 +222,9 @@ def train_one_epoch(
         loss = criterion(predictions, labels)
 
         # compute accuracy
-        prec1, prec3 = accuracy(predictions.data, labels, topk=(1, 3))
+        prec1 = metrics["top1"](predictions, labels) * 100
+        prec3 = metrics["top3"](predictions, labels) * 100
+
         losses.update(loss.data.item(), batch_size)
         top1.update(prec1.item(), batch_size)
         top3.update(prec3.item(), batch_size)
@@ -247,6 +257,7 @@ def validate(
     model: torch.nn.Module,
     validation_loader: DataLoader,
     criterion: torch.optim.SGD,
+    metrics: Dict[MulticlassAccuracy],
     device: torch.device,
     intermediate_forward: bool,
     epoch: int,
@@ -296,7 +307,9 @@ def validate(
         loss = criterion(predictions, labels)
 
         # compute accuracy
-        prec1, prec3 = accuracy(predictions.data, labels, topk=(1, 3))
+        prec1 = metrics["top1"](predictions, labels) * 100
+        prec3 = metrics["top3"](predictions, labels) * 100
+
         losses.update(loss.data.item(), batch_size)
         top1.update(prec1.item(), batch_size)
         top3.update(prec3.item(), batch_size)
@@ -352,37 +365,6 @@ def load_model_from_checkpoint(
         raise ValueError(
             f"Checkpoint path is not a valid .pth or .pt file : {checkpoint_path}"
         )
-
-
-def accuracy(output: torch.Tensor, target: torch.Tensor, topk=(1,)) -> List[float]:
-    """Computes the precision@k for the specified values of k
-
-    Args:
-        output (torch.Tensor): output of the model
-        target (torch.Tensor): label found in the dataset corresponding to the
-            input fed into the model
-        topk (tuple, optional): a tuple containing the values of k. Defaults to (1,).
-
-    Returns:
-        List[float]: list of precision@k
-    """
-
-    maxk = max(topk)
-    batch_size = target.size(0)
-
-    _, y_pred = output.topk(k=maxk, dim=1, largest=True, sorted=True)
-    y_pred = y_pred.t()
-
-    _, label = target.topk(k=1, dim=1, largest=True, sorted=True)
-    label = label.squeeze(-1)
-    label_reshaped = label.view(1, -1).expand_as(y_pred)
-    correct = y_pred == label_reshaped
-
-    res = []
-    for k in topk:
-        correct_k = correct[:k].reshape(k * batch_size).float().sum(0)
-        res.append(correct_k.mul_(100.0 / batch_size))
-    return res
 
 
 if __name__ == "__main__":

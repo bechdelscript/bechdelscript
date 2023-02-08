@@ -188,11 +188,12 @@ def get_dataset(config: dict) -> TaggedLines:
     else:
         lines_and_tags = create_lines_and_tags_df(config)
 
-    # one hot encoding of tags
-    label_to_tensor_dict = {e.name: e.tensor for e in label}
-    lines_and_tags["labels"] = lines_and_tags["tags"].apply(lambda x: label_to_tensor_dict[x])
+    # replacing tags by their id (int)
+    tags_to_id_dict = {e.name: e.label_id for e in label}
+    lines_and_tags["labels"] = lines_and_tags["tags"].apply(
+        lambda x: tags_to_id_dict[x]
+    )
     lines_and_labels = lines_and_tags.drop(columns="tags")
-    lines_and_labels["labels"] = lines_and_labels["labels"].apply(torch.Tensor)
 
     # keep only a percentage of the dataset
     sample_lines_and_labels = lines_and_labels.sample(

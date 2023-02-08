@@ -14,3 +14,4 @@ gitpython==3.1.29
 neuralcoref==4.0
 spacy==2.1.0
 tqdm==4.42.1 
+torchmetrics==0.11.1

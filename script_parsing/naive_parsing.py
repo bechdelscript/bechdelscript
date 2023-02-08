@@ -11,13 +11,13 @@ import numpy as np
 class label(Enum):
     EMPTY_LINE = "E"  # no labels or id because can't be predicted by the model
     SCENES_BOUNDARY_AND_DESCRIPTION = "SN"
-    SCENES_BOUNDARY = "S", [0, 0, 0, 1, 0, 0], 3
-    SCENES_DESCRIPTION = "N", [0, 0, 0, 0, 1, 0], 4
-    CHARACTER = "C", [1, 0, 0, 0, 0, 0], 0
+    SCENES_BOUNDARY = "S", 3
+    SCENES_DESCRIPTION = "N", 4
+    CHARACTER = "C", 0
     SHORT_CAPITALIZED_TEXTS = "C?"
-    DIALOGUE = "D", [0, 1, 0, 0, 0, 0], 1
-    METADATA = "M", [0, 0, 1, 0, 0, 0], 2
-    UNKNOWN = "?", [0, 0, 0, 0, 0, 1], 5
+    DIALOGUE = "D", 1
+    METADATA = "M", 2
+    UNKNOWN = "?", 5
 
     def __new__(cls, *args, **kwds):
         obj = object.__new__(cls)
@@ -25,18 +25,13 @@ class label(Enum):
         return obj
 
     # ignore the first param since it's already set by __new__
-    def __init__(self, _: str, tensor: list = None, label_id: int = None):
-        self._tensor_ = tensor
+    def __init__(self, _: str, label_id: int = None):
         self._label_id_ = label_id
 
     def __str__(self):
         return self.value
 
-    # this makes sure that the description is read-only
-    @property
-    def tensor(self):
-        return self._tensor_
-
+    # this makes sure that the label_id is read-only
     @property
     def label_id(self):
         return self._label_id_
@@ -433,7 +428,6 @@ def tag_lines(
 
 
 def print_several_lists(list_labels, lists):
-
     maximum_length = max(
         [max([len(str(element)) for element in sublist]) for sublist in lists]
     )
