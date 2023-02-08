@@ -1,15 +1,14 @@
 import os
-from typing import List, Tuple
+from typing import List, Tuple, Union
 
 import torch
 from torch.utils.data import DataLoader
-from typing import Union
 
 from script_parsing.fine_tuning import (
     fine_tune_parsing_model,
     load_model_from_checkpoint,
 )
-from script_parsing.naive_parsing import clean_scenes, label
+from script_parsing.naive_parsing import label
 from script_parsing.parsing_model import (
     BertClassifier,
     SentenceTransformerClassifier,
@@ -137,8 +136,9 @@ def get_trained_model(
 
 if __name__ == "__main__":
     from random import choice
-    import pandas as pd
+
     import configue
+    import pandas as pd
 
     config = configue.load("parameters.yaml")
     scripts = pd.read_csv("script_parsing/coherent_parsing.csv")

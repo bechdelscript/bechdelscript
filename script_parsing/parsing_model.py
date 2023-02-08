@@ -1,9 +1,8 @@
 from collections import OrderedDict
-from typing import List
+from typing import List, Union
 
 import torch
 import torch.nn as nn
-from typing import Union
 from sentence_transformers import SentenceTransformer
 from transformers import BertModel, BertTokenizer
 

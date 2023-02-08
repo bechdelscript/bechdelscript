@@ -1,13 +1,12 @@
 import os
 from datetime import datetime
-from typing import Tuple, Dict
+from typing import Dict, Tuple, Union
 
 import torch
 import yaml
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torch.utils.data import DataLoader
 from torchmetrics.classification import MulticlassAccuracy
-from typing import Union
 
 from script_parsing.intermediate_forward import (
     LinesEmbeddingsDataset,
@@ -370,6 +369,7 @@ def load_model_from_checkpoint(
 
 if __name__ == "__main__":
     import time
+
     import configue
 
     config = configue.load("parameters.yaml")

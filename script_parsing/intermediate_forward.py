@@ -1,9 +1,9 @@
 import os
+from typing import Union
 
 import pandas as pd
 import torch
 from torch.utils.data import DataLoader
-from typing import Union
 from tqdm import tqdm
 
 from script_parsing.parsed_script_dataset import TaggedLines, get_dataset
@@ -171,6 +171,7 @@ def unfreeze_pretrained_model_part(
 
 if __name__ == "__main__":
     import time
+
     import configue
 
     config = configue.load("parameters.yaml")
