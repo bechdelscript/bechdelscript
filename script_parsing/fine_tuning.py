@@ -161,7 +161,8 @@ def get_experiment_folder_name(config: dict) -> str:
         results_folder, datetime.now().strftime("%y-%m-%d_%H:%M:%S")
     )
     os.makedirs(new_folder_path)
-    yaml.dump(config, open(os.path.join(new_folder_path, "parameters.yaml"), "w+"))
+    with open(os.path.join(new_folder_path, "parameters.yaml")) as f:
+        yaml.dump(config, f, "w+")
     return new_folder_path
 
 
@@ -369,8 +370,9 @@ def load_model_from_checkpoint(
 
 if __name__ == "__main__":
     import time
+    import configue
 
-    config = yaml.safe_load(open("parameters.yaml", "r"))
+    config = configue.load("parameters.yaml")
 
     start = time.time()
 

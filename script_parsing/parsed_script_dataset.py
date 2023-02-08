@@ -261,10 +261,9 @@ def get_dataloaders(
 
 if __name__ == "__main__":
     import time
+    import configue
 
-    import yaml
-
-    config = yaml.safe_load(open("parameters.yaml"))
+    config = configue.load("parameters.yaml")
     tic = time.time()
     dataset = get_dataset(config)
     print("TIME :", time.time() - tic)

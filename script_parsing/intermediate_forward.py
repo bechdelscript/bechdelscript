@@ -171,10 +171,9 @@ def unfreeze_pretrained_model_part(
 
 if __name__ == "__main__":
     import time
+    import configue
 
-    import yaml
-
-    config = yaml.safe_load(open("parameters.yaml", "r"))
+    config = configue.load("parameters.yaml")
     bert_classifier = SentenceTransformerClassifier(config)
     device = torch.device("cpu")
     start = time.time()

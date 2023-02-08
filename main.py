@@ -3,7 +3,7 @@ from random import choice
 
 import pandas as pd
 import argparse
-import yaml
+import configue
 
 
 from screenplay_classes import Script
@@ -11,7 +11,7 @@ from dataset_building.build_dataset import build_dataset
 
 
 def main(args):
-    config = yaml.safe_load(open(args.parameters_path))
+    config = configue.load(args.parameters_path)
 
     path_dataset = os.path.join(
         config["paths"]["input_folder_name"], config["names"]["db_name"]

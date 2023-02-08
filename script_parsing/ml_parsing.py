@@ -121,7 +121,6 @@ def get_trained_model(
         config["paths"]["input_folder_name"], config["names"]["parsing_model"]
     )
     if os.path.exists(checkpoint_path):
-
         if torch.cuda.is_available():
             device = torch.device(f"cuda:{torch.cuda.current_device()}")
         else:
@@ -138,11 +137,10 @@ def get_trained_model(
 
 if __name__ == "__main__":
     from random import choice
-
     import pandas as pd
-    import yaml
+    import configue
 
-    config = yaml.safe_load(open("parameters.yaml", "r"))
+    config = configue.load("parameters.yaml")
     scripts = pd.read_csv("script_parsing/coherent_parsing.csv")
     incoherent_scripts = scripts[~scripts["coherent parsing"]]
     script_path = choice(incoherent_scripts["path"].tolist())

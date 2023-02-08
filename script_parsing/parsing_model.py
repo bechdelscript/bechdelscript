@@ -131,7 +131,6 @@ class SentenceTransformerClassifier(nn.Module):
         )
 
     def forward(self, list_sentences):
-
         # model_output dimensions : batch_size * nb sentences * word_embedding_dimension (=384)
         model_output = self.sentence_bert.encode(list_sentences, convert_to_tensor=True)
 
@@ -186,9 +185,9 @@ def build_fully_connected(fully_connected_hidden_layers, input_dim, output_dim):
 
 
 if __name__ == "__main__":
-    import yaml
+    import configue
 
-    config = yaml.safe_load(open("parameters.yaml", "r"))
+    config = configue.load("parameters.yaml")
     bert_classifier = SentenceTransformerClassifier(config)
     output = bert_classifier(["Ceci est une phrase de test."])
     print(output)
