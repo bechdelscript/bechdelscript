@@ -141,8 +141,6 @@ def fine_tune_parsing_model(
 def get_experiment_folder_name(config: dict) -> str:
     """Creates a folder into which the files monitoring the fine-tuning will be kept, and
     returns the path of this folder. The folder's name is the current date (yy-mm-dd_hh:mm:ss).
-    The function also issues a warning if the results of a similar experiment are already
-    stored in the experiments folder.
 
     Args:
         config (dict): config yaml file imported as a dict
@@ -152,18 +150,6 @@ def get_experiment_folder_name(config: dict) -> str:
     """
     results_folder = config["paths"]["script_parsing_experiments_folder"]
     os.makedirs(results_folder, exist_ok=True)
-    for subfolder in os.listdir(results_folder):
-        if os.path.isdir(subfolder):
-            for filename in os.listdir(os.path.join(results_folder, subfolder)):
-                if filename[-5:] == ".yaml":
-                    previous_config = yaml.safe_load(
-                        open(os.path.join(results_folder, subfolder, filename), "r")
-                    )
-                    if previous_config == config:
-                        print(
-                            f"Warning : same experiment was already launched in folder {subfolder}"
-                        )
-                        break
     new_folder_path = os.path.join(
         results_folder, datetime.now().strftime("%y-%m-%d_%H:%M:%S")
     )
