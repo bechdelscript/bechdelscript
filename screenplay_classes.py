@@ -1,9 +1,9 @@
 from typing import List
 import re
-import yaml
 
 from script_parsing.naive_parsing import label, tag_script
 from topic_modeling.import_masculine_words import import_masculine_words
+from script_parsing.ml_parsing import tag_script_with_ml
 from gender_name import classifier, _classify, gender_data
 from pronouns.narrative_approach import import_gender_tokens
 from pronouns.neural_coref import list_pronouns_coref
@@ -43,9 +43,6 @@ class Script:
         if not with_ml:
             list_scenes, self.list_list_tags = tag_script(self.script_path)
         else:
-            # imported here because of circular import issue
-            from script_parsing.ml_parsing import tag_script_with_ml
-
             list_scenes, self.list_list_tags = tag_script_with_ml(
                 self.config, self.script_path
             )

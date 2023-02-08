@@ -1,13 +1,18 @@
+# prevents the typing to be read during execution, necessary because of circular imports issue
+from __future__ import annotations
+
 import os
-from typing import List, Tuple, Union
+from typing import TYPE_CHECKING, List, Tuple, Union
 
 import pandas as pd
 import torch
 from torch.utils.data import DataLoader, random_split
 from tqdm import tqdm
 
-from screenplay_classes import Script
 from script_parsing.naive_parsing import label, tag_script
+
+if TYPE_CHECKING:
+    from screenplay_classes import Script
 
 
 def get_df_coherent_scripts(
@@ -57,6 +62,8 @@ def create_df_coherent_scripts(
         Tuple[pd.DataFrame, List[Script]]: the first element of the tuple is
             the dataframe, the second element a list of Scripts.
     """
+    from screenplay_classes import Script
+
     scripts = []
     for path in tqdm(list(dataset["path"])):
         script = Script(path)
