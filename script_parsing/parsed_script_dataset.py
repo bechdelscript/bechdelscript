@@ -190,9 +190,7 @@ def get_dataset(config: dict) -> TaggedLines:
 
     # one hot encoding of tags
     label_to_tensor_dict = {e.name: e.tensor for e in label}
-    lines_and_tags["labels"] = lines_and_tags["tags"].apply(
-        lambda x: label_to_tensor_dict[x], axis=1
-    )
+    lines_and_tags["labels"] = lines_and_tags["tags"].apply(lambda x: label_to_tensor_dict[x])
     lines_and_labels = lines_and_tags.drop(columns="tags")
     lines_and_labels["labels"] = lines_and_labels["labels"].apply(torch.Tensor)
 
