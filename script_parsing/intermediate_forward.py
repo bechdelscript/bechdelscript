@@ -4,6 +4,7 @@ import pandas as pd
 import torch
 from torch.utils.data import DataLoader
 from typing import Union
+from tqdm import tqdm
 
 from script_parsing.parsed_script_dataset import TaggedLines, get_dataset
 from script_parsing.parsing_model import BertClassifier, SentenceTransformerClassifier
@@ -63,8 +64,9 @@ def get_intermediate_dataset(
         shuffle=False,
     )
 
-    for batch_idx, batch in enumerate(loader):
-        print(f"Batch_idx : {batch_idx} / {len(tagged_lines)//batch_size}", end="\r")
+    for batch_idx, batch in tqdm(
+        enumerate(loader), total=len(tagged_lines) // batch_size
+    ):
         sentences, labels = batch
         labels = labels.to(device)
         current_batch_size = len(sentences)
