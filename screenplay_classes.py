@@ -11,8 +11,10 @@ import nltk
 
 
 class Script:
-    def __init__(self, script_path, config, ground_truth=None, user_genders=None):
-        self.script_path = script_path
+    def __init__(
+        self, script_text: str, config: dict, ground_truth=None, user_genders=None
+    ):
+        self.script_text = script_text
         self.config = config
         self.user_genders = user_genders
         self.list_scenes: List[Scene] = []
@@ -27,6 +29,14 @@ class Script:
         self.score2_scenes: List[int] = []
         self.score3_scenes: List[int] = []
         self.bechdel_rules = self.config["bechdel_test_rules"]
+
+    @classmethod
+    def from_path(
+        cls, script_path: str, config: dict, ground_truth=None, user_genders=None
+    ):
+        with open(script_path, "r") as f:
+            script_text = f.read()
+        return cls(script_text, config, ground_truth, user_genders)
 
     def load_format(self):
         self.load_scenes()
@@ -46,10 +56,10 @@ class Script:
 
     def load_scenes(self, with_ml: bool = False):
         if not with_ml:
-            list_scenes, self.list_list_tags = tag_script(self.script_path)
+            list_scenes, self.list_list_tags = tag_script(self.script_text)
         else:
             list_scenes, self.list_list_tags = tag_script_with_ml(
-                self.config, self.script_path
+                self.config, self.script_text
             )
         self.list_scenes = []
         for i, scene in enumerate(list_scenes):
@@ -105,7 +115,7 @@ class Script:
             pronouns = list_pronouns_coref(self.list_narration.list_contents)
             function = lambda x: self.list_narration.character_coref_gender(x, pronouns)
         for character in self.list_characters:
-            if character.is_named :
+            if character.is_named:
                 if self.user_genders and (character.name in self.user_genders.keys()):
                     character.gender = self.user_genders[character.name]
                 else:
@@ -113,7 +123,7 @@ class Script:
 
     def load_named_males(self):
         for character in self.list_characters:
-            if character.is_named :
+            if character.is_named:
                 if character.gender == "m":
                     self.male_named_characters += list(character.name_variation)
 

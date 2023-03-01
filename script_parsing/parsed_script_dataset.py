@@ -66,7 +66,7 @@ def create_df_coherent_scripts(
 
     scripts = []
     for path in tqdm(list(dataset["path"])):
-        script = Script(path, config)
+        script = Script.from_path(path, config)
         script.load_scenes()
         script.identify_characters()
         script.check_parsing_is_coherent()
