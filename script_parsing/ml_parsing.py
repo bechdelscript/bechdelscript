@@ -35,10 +35,10 @@ def tag_script_with_ml(
 
     model = get_trained_model(config)
 
-    list_lines = script_text.split("\n")
-    list_tags = predict_tag_of_lines(config, model, list_lines)
+    lines_list = script_text.split("\n")
+    list_tags = predict_tag_of_lines(config, model, lines_list)
 
-    scenes_lines, scenes_tags = find_scenes(list_lines, list_tags)
+    scenes_lines, scenes_tags = find_scenes(lines_list, list_tags)
 
     return scenes_lines, scenes_tags
 
@@ -46,7 +46,7 @@ def tag_script_with_ml(
 def predict_tag_of_lines(
     config: dict,
     model: Union[BertClassifier, SentenceTransformerClassifier],
-    list_lines: List[str],
+    lines_list: List[str],
 ) -> List[label]:
     """Given a list of lines and a trained model, assign a label to each line.
 
@@ -54,14 +54,14 @@ def predict_tag_of_lines(
         config (dict): config yaml file imported as a dict
         model (Union[BertClassifier, SentenceTransformerClassifier]): model trained to
             classify a line of text into the six available labels.
-        list_lines (List[str]): list of string, each element being a line from a script
+        lines_list (List[str]): list of string, each element being a line from a script
 
     Returns:
         List[label]: _description_
     """
     list_tags = []
     dataloader = DataLoader(
-        dataset=list_lines, batch_size=config["script_parsing_model"]["batch_size"]
+        dataset=lines_list, batch_size=config["script_parsing_model"]["batch_size"]
     )
     for lines_batch in dataloader:
         list_tags += model.predict_rough_batch(lines_batch)
