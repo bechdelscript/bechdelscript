@@ -160,8 +160,8 @@ def get_experiment_folder_name(config: dict) -> str:
         results_folder, datetime.now().strftime("%y-%m-%d_%H:%M:%S")
     )
     os.makedirs(new_folder_path)
-    with open(os.path.join(new_folder_path, "parameters.yaml")) as f:
-        yaml.dump(config, f, "w+")
+    with open(os.path.join(new_folder_path, "parameters.yaml"), "w+") as f:
+        yaml.dump(config, f)
     return new_folder_path
 
 
