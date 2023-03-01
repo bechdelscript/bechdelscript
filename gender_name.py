@@ -95,7 +95,7 @@ def _classify(name, classifier):
         dist = classifier.prob_classify(_name)
         m, f, b = dist.prob("m"), dist.prob("f"), dist.prob("f,m")
         d = {m: "m", f: "f", b: "f,m"}
-        prob = max(m, f, b)
+        prob = max(m, f)
         guess = d[prob]
         # print("%s -> %s (%.2f%%)" % (name, guess, prob * 100))
     return guess, prob
