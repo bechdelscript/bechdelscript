@@ -11,9 +11,10 @@ import nltk
 
 
 class Script:
-    def __init__(self, script_path, config, ground_truth=None):
+    def __init__(self, script_path, config, ground_truth=None, user_genders=None):
         self.script_path = script_path
         self.config = config
+        self.user_genders = user_genders
         self.list_scenes: List[Scene] = []
         self.list_list_tags: List[List[label]] = []
         self.coherent_parsing: bool = None
@@ -27,12 +28,15 @@ class Script:
         self.score3_scenes: List[int] = []
         self.bechdel_rules = self.config["bechdel_test_rules"]
 
+    def load_format(self):
         self.load_scenes()
         self.identify_characters()
         self.check_parsing_is_coherent()
         self.reparse_if_incoherent()
         self.load_dialogues()
         self.load_narration()
+
+    def bechdel(self):
         self.are_characters_named()
         self.identify_gender_named_chars()
         self.load_named_males()
@@ -101,12 +105,15 @@ class Script:
             pronouns = list_pronouns_coref(self.list_narration.list_contents)
             function = lambda x: self.list_narration.character_coref_gender(x, pronouns)
         for character in self.list_characters:
-            if character.is_named == True:
-                character.identify_gender(function)
+            if character.is_named :
+                if self.user_genders and (character.name in self.user_genders.keys()):
+                    character.gender = self.user_genders[character.name]
+                else:
+                    character.identify_gender(function)
 
     def load_named_males(self):
         for character in self.list_characters:
-            if character.is_named == True:
+            if character.is_named :
                 if character.gender == "m":
                     self.male_named_characters += list(character.name_variation)
 

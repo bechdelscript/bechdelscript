@@ -43,11 +43,11 @@ def get_df_coherent_scripts(
                 config["paths"]["input_folder_name"], config["names"]["db_name"]
             )
         )
-        return create_df_coherent_scripts(coherent_scripts_path, dataset)
+        return create_df_coherent_scripts(coherent_scripts_path, dataset, config)
 
 
 def create_df_coherent_scripts(
-    coherent_scripts_path: str, dataset: pd.DataFrame
+    coherent_scripts_path: str, dataset: pd.DataFrame, config: dict
 ) -> Tuple[pd.DataFrame, List[Script]]:
     """Builds a dataframe containing whether each script was parsed
     coherently or not by the naive method. Returns the dataframe
@@ -66,7 +66,7 @@ def create_df_coherent_scripts(
 
     scripts = []
     for path in tqdm(list(dataset["path"])):
-        script = Script(path)
+        script = Script(path, config)
         scripts.append(script)
 
     dataset["coherent parsing"] = [script.coherent_parsing for script in scripts]

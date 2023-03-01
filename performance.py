@@ -31,6 +31,8 @@ def load_scripts():
     for path in tqdm(list(dataset["path"])):
         ground_truth = dataset[dataset["path"] == path].iloc[0]["rating"]
         script = Script(path, config, ground_truth=ground_truth)
+        script.load_format()
+        script.bechdel()
         score = int(script.computed_score)
         bechdel_computed_scores.append(score)
         bechdel_true_scores.append(ground_truth)

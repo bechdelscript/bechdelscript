@@ -45,6 +45,8 @@ def main(args):
         script_path = choice(dataset["path"])
 
     script = Script(script_path, config)
+    script.load_format()
+    script.bechdel()
 
     print("Nom du script :", script_path.split("/")[-1])
 
