@@ -60,7 +60,7 @@ def merge_datasets(config):
     for script_path in (
         duplicate_scripts_to_delete["path"].tolist() + list_unparsable_scripts
     ):
-        if os.path.exists(script_path) and not df_dataset["path"].tolist():
+        if os.path.exists(script_path) and not script_path in df_dataset["path"].tolist():
             os.remove(script_path)
 
     df_dataset.to_csv(
