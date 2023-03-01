@@ -30,6 +30,7 @@ class Script:
         self.load_scenes()
         self.identify_characters()
         self.check_parsing_is_coherent()
+        self.reparse_if_incoherent()
         self.load_dialogues()
         self.load_narration()
         self.are_characters_named()
@@ -261,9 +262,11 @@ class Script:
         if len(self.list_scenes) == 1:
             self.coherent_parsing = False
 
-        if self.config["used_methods"]["reparse_with_ml"]:
+    def reparse_if_incoherent(self):
+        if not self.coherent_parsing and self.config["used_methods"]["reparse_with_ml"]:
             self.load_scenes(with_ml=True)
             self.identify_characters()
+            self.check_parsing_is_coherent()
 
 
 class Scene:
@@ -548,7 +551,6 @@ class Dialogue:
         return False
 
     def clean_text(self):
-
         clean_speech_text = self.speech_text.strip()
 
         clean_speech_text = clean_speech_text.replace(".", " ")
