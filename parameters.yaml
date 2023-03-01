@@ -20,6 +20,7 @@ names :
     tagged_lines : tagged_lstripped_lines.csv
     dataset_embeddings : dataset_embeddings.pt
     parsing_model : parsing_model.pth
+    unparsable_scripts : dataset_building/unparsable_scripts.yaml
 
 merge_dataset :
     keep : imsdb  # 'imsdb' or 'kaggle'

@@ -1,14 +1,15 @@
+import os
+
+import configue
+import pandas as pd
+
 from dataset_building.download_imsdb_scripts import main_imsdb
 from dataset_building.get_kaggle_scripts import main_kaggle
-import pandas as pd
-import os
-import yaml
-
-config = yaml.safe_load(open("parameters.yaml"))
 
 
-def create_bechdel_db():
+def create_bechdel_db(config):
     bechdel_df = pd.read_json(config["urls"]["bechdel_test_api"])
+    os.makedirs(config["paths"]["input_folder_name"], exist_ok=True)
     bechdel_df.to_csv(
         os.path.join(
             config["paths"]["input_folder_name"], config["names"]["bechdel_db_name"]
@@ -17,8 +18,7 @@ def create_bechdel_db():
     )
 
 
-def merge_datasets():
-
+def merge_datasets(config):
     df_kaggle = pd.read_csv(
         os.path.join(
             config["paths"]["input_folder_name"], config["names"]["kaggle_db_name"]
@@ -39,10 +39,29 @@ def merge_datasets():
 
     if config["merge_dataset"]["keep"] == "imsdb":
         keep = "first"
-    if config["merge_dataset"]["keep"] == "kaggle":
+    elif config["merge_dataset"]["keep"] == "kaggle":
         keep = "last"
+    else:
+        raise ValueError(
+            f"The merge_dataset.keep parameters can only be \
+'imsdb' or 'kaggle', got {config['merge_dataset']['keep']}"
+        )
 
+    duplicate_scripts_to_delete = df_dataset[
+        df_dataset.duplicated(subset=["imdbid"], keep=keep)
+    ]
     df_dataset = df_dataset.drop_duplicates(subset=["imdbid"], keep=keep)
+
+    # this list of unparsable script was formed manually (empty file, one line only etc.)
+    list_unparsable_scripts = configue.load(config["names"]["unparsable_scripts"])[
+        "unparsable_scripts"
+    ]
+    df_dataset = df_dataset[~df_dataset["path"].isin(list_unparsable_scripts)]
+    for script_path in (
+        duplicate_scripts_to_delete["path"].tolist() + list_unparsable_scripts
+    ):
+        if os.path.exists(script_path) and not df_dataset["path"].tolist():
+            os.remove(script_path)
 
     df_dataset.to_csv(
         config["paths"]["input_folder_name"] + config["names"]["db_name"],
@@ -50,12 +69,13 @@ def merge_datasets():
     )
 
 
-def build_dataset():
-    create_bechdel_db()
-    main_imsdb()
-    main_kaggle()
-    merge_datasets()
+def build_dataset(config):
+    create_bechdel_db(config)
+    main_imsdb(config)
+    main_kaggle(config)
+    merge_datasets(config)
 
 
 if __name__ == "__main__":
-    build_dataset()
+    config = configue.load("parameters.yaml")
+    build_dataset(config)
