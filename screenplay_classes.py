@@ -584,10 +584,13 @@ class All_Narration:
         self.tokens = import_gender_tokens(self.config)
 
     def character_narrative_gender(self, name: str):
+        res = None
         if name.lower().split()[0] in gender_data["name"].values:
-            res = gender_data.loc[gender_data["name"] == name.lower().split()[0]][
+            temp = gender_data.loc[gender_data["name"] == name.lower().split()[0]][
                 "gender"
             ].values[0]
+            if temp != "f,m":
+                res = temp
         else:
             # name = char.name
             freq_gender = {"m": 0, "f": 0, "nb": 0}
@@ -613,9 +616,11 @@ class All_Narration:
     def character_coref_gender(self, name: str, pronouns):
         res = None
         if name.lower().split()[0] in gender_data["name"].values:
-            res = gender_data.loc[gender_data["name"] == name.lower().split()[0]][
+            temp = gender_data.loc[gender_data["name"] == name.lower().split()[0]][
                 "gender"
             ].values[0]
+            if temp != "f,m":
+                res = temp
         else:
             freq = {}
             clean_name = None
