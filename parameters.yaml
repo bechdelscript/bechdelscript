@@ -61,4 +61,4 @@ bechdel_test_rules :
 
 used_methods :
     character_gender_method : coref # can also be classify or coref or narrative
-    reparse_with_ml: false # will reparse the script with ml if the naive parsing is incoherent
+    reparse_with_ml: true # will reparse the script with ml if the naive parsing is incoherent
