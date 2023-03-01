@@ -7,16 +7,34 @@ from typing import Dict, List, Tuple
 import numpy as np
 
 
+# labels and ids are in alphabetical orders
 class label(Enum):
-    EMPTY_LINE = "E"
+    EMPTY_LINE = "E"  # no labels or id because can't be predicted by the model
     SCENES_BOUNDARY_AND_DESCRIPTION = "SN"
-    SCENES_BOUNDARY = "S"
-    SCENES_DESCRIPTION = "N"
-    CHARACTER = "C"
+    SCENES_BOUNDARY = "S", 3
+    SCENES_DESCRIPTION = "N", 4
+    CHARACTER = "C", 0
     SHORT_CAPITALIZED_TEXTS = "C?"
-    DIALOGUE = "D"
-    METADATA = "M"
-    UNKNOWN = "?"
+    DIALOGUE = "D", 1
+    METADATA = "M", 2
+    UNKNOWN = "?", 5
+
+    def __new__(cls, *args, **kwds):
+        obj = object.__new__(cls)
+        obj._value_ = args[0]
+        return obj
+
+    # ignore the first param since it's already set by __new__
+    def __init__(self, _: str, label_id: int = None):
+        self._label_id_ = label_id
+
+    def __str__(self):
+        return self.value
+
+    # this makes sure that the label_id is read-only
+    @property
+    def label_id(self):
+        return self._label_id_
 
 
 LABELS_PRIORITY = [
@@ -55,18 +73,16 @@ META_KEYWORDS = [
 DIALOGUE_KEYWORDS = [r"\?"]  # just question marks
 
 
-def tag_script(script_path: str) -> Tuple[List[List[str]], List[label], bool]:
+def tag_script(script_path: str) -> Tuple[List[List[str]], List[List[label]]]:
     """Assign a label to each line of a script.
 
     Args:
         script_path (str): path of the script
 
     Returns:
-        Tuple[List[List[str]], List[label], bool ]: First element of the
+        Tuple[List[List[str]], List[List[label]]]: First element of the
             tuple is a list of scenes, each scene being a list of lines.
             The second element returned is the list of labels for each line.
-            The last element indicates whether the parsing seems to have gone
-            well or not.
     """
     with open(script_path, errors="ignore") as f:
         screenplay = f.read()
@@ -87,13 +103,12 @@ def tag_script(script_path: str) -> Tuple[List[List[str]], List[label], bool]:
     characterized_indent_levels = characterize_indent_levels(
         middle_lines, middle_indents
     )
-    coherent_parsing = check_parsing_is_coherent(characterized_indent_levels)
 
     tags = []
     for scene in scenes:
         tags.append(tag_lines(scene, characterized_indent_levels))
 
-    return scenes, tags, coherent_parsing
+    return scenes, tags
 
 
 def find_scenes(
@@ -409,22 +424,10 @@ def tag_lines(
     return tags
 
 
-def check_parsing_is_coherent(characterized_indent_levels):
-    if (
-        label.DIALOGUE not in characterized_indent_levels.values()
-        or label.CHARACTER not in characterized_indent_levels.values()
-        or label.SCENES_BOUNDARY_AND_DESCRIPTION
-        not in characterized_indent_levels.values()
-    ):
-        return False
-    return True
-
-
 ### Functions below are only used to better visualize the parsing in order to improve it ###
 
 
 def print_several_lists(list_labels, lists):
-
     maximum_length = max(
         [max([len(str(element)) for element in sublist]) for sublist in lists]
     )
@@ -436,14 +439,19 @@ def print_several_lists(list_labels, lists):
         print(string)
 
 
-def markdown_color_script(script_path, html=False):
-    scenes, tags, coherent = tag_script(script_path)
+def markdown_color_script(script_path, scenes=None, tags=None, html=False, suffix=None):
+    if scenes is None or tags is None:
+        scenes, tags = tag_script(script_path)
 
-    movie_name = os.path.split(script_path)[1].split(".")[0] + (
-        ".html" if html else ".md"
+    movie_name = (
+        os.path.split(script_path)[1].split(".")[0]
+        + (suffix if suffix is not None else "")
+        + (".html" if html else ".md")
     )
     with open(
-        os.path.join("data", "intermediate", "colored_scripts", movie_name), "w+"
+        # os.path.join("data", "intermediate", "colored_scripts", movie_name), "w+"
+        os.path.join("data", "intermediate", "incoherent_test", movie_name),
+        "w+",
     ) as f:
         for scene_idx, scene in enumerate(scenes):
             for line_idx, line in enumerate(scene):
@@ -475,5 +483,6 @@ if __name__ == "__main__":
 
     folder_name = "data/input/scripts_imsdb"
     script_name = choice(os.listdir(folder_name))
+    script_name = "Duck-Soup.txt"
     print(script_name)
     markdown_color_script(os.path.join(folder_name, script_name))

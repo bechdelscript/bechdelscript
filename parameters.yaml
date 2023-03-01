@@ -5,6 +5,8 @@ paths :
     path_to_imsdb_scripts : data/input/scripts_imsdb/
     topic_modeling_folder : topic_modeling/
     pronoun_folder : pronouns/
+    script_parsing_folder : script_parsing/
+    script_parsing_experiments_folder : script_parsing/experiments
 
 names :
     kaggle_db_name : bechdel_script_kaggle.csv
@@ -14,10 +16,36 @@ names :
     db_name : dataset.csv
     list_of_words_about_men : keywords.json
     list_pronoun_tokens : pronouns.csv
+    coherently_parsed_scripts : coherent_parsing.csv
+    tagged_lines : tagged_lstripped_lines.csv
+    dataset_embeddings : dataset_embeddings.pt
+    parsing_model : parsing_model.pth
 
 merge_dataset :
     keep : imsdb  # 'imsdb' or 'kaggle'
 
+script_parsing_model:
+    model_architecture : 
+        use_sentence_transformer: true
+        bert_pretrained_model_name: bert-base-uncased
+        sentence_transformer_pretrained_model_name: all-MiniLM-L6-v2
+        fully_connected_hidden_layers : [2048, "relu", 1024, "relu", 512, "relu", 256, "relu", 128]
+        nb_output_classes : 6
+    load_checkpoint: false
+    checkpoint_path: ""
+    intermediate_forward: true 
+    dataset_percentage: 0.1
+    validation_dataset_proportion: 0.3
+    test_dataset_proportion: 0.1
+    seed: 42
+    batch_size : 50
+    learning_rate : 
+        initial_value: 0.01
+        decrease_on_plateau: true
+        patience: 3
+    weight_decay: 0.0001
+    nb_epochs : 50
+    
 urls : 
     bechdel_test_api : http://bechdeltest.com/api/v1/getAllMovies
     imsdb_base_url : http://www.imsdb.com
@@ -33,3 +61,4 @@ bechdel_test_rules :
 
 used_methods :
     character_gender_method : coref # can also be classify or coref or narrative
+    reparse_with_ml: true # will reparse the script with ml if the naive parsing is incoherent

@@ -168,3 +168,4 @@ script_parsing/experiments
 
 # Extensions : 
 *.csv
+*.pt

@@ -1,9 +1,9 @@
 from typing import List
 import re
-import yaml
 
 from script_parsing.naive_parsing import label, tag_script
 from topic_modeling.import_masculine_words import import_masculine_words
+from script_parsing.ml_parsing import tag_script_with_ml
 from gender_name import classifier, _classify, gender_data
 from pronouns.narrative_approach import import_gender_tokens
 from pronouns.neural_coref import list_pronouns_coref
@@ -29,6 +29,8 @@ class Script:
 
         self.load_scenes()
         self.identify_characters()
+        self.check_parsing_is_coherent()
+        self.reparse_if_incoherent()
         self.load_dialogues()
         self.load_narration()
         self.are_characters_named()
@@ -38,14 +40,19 @@ class Script:
         self.load_score_2()
         self.load_score_3()
 
-    def load_scenes(self):
-        list_scenes, self.list_list_tags, self.coherent_parsing = tag_script(
-            self.script_path
-        )
+    def load_scenes(self, with_ml: bool = False):
+        if not with_ml:
+            list_scenes, self.list_list_tags = tag_script(self.script_path)
+        else:
+            list_scenes, self.list_list_tags = tag_script_with_ml(
+                self.config, self.script_path
+            )
+        self.list_scenes = []
         for i, scene in enumerate(list_scenes):
             self.list_scenes.append(Scene(scene, self.list_list_tags[i]))
 
     def identify_characters(self):
+        self.list_characters = []
         for i, scene in enumerate(self.list_scenes):
             for j, lab in enumerate(self.list_list_tags[i]):
                 if lab == label.CHARACTER:
@@ -239,6 +246,27 @@ class Script:
                         f"\n******* {str(scene_id) + 'th' if scene_id == 1 else str(scene_id) + 'st'} scene *******"
                     )
                     print(self.list_scenes[scene_id])
+
+    def check_parsing_is_coherent(self):
+        all_tags = sum(self.list_list_tags, [])
+        self.coherent_parsing = True
+        if (
+            label.DIALOGUE not in all_tags
+            or label.CHARACTER not in all_tags
+            or label.SCENES_DESCRIPTION not in all_tags
+            or label.SCENES_BOUNDARY not in all_tags
+        ):
+            self.coherent_parsing = False
+        if len(self.list_characters) > 1000:
+            self.coherent_parsing = False
+        if len(self.list_scenes) == 1:
+            self.coherent_parsing = False
+
+    def reparse_if_incoherent(self):
+        if not self.coherent_parsing and self.config["used_methods"]["reparse_with_ml"]:
+            self.load_scenes(with_ml=True)
+            self.identify_characters()
+            self.check_parsing_is_coherent()
 
 
 class Scene:
@@ -523,7 +551,6 @@ class Dialogue:
         return False
 
     def clean_text(self):
-
         clean_speech_text = self.speech_text.strip()
 
         clean_speech_text = clean_speech_text.replace(".", " ")
