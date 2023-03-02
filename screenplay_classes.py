@@ -599,9 +599,9 @@ class All_Narration:
             temp = gender_data.loc[gender_data["name"] == name.lower().split()[0]][
                 "gender"
             ].values[0]
-            if temp != "f,m":
+            if temp != "f,m" and temp != "m,f":
                 res = temp
-        else:
+        if res==None:
             # name = char.name
             freq_gender = {"m": 0, "f": 0, "nb": 0}
             paragraphs = [para for para in self.list_contents if name in para]
@@ -629,24 +629,25 @@ class All_Narration:
             temp = gender_data.loc[gender_data["name"] == name.lower().split()[0]][
                 "gender"
             ].values[0]
-            if temp != "f,m":
+            if (temp != "f,m") and (temp != "m,f"):
                 res = temp
-        else:
+        if res == None:
             freq = {}
-            clean_name = None
+            clean_name = []
             for key in pronouns.keys():
                 if name.lower() in str(key).lower():
-                    clean_name = key
-            if clean_name:
-                for key in pronouns[clean_name]:
-                    if str(key).lower() in self.tokens[0].values:
-                        gen = self.tokens.loc[self.tokens[0] == str(key).lower()][
-                            1
-                        ].values[0]
-                        try:
-                            freq[gen] += 1
-                        except:
-                            freq[gen] = 1
+                    clean_name.append(key)
+            if clean_name != []:
+                for clean in clean_name:
+                    for key in pronouns[clean]:
+                        if str(key).lower() in self.tokens[0].values:
+                            gen = self.tokens.loc[self.tokens[0] == str(key).lower()][
+                                1
+                            ].values[0]
+                            try:
+                                freq[gen] += 1
+                            except:
+                                freq[gen] = 1
                 if freq != {}:
                     res = max(freq, key=lambda k: freq[k])
         if res == None:
