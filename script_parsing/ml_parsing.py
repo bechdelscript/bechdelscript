@@ -17,7 +17,7 @@ from script_parsing.parsing_model import (
 
 
 def tag_script_with_ml(
-    config: dict, script_path: str
+    config: dict, script_text: str
 ) -> Tuple[List[List[str]], List[List[label]]]:
     """Using predictions from a trained model, assign a label to each line of a script.
 
@@ -30,9 +30,6 @@ def tag_script_with_ml(
             tuple is a list of scenes, each scene being a list of lines.
             The second element returned is the list of labels for each line.
     """
-    with open(script_path, "r") as f:
-        script_text = f.read()
-
     model = get_trained_model(config)
 
     lines_list = script_text.split("\n")
