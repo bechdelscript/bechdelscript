@@ -1,0 +1,16 @@
+unparsable_scripts :
+# Files are almost empty
+- data/input/scripts_imsdb/Frankenstein.txt   
+- data/input/scripts_imsdb/Conan-the-Barbarian.txt 
+- data/input/scripts_imsdb/Commando.txt
+- data/input/scripts_imsdb/Apollo-13.txt
+- data/input/scripts_imsdb/eXistenZ.txt
+- data/input/scripts_imsdb/Frankenweenie.txt
+
+# The whole script is written on one line
+- data/input/scripts_imsdb/Training-Day.txt
+- data/input/scripts_imsdb/American-Outlaws.txt
+- data/input/scripts_imsdb/Scary-Movie-2.txt
+
+# The script isn't in the required format
+- data/input/scripts_imsdb/Mulan.txt

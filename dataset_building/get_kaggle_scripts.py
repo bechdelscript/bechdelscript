@@ -7,15 +7,13 @@ https://bechdeltest.com/api/v1/doc#getMovieByImdbId
 Ensuite, il s'agit de nettoyer les noms de fichiers scripts et bechdel et de merge les deux
 bases de données sur le titre."""
 
-import pandas as pd
 import os
-import yaml
-import warnings
 import sys
+import warnings
+
+import pandas as pd
 
 warnings.filterwarnings("ignore")
-
-config = yaml.safe_load(open("parameters.yaml"))
 
 
 def clean_script(text: str) -> str:
@@ -86,7 +84,14 @@ def clean_file(path):
         f.write(script)
 
 
-def rename():
+def rename(config):
+    if not os.path.exists(config["paths"]["path_to_kaggle_scripts"]):
+        raise ValueError(
+            f"The folder {config['paths']['path_to_kaggle_scripts']} does not exist. \
+                         Please create the folder, download the kaggle scripts manually  at \
+                         https://www.kaggle.com/datasets/parthplc/movie-scripts?resource=download&select=Scripts \
+                         and place them in the folder."
+        )
     file_names = os.listdir(config["paths"]["path_to_kaggle_scripts"])
 
     for file in file_names:
@@ -95,7 +100,6 @@ def rename():
                 old_path = os.path.join(config["paths"]["path_to_kaggle_scripts"], file)
                 clean_file(old_path)
                 with open(old_path) as f:
-
                     first_line = (
                         f.readline()
                         .strip()
@@ -162,12 +166,12 @@ def title_cleanup(df):
 
 
 # Transform filename field into path to file, for easier access in the future
-def fpath(filename):
+def fpath(config, filename):
     return config["paths"]["path_to_kaggle_scripts"] + filename
 
 
-def main_kaggle():
-    rename()
+def main_kaggle(config):
+    rename(config)
     bechdel_df = pd.read_csv(
         os.path.join(
             config["paths"]["input_folder_name"], config["names"]["bechdel_db_name"]
@@ -216,10 +220,23 @@ def main_kaggle():
     bechdel_script_df = pd.merge(
         script_title_df, bechdel_df, left_on="title", right_on="title"
     )
-    bechdel_script_df["file_name"] = bechdel_script_df["file_name"].apply(fpath)
 
     # Drop duplicates on title field
     bechdel_script_df.drop_duplicates(subset="title", keep="first", inplace=True)
+
+    # Scripts that are not in the bechdel database are deleted
+    scripts_to_delete = script_title_df[
+        ~script_title_df["file_name"].isin(bechdel_script_df["file_name"].tolist())
+    ]
+    for filename in scripts_to_delete["file_name"].tolist():
+        script_path = fpath(config, filename)
+        if os.path.exists(script_path):
+            os.remove(script_path)
+
+    # Complete the path with folder names
+    bechdel_script_df["file_name"] = bechdel_script_df["file_name"].apply(
+        lambda x: fpath(config, x)
+    )
 
     # Drop the script column from this dataframe
     bechdel_script_df.drop(columns="script", inplace=True)
