@@ -125,7 +125,7 @@ class Script:
         for character in self.list_characters:
             if character.is_named:
                 if character.gender == "m":
-                    self.male_named_characters += list(character.name_variation)
+                    self.male_named_characters += [name.lower() for name in list(character.name_variation)]
 
     def load_score_1(self):
         females = [
@@ -559,7 +559,7 @@ class Dialogue:
         self.speech_text = " ".join(speech)
         self.clean_speech_text = self.clean_text()
 
-    def speaks_about_men(self, males_names: List[str], masculine_words):
+    def speaks_about_men(self, masculine_words, males_names: List[str]):
         masculine_words = masculine_words + males_names
         words = self.clean_speech_text.split(" ")
         for word in words:
