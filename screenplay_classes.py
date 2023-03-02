@@ -270,64 +270,98 @@ class Script:
                     print(self.list_scenes[scene_id])
 
     def display_results_streamlit(self, nb_scenes):
-        relevant_scenes = []
+        st.write(f"Computed score : {self.computed_score}")
         if self.computed_score == 0:
-            st.write(
-                f"The movie does not pass the Bechdel test. Its score is {self.computed_score}, which means there aren't two named women in the movie."
-            )
+            st.write("There aren't two named women in the movie.")
+            st.write("List of named characters in the movie :")
+            for character in self.list_characters:
+                if character.is_named:
+                    st.write(f"- {character.name} ({character.gender})")
         elif self.computed_score >= 1:
             named_women_characters = [
                 character.name
                 for character in self.list_characters
                 if character.is_named and character.gender == "f"
             ]
+            st.write(
+                f"""There is at least two women who are named : {
+                    ", ".join(named_women_characters)
+                }\n"""
+            )
             if self.computed_score == 1:
                 st.write(
-                    f"The movie does not pass the Bechdel test. Its score is {self.computed_score}, which means there are at least two named women in the movie. \n However, they never talk in the same scene without other men."
+                    "However, they never talk in the same scene without other men, here are some scenes where they appear :"
                 )
-            elif self.computed_score >= 2:
+                current_nb_scenes = 0
+                for i, scene in enumerate(self.list_scenes):
+                    for named_woman in named_women_characters:
+                        if (
+                            any(
+                                [
+                                    named_woman.startswith(character.name)
+                                    or character.name.startswith(named_woman)
+                                    for character in scene.list_characters_in_scene
+                                ]
+                            )
+                            > 0
+                        ):
+                            st.write(
+                                f"""- Scene number {i} with characters : {
+                                    ", ".join(
+                                        [
+                                            f"{character.name} ({character.gender})"
+                                            for character in scene.list_characters_in_scene
+                                        ]
+                                    )
+                                }"""
+                            )
+                            current_nb_scenes += 1
+                    if current_nb_scenes == 5:
+                        break
+            else:
                 if self.computed_score == 2:
                     relevant_scenes = self.score2_scenes
                     st.write(
-                        f"The movie does not pass the Bechdel test. Its score is {self.computed_score}, which means there are at least two named women in the movie. \n And they talk with each other in {len(self.score2_scenes)} scenes, however, they talk about men."
+                        f"And they talk with each other in {len(self.score2_scenes)} scenes, here are some of them :"
                     )
+                    for i in self.score2_scenes[:5]:
+                        st.write(
+                            f"""- Scene number {i} with characters : {
+                                ", ".join(
+                                    [
+                                        f"{character.name} ({character.gender})"
+                                        for character in self.list_scenes[i].list_characters_in_scene
+                                    ]
+                                )
+                            }"""
+                        )
+                    st.write("However, they talk about men in all of those scenes.")
+
                 elif self.computed_score == 3:
                     relevant_scenes = self.score3_scenes
                     st.write(
-                        f"The movie passes the Bechdel test ! Its score is {self.computed_score}, which means there are at least two named women in the movie. \n And they talk with each other about things other than men in {len(self.score3_scenes)} scenes."
+                        f"And they talk with each other about things other than men in {len(self.score3_scenes)} scenes, here are some of them :"
                     )
-
-        expander = st.expander("List of characters :")
-        with expander:
-            selectboxes_dict = {}
-            form = st.form(key="list_characters")
-            for character in self.list_characters:
-                if character.is_named:
-                    selectboxes_dict[character.name] = form.selectbox(
-                        label=character.name,
-                        options=("Male", "Female", "Non binary", "None"),
-                        index=(
-                            0
-                            if character.gender == "m"
-                            else 1
-                            if character.gender == "f"
-                            else 2
-                            if character.gender == "nb"
-                            else 3
-                        ),
+                    for i in self.score3_scenes[:5]:
+                        st.write(
+                            f"""- Scene number {i} with characters : {
+                                ", ".join(
+                                    [
+                                        f"{character.name} ({character.gender})"
+                                        for character in self.list_scenes[i].list_characters_in_scene
+                                    ]
+                                )
+                            }"""
+                        )
+                nb_scenes_to_print = min(nb_scenes, len(relevant_scenes))
+                st.write(
+                    f"\nHere {'are' if nb_scenes_to_print > 1 else 'is'} {nb_scenes_to_print} {'scenes' if nb_scenes_to_print > 1 else 'scene'} that validate this score :"
+                )
+                for scene_id in relevant_scenes[:nb_scenes_to_print]:
+                    st.write(
+                        f"\n******* {str(scene_id) + 'th' if scene_id == 1 else str(scene_id) + 'st'} scene *******"
                     )
-            submit = form.form_submit_button("Submit")
-            # st.write(f"- {character.name} ({character.gender})")
-        nb_scenes_to_print = min(nb_scenes, len(relevant_scenes))
-        st.write(
-            f"\nHere {'are' if nb_scenes_to_print > 1 else 'is'} {nb_scenes_to_print} {'scenes' if nb_scenes_to_print > 1 else 'scene'} that validate this score :"
-        )
-        for scene_id in relevant_scenes[:nb_scenes_to_print]:
-            st.write(
-                f"\n******* {str(scene_id) + 'th' if scene_id == 1 else str(scene_id) + 'st'} scene *******"
-            )
-            st.write(self.list_scenes[scene_id])
-        return selectboxes_dict, submit
+                    st.write(self.list_scenes[scene_id])
 
     def check_parsing_is_coherent(self):
         all_tags = sum(self.list_list_tags, [])
@@ -666,7 +700,7 @@ class All_Narration:
             ].values[0]
             if temp != "f,m" and temp != "m,f":
                 res = temp
-        if res==None:
+        if res == None:
             # name = char.name
             freq_gender = {"m": 0, "f": 0, "nb": 0}
             paragraphs = [para for para in self.list_contents if name in para]
