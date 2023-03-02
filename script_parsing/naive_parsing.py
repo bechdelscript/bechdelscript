@@ -73,7 +73,7 @@ META_KEYWORDS = [
 DIALOGUE_KEYWORDS = [r"\?"]  # just question marks
 
 
-def tag_script(script_path: str) -> Tuple[List[List[str]], List[List[label]]]:
+def tag_script(script_text: str) -> Tuple[List[List[str]], List[List[label]]]:
     """Assign a label to each line of a script.
 
     Args:
@@ -84,10 +84,8 @@ def tag_script(script_path: str) -> Tuple[List[List[str]], List[List[label]]]:
             tuple is a list of scenes, each scene being a list of lines.
             The second element returned is the list of labels for each line.
     """
-    with open(script_path, errors="ignore") as f:
-        screenplay = f.read()
 
-    lines = screenplay.split("\n")
+    lines = script_text.split("\n")
     scenes = find_scenes(lines)
 
     indents = get_indents_list(lines)

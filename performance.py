@@ -30,7 +30,9 @@ def load_scripts():
     bechdel_approved_truths = []
     for path in tqdm(list(dataset["path"])):
         ground_truth = dataset[dataset["path"] == path].iloc[0]["rating"]
-        script = Script(path, config, ground_truth=ground_truth)
+        script = Script.from_path(path, config, ground_truth=ground_truth)
+        script.load_format()
+        script.bechdel()
         score = int(script.computed_score)
         bechdel_computed_scores.append(score)
         bechdel_true_scores.append(ground_truth)
@@ -56,7 +58,6 @@ def load_scripts():
 
 
 def compute_confusion_matrix(bechdel_truths, bechdel_approved_predictions, average):
-
     conf_matrix = confusion_matrix(bechdel_truths, bechdel_approved_predictions)
 
     conf_matrix_percents = conf_matrix * 100 / len(bechdel_truths)
@@ -197,7 +198,6 @@ def create_results(
 
 
 def create_confusion_matrix_csv(conf_matrix, path, binary=False):
-
     if binary:
         df = pd.DataFrame(
             conf_matrix,

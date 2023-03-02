@@ -8,12 +8,17 @@ from gender.gender_name import classifier, _classify, gender_data
 from gender.narrative_approach import import_gender_tokens
 from gender.neural_coref import list_pronouns_coref
 import nltk
+import streamlit as st
+import streamlit_toggle as tog
 
 
 class Script:
-    def __init__(self, script_path, config, ground_truth=None):
-        self.script_path = script_path
+    def __init__(
+        self, script_text: str, config: dict, ground_truth=None, user_genders=None
+    ):
+        self.script_text = script_text
         self.config = config
+        self.user_genders = user_genders
         self.list_scenes: List[Scene] = []
         self.list_list_tags: List[List[label]] = []
         self.coherent_parsing: bool = None
@@ -27,12 +32,24 @@ class Script:
         self.score3_scenes: List[int] = []
         self.bechdel_rules = self.config["bechdel_test_rules"]
 
+    @classmethod
+    def from_path(
+        cls, script_path: str, config: dict, ground_truth=None, user_genders=None
+    ):
+        with open(script_path, "r") as f:
+            script_text = f.read()
+        return cls(script_text, config, ground_truth, user_genders)
+
+    def load_format(self):
         self.load_scenes()
         self.identify_characters()
         self.check_parsing_is_coherent()
         self.reparse_if_incoherent()
         self.load_dialogues()
         self.load_narration()
+
+    def bechdel(self, user_genders=None):
+        self.user_genders = user_genders
         self.are_characters_named()
         self.identify_gender_named_chars()
         self.load_named_males()
@@ -42,10 +59,10 @@ class Script:
 
     def load_scenes(self, with_ml: bool = False):
         if not with_ml:
-            list_scenes, self.list_list_tags = tag_script(self.script_path)
+            list_scenes, self.list_list_tags = tag_script(self.script_text)
         else:
             list_scenes, self.list_list_tags = tag_script_with_ml(
-                self.config, self.script_path
+                self.config, self.script_text
             )
         self.list_scenes = []
         for i, scene in enumerate(list_scenes):
@@ -101,14 +118,19 @@ class Script:
             pronouns = list_pronouns_coref(self.list_narration.list_contents)
             function = lambda x: self.list_narration.character_coref_gender(x, pronouns)
         for character in self.list_characters:
-            if character.is_named == True:
-                character.identify_gender(function)
+            if character.is_named:
+                if self.user_genders and (character.name in self.user_genders.keys()):
+                    character.gender = self.user_genders[character.name]
+                else:
+                    character.identify_gender(function)
 
     def load_named_males(self):
         for character in self.list_characters:
-            if character.is_named == True:
+            if character.is_named:
                 if character.gender == "m":
-                    self.male_named_characters += list(character.name_variation)
+                    self.male_named_characters += [
+                        name.lower() for name in list(character.name_variation)
+                    ]
 
     def load_score_1(self):
         females = [
@@ -246,6 +268,100 @@ class Script:
                         f"\n******* {str(scene_id) + 'th' if scene_id == 1 else str(scene_id) + 'st'} scene *******"
                     )
                     print(self.list_scenes[scene_id])
+
+    def display_results_streamlit(self, nb_scenes):
+        st.write(f"Computed score : {self.computed_score}")
+        if self.computed_score == 0:
+            st.write("There aren't two named women in the movie.")
+            st.write("List of named characters in the movie :")
+            for character in self.list_characters:
+                if character.is_named:
+                    st.write(f"- {character.name} ({character.gender})")
+        elif self.computed_score >= 1:
+            named_women_characters = [
+                character.name
+                for character in self.list_characters
+                if character.is_named and character.gender == "f"
+            ]
+            st.write(
+                f"""There is at least two women who are named : {
+                    ", ".join(named_women_characters)
+                }\n"""
+            )
+            if self.computed_score == 1:
+                st.write(
+                    "However, they never talk in the same scene without other men, here are some scenes where they appear :"
+                )
+                current_nb_scenes = 0
+                for i, scene in enumerate(self.list_scenes):
+                    for named_woman in named_women_characters:
+                        if (
+                            any(
+                                [
+                                    named_woman.startswith(character.name)
+                                    or character.name.startswith(named_woman)
+                                    for character in scene.list_characters_in_scene
+                                ]
+                            )
+                            > 0
+                        ):
+                            st.write(
+                                f"""- Scene number {i} with characters : {
+                                    ", ".join(
+                                        [
+                                            f"{character.name} ({character.gender})"
+                                            for character in scene.list_characters_in_scene
+                                        ]
+                                    )
+                                }"""
+                            )
+                            current_nb_scenes += 1
+                    if current_nb_scenes == 5:
+                        break
+            else:
+                if self.computed_score == 2:
+                    relevant_scenes = self.score2_scenes
+                    st.write(
+                        f"And they talk with each other in {len(self.score2_scenes)} scenes, here are some of them :"
+                    )
+                    for i in self.score2_scenes[:5]:
+                        st.write(
+                            f"""- Scene number {i} with characters : {
+                                ", ".join(
+                                    [
+                                        f"{character.name} ({character.gender})"
+                                        for character in self.list_scenes[i].list_characters_in_scene
+                                    ]
+                                )
+                            }"""
+                        )
+                    st.write("However, they talk about men in all of those scenes.")
+
+                elif self.computed_score == 3:
+                    relevant_scenes = self.score3_scenes
+                    st.write(
+                        f"And they talk with each other about things other than men in {len(self.score3_scenes)} scenes, here are some of them :"
+                    )
+                    for i in self.score3_scenes[:5]:
+                        st.write(
+                            f"""- Scene number {i} with characters : {
+                                ", ".join(
+                                    [
+                                        f"{character.name} ({character.gender})"
+                                        for character in self.list_scenes[i].list_characters_in_scene
+                                    ]
+                                )
+                            }"""
+                        )
+                nb_scenes_to_print = min(nb_scenes, len(relevant_scenes))
+                st.write(
+                    f"\nHere {'are' if nb_scenes_to_print > 1 else 'is'} {nb_scenes_to_print} {'scenes' if nb_scenes_to_print > 1 else 'scene'} that validate this score :"
+                )
+                for scene_id in relevant_scenes[:nb_scenes_to_print]:
+                    st.write(
+                        f"\n******* {str(scene_id) + 'th' if scene_id == 1 else str(scene_id) + 'st'} scene *******"
+                    )
+                    st.write(self.list_scenes[scene_id])
 
     def check_parsing_is_coherent(self):
         all_tags = sum(self.list_list_tags, [])
@@ -542,7 +658,7 @@ class Dialogue:
         self.speech_text = " ".join(speech)
         self.clean_speech_text = self.clean_text()
 
-    def speaks_about_men(self, males_names: List[str], masculine_words):
+    def speaks_about_men(self, masculine_words, males_names: List[str]):
         masculine_words = masculine_words + males_names
         words = self.clean_speech_text.split(" ")
         for word in words:
@@ -577,11 +693,14 @@ class All_Narration:
         self.tokens = import_gender_tokens(self.config)
 
     def character_narrative_gender(self, name: str):
+        res = None
         if name.lower().split()[0] in gender_data["name"].values:
-            res = gender_data.loc[gender_data["name"] == name.lower().split()[0]][
+            temp = gender_data.loc[gender_data["name"] == name.lower().split()[0]][
                 "gender"
             ].values[0]
-        else:
+            if temp != "f,m" and temp != "m,f":
+                res = temp
+        if res == None:
             # name = char.name
             freq_gender = {"m": 0, "f": 0, "nb": 0}
             paragraphs = [para for para in self.list_contents if name in para]
@@ -606,25 +725,28 @@ class All_Narration:
     def character_coref_gender(self, name: str, pronouns):
         res = None
         if name.lower().split()[0] in gender_data["name"].values:
-            res = gender_data.loc[gender_data["name"] == name.lower().split()[0]][
+            temp = gender_data.loc[gender_data["name"] == name.lower().split()[0]][
                 "gender"
             ].values[0]
-        else:
+            if (temp != "f,m") and (temp != "m,f"):
+                res = temp
+        if res == None:
             freq = {}
-            clean_name = None
+            clean_name = []
             for key in pronouns.keys():
                 if name.lower() in str(key).lower():
-                    clean_name = key
-            if clean_name:
-                for key in pronouns[clean_name]:
-                    if str(key).lower() in self.tokens[0].values:
-                        gen = self.tokens.loc[self.tokens[0] == str(key).lower()][
-                            1
-                        ].values[0]
-                        try:
-                            freq[gen] += 1
-                        except:
-                            freq[gen] = 1
+                    clean_name.append(key)
+            if clean_name != []:
+                for clean in clean_name:
+                    for key in pronouns[clean]:
+                        if str(key).lower() in self.tokens[0].values:
+                            gen = self.tokens.loc[self.tokens[0] == str(key).lower()][
+                                1
+                            ].values[0]
+                            try:
+                                freq[gen] += 1
+                            except:
+                                freq[gen] = 1
                 if freq != {}:
                     res = max(freq, key=lambda k: freq[k])
         if res == None:

@@ -16,3 +16,4 @@ spacy==2.1.0
 tqdm==4.42.1 
 torchmetrics==0.11.1
 configue==4.1.1
+streamlit==1.19.0
