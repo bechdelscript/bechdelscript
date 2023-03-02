@@ -4,7 +4,7 @@ paths :
     path_to_kaggle_scripts : data/input/scripts_kaggle/
     path_to_imsdb_scripts : data/input/scripts_imsdb/
     topic_modeling_folder : topic_modeling/
-    pronoun_folder : pronouns/
+    pronoun_folder : gender/
     script_parsing_folder : script_parsing/
     script_parsing_experiments_folder : script_parsing/experiments
 

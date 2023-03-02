@@ -4,9 +4,9 @@ import re
 from script_parsing.naive_parsing import label, tag_script
 from topic_modeling.import_masculine_words import import_masculine_words
 from script_parsing.ml_parsing import tag_script_with_ml
-from gender_name import classifier, _classify, gender_data
-from pronouns.narrative_approach import import_gender_tokens
-from pronouns.neural_coref import list_pronouns_coref
+from gender.gender_name import classifier, _classify, gender_data
+from gender.narrative_approach import import_gender_tokens
+from gender.neural_coref import list_pronouns_coref
 import nltk
 
 
