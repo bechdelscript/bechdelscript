@@ -4,11 +4,11 @@ from fastapi import FastAPI, UploadFile, File, HTTPException
 from pydantic import BaseModel
 from screenplay_classes import Script
 import configue
-import chardet
 
 config = configue.load("parameters.yaml")
 
 app = FastAPI()
+db = {}
 
 
 @app.post("/upload_script/")
@@ -25,11 +25,8 @@ async def upload_script(
         response.bechdel()
         score = response.computed_score
         chars = response.list_characters
-        return {
-            "message": "Fichier {} lu".format(filename),
-            "Score calculé": score,
-            "Personnages": chars,
-        }
+        db[filename] = {"score": score, "chars": chars}
+        return {"message": "Fichier {} lu".format(filename)}
     else:
         return {"message": "There was an error uploading the file {}".format(filename)}
 
@@ -43,7 +40,7 @@ async def home():
 # /list-scripts
 @app.get("/list-scripts")
 async def list_scripts():
-    return {"Movies in base": []}
+    return {"Movies in base": db}
 
 
 # c'est ici qu'il faut mettre la base des films. tous les titres?
@@ -51,10 +48,10 @@ async def list_scripts():
 # /result-by-title
 @app.get("/result-by-title/{filename}")
 async def result_by_title(filename: str):
-    # if filename dans le dossier
-    # return {"result" : score quand on crée le script}
-    # gérer cas où ça marche pas : raise HTTPException(404, f"Movie not in base")
-    pass
+    if filename in db.keys():
+        return {"score": db[filename]["score"], "chars": db[filename]["chars"]}
+    else:
+        raise HTTPException(404, f"Movie not in base")
 
 
 # /add-script
