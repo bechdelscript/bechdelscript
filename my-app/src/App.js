@@ -2,6 +2,22 @@
 import './App.css';
 
 import UploadButton from './components/button';
+import CharacterList from './components/characters_list';
+
+const obj = {
+  "characters": [{
+    "name": "marge",
+    "gender": "female"
+  },
+  {
+    "name": "homer",
+    "gender": "male"
+  },
+  {
+    "name": "lisa",
+    "gender": "female"
+  }]
+}
 
 function App() {
   return (
@@ -16,6 +32,9 @@ function App() {
         <div>
           {/* <Button variant="contained">Show</Button> */}
           <UploadButton />
+        </div>
+        <div>
+          <CharacterList characters={obj.characters} />
         </div>
       </body>
     </div>
