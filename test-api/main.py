@@ -41,8 +41,8 @@ async def upload_script(
         db[filename] = {"score": score, "chars": chars}
         return {
             "message": "Fichier {} lu".format(filename),
-            "Score calculé": score,
-            "Personnages": chars,
+            "computed_score": score,
+            "characters": chars,
         }
     else:
         return {"message": "There was an error uploading the file {}".format(filename)}
