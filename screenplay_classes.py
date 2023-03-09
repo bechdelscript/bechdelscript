@@ -9,7 +9,6 @@ from gender.narrative_approach import import_gender_tokens
 from gender.neural_coref import list_pronouns_coref
 import nltk
 import streamlit as st
-import streamlit_toggle as tog
 
 
 class Script:

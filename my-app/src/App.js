@@ -1,7 +1,7 @@
 // import logo from './logo.svg';
 import './App.css';
 
-import UploadButton from './components/button';
+import FileUpload from './components/file_upload';
 
 function App() {
   return (
@@ -14,8 +14,7 @@ function App() {
       </header>
       <body>
         <div>
-          {/* <Button variant="contained">Show</Button> */}
-          <UploadButton />
+          <FileUpload />
         </div>
       </body>
     </div>

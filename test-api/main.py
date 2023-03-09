@@ -1,6 +1,7 @@
 from typing import Union
 
 from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from screenplay_classes import Script
 import configue
@@ -9,6 +10,18 @@ config = configue.load("parameters.yaml")
 
 app = FastAPI()
 db = {}
+
+origins = [
+    "http://localhost:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.post("/upload_script/")
@@ -26,7 +39,11 @@ async def upload_script(
         score = response.computed_score
         chars = response.list_characters
         db[filename] = {"score": score, "chars": chars}
-        return {"message": "Fichier {} lu".format(filename)}
+        return {
+            "message": "Fichier {} lu".format(filename),
+            "Score calculé": score,
+            "Personnages": chars,
+        }
     else:
         return {"message": "There was an error uploading the file {}".format(filename)}
 
