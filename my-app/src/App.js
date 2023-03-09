@@ -1,8 +1,8 @@
 // import logo from './logo.svg';
 import './App.css';
 
-import UploadButton from './components/button';
 import CharacterList from './components/characters_list';
+import FileUpload from './components/file_upload';
 
 const obj = {
   "characters": [{
@@ -30,8 +30,7 @@ function App() {
       </header>
       <body>
         <div>
-          {/* <Button variant="contained">Show</Button> */}
-          <UploadButton />
+          <FileUpload />
         </div>
         <div>
           <CharacterList characters={obj.characters} />
