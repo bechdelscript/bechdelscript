@@ -1,6 +1,6 @@
 import { Component } from "react";
 import Character from "./character";
-
+import Box from '@mui/material/Box';
 
 
 class CharacterList extends Component {
@@ -22,10 +22,12 @@ class CharacterList extends Component {
             );
         }
         return (
-            <div className="shopping-list">
-                <h1>List of characters</h1>
-                <ul>{rows}</ul>
-            </div>
+            <Box sx={{ minWidth: 120, maxHeight: 30 }}>
+                <div className="characters-list">
+                    <h1>List of characters</h1>
+                    <ul>{rows}</ul>
+                </div>
+            </Box>
         )
     }
 }
