@@ -2,24 +2,8 @@
 import './App.css';
 import React from 'react';
 
-import CharacterList from './components/characters_list';
 import FileUpload from './components/file_upload';
-
-// const obj = null;
-const obj = {
-	"characters": [{
-		"name": "marge",
-		"gender": "female"
-	},
-	{
-		"name": "homer",
-		"gender": "male"
-	},
-	{
-		"name": "lisa",
-		"gender": "female"
-	}]
-}
+import Results from "./components/results";
 
 class App extends React.Component {
 
@@ -57,33 +41,60 @@ class App extends React.Component {
 			computed_score: data.computed_score,
 			characters: data.characters
 		});
-
 	}
 
+	handleGenderChange = async (i, event) => {
+		const characters = this.state.characters.slice();
+		characters[i].gender = event.target.value;
+		console.log(characters[i].gender);
+		this.setState({ characters: characters });
+	}
+
+	handleCharactersListSubmit = async (event) => {
+		event.preventDefault();
+		const formData = new FormData();
+		formData.append('file_name', this.state.file.name);
+		formData.append('characters_list', this.state.characters);
+		const response = await fetch("http://localhost:8000/result-with-user-gender-by-title/", {
+			method: 'POST',
+			body: formData,
+		});
+		console.log(response);
+		// TODO : check response is valid
+		const data = await response.json();
+		console.log(data);
+		this.setState({
+			computed_score: data.computed_score,
+			characters: data.characters
+		});
+	}
+
+
 	render() {
-		let character_list;
-		if (obj) { character_list = <CharacterList characters={obj.characters} /> }
-		else { character_list = null }
 		return (
 			<div className="App">
 				<header className="App-header">
 					{/* <img src={logo} className="App-logo" alt="logo" /> */}
 					<p>
-						<div>Bechdel Test AI</div>
+						Bechdel Test AI
 					</p>
 				</header>
-				<body>
+				<div>
 					<div>
 						<FileUpload
 							handleFileSelect={this.handleUploadFileSelect}
 							handleSubmit={this.handleUploadFileSubmit}
 						/>
-						<div>{this.state.computed_score}</div>
 					</div>
 					<div>
-						{character_list}
+						<Results
+							characters={this.state.characters}
+							computed_score={this.state.computed_score}
+							handleChange={this.handleGenderChange}
+							handleSubmit={this.handleCharactersListSubmit}
+						/>
 					</div>
-				</body>
+				</div>
 			</div>
 		);
 	}

@@ -1,34 +1,33 @@
 import { Component } from "react";
 import Character from "./character";
-import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 
 
 class CharacterList extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            characters: props.characters
-        };
-    }
 
     render() {
         const rows = [];
-        for (let i = 0; i < this.state.characters.length; i++) {
+        for (let i = 0; i < this.props.characters.length; i++) {
             rows.push(
                 <Character
-                    name={this.state.characters[i].name}
-                    gender={this.state.characters[i].gender}
+                    key={this.props.characters[i].name + toString(i)}
+                    name={this.props.characters[i].name}
+                    gender={this.props.characters[i].gender}
+                    handleChange={(e) => this.props.handleChange(i, e)}
                 />
             );
         }
         return (
-            <Box sx={{ minWidth: 120, maxHeight: 30 }}>
+            <form onSubmit={this.props.handleSubmit}>
                 <div className="characters-list">
                     <h1>List of characters</h1>
                     <ul>{rows}</ul>
                 </div>
-            </Box>
+                <Button type="submit">Test again !</Button>
+            </form>
+            // {/* <input type="file" onChange={props.handleFileSelect} /> */ }
         )
+
     }
 }
 
