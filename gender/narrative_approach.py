@@ -1,14 +1,15 @@
 import pandas as pd
 import nltk
 import os
-import yaml
 
 """Given a list of narrative passages, this function identifies the most frequently used gendered pronouns included in 
 paragraphs where the character's name appears. Then, we use the most frequent gender associated with narrative passages as our
 prediction."""
 
 
-def import_gender_tokens(config):
+def import_gender_tokens(config: dict) -> pd.DataFrame:
+    """
+    Given a config file, this creates the gendered tokens dataframe."""
 
     path = os.path.join(
         config["paths"]["pronoun_folder"],
@@ -19,7 +20,11 @@ def import_gender_tokens(config):
     return tokens
 
 
-def pronoun_id(paragraphs, name, tokens):
+def pronoun_id(paragraphs: list, name: str, tokens: pd.DataFrame) -> str:
+    """
+    Given a list of paragraphs, a character name, and a gendered tokens dataframe,
+    this function returns the gender associated with the most frequent pronouns present in
+    paragraphs where the character is named."""
     freq_gender = {"M": 0, "F": 0, "NB": 0}
     paragraphs = [para for para in paragraphs if name in para]
     for para in paragraphs:
