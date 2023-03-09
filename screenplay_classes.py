@@ -50,6 +50,7 @@ class Script:
         self.load_narration()
 
     def bechdel(self, user_genders=None):
+        self.computed_score = 0
         self.user_genders = user_genders
         self.are_characters_named()
         self.identify_gender_named_chars()

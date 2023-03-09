@@ -85,7 +85,7 @@ async def result_with_user_gender_by_title(item : Item):
     user_gender = item.user_gender
     if filename in db.keys():
         temp = db[filename]["script"]
-        temp.bechdel(user_gender)
+        temp.bechdel(user_genders = user_gender)
         score = temp.computed_score
         chars = [x for x in temp.list_characters if x.is_named]
         db[filename] = {"score": score, "chars": chars, "script": temp}
