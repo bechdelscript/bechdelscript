@@ -24,7 +24,7 @@ async def upload_script(
         response.load_format()
         response.bechdel()
         score = response.computed_score
-        chars = response.list_characters
+        chars = [x for x in response.list_characters if x.is_named]
         db[filename] = {"score": score, "chars": chars}
         return {"message": "Fichier {} lu".format(filename)}
     else:
