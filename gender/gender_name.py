@@ -5,57 +5,72 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 import requests
 
+"""This script creates a gender classifier based on character names.
+It is heavily inspired from the following git repository."""
 # https://github.com/ellisbrown/name2gender/tree/master/naive_bayes
-# On utilise la base de données de prénom obtenue sur datagouv au lien suivant : https://www.data.gouv.fr/fr/datasets/liste-de-prenoms/
+"""The used dataset was found on data.gouv.fr, the french government open data resource."""
 
-if "Prenoms.csv" not in "data/input/":
-    url = "https://www.data.gouv.fr/fr/datasets/r/55cd803a-998d-4a5c-9741-4cd0ee0a7699"
-    r = requests.get(url, allow_redirects=True)
-    open("data/input/Prenoms.csv", "wb").write(r.content)
+# The following dictionary represents gendered keywords for when characters are called by their last name.
+keywords = {
+    "f": ["Mrs.", "Mrs", "mrs.", "mrs", "MRS.", "MRS"],
+    "m": ["Mr.", "Mr", "mr.", "mr", "MR.", "MR"],
+}
+
+def load_database() -> pd.DataFrame:
+    """This function creates the name to gender database."""
+    # If the database isn't in the data folder already, the following will download it.
+    if "Prenoms.csv" not in "data/input/":
+        url = "https://www.data.gouv.fr/fr/datasets/r/55cd803a-998d-4a5c-9741-4cd0ee0a7699"
+        r = requests.get(url, allow_redirects=True)
+        open("data/input/Prenoms.csv", "wb").write(r.content)
+
+    # Read the original gender database.
+    gender_data = pd.read_csv(
+        "data/input/Prenoms.csv",
+        encoding="latin-1",
+        header=0,
+        names=["name", "gender", "language", "frequency"],
+        delimiter=";",
+    )
+
+    # Clean this database by dropping na values and standardize the mixed names.
+    gender_data.dropna(inplace=True)
+    gender_data["gender"].replace("m,f", "f,m", inplace=True)
+
+    return gender_data
 
 
-# Read the original gender database
-gender_data = pd.read_csv(
-    "data/input/Prenoms.csv",
-    encoding="latin-1",
-    header=0,
-    names=["name", "gender", "language", "frequency"],
-    delimiter=";",
-)
-
-# Clean this database by dropping na values.
-gender_data.dropna(inplace=True)
-gender_data["gender"].replace("m,f", "f,m", inplace=True)
-
-
-# This function creates the trin and test set for the classifier
-def create_test_train():
-
+def create_test_train(gender_data: pd.DataFrame):
+    """This function creates the train and test set for the classifier."""
     # Create the X and Y vectors, equal to the name and gender columns
     X = gender_data.iloc[:, :1]
     Y = gender_data.iloc[:, 1:]
 
-    # Create the train and test set
+    # Create the train and test set.
     X_train, X_test, y_train, y_test = train_test_split(
         X, Y, test_size=0.3, random_state=0
     )
 
-    # Create the train dataframe, transform it into a list of tuples
+    # Create the train dataframe, transform it into a list of tuples.
     train = pd.merge(X_train, y_train, right_index=True, left_index=True)
     train = list(train.itertuples(index=False, name=None))
-    # Apply _gender_features to the names in train
-    train_features = nltk.classify.apply_features(_gender_features, train, labeled=True)
+    # Apply _gender_features to the names in train.
+    train_features = nltk.classify.apply_features(
+        create_gender_features, train, labeled=True
+    )
 
-    # DO the same for the test set
+    # Do the same for the test set.
     test = pd.merge(X_test, y_test, right_index=True, left_index=True)
     test = list(test.itertuples(index=False, name=None))
-    test_features = nltk.classify.apply_features(_gender_features, test, labeled=True)
+    test_features = nltk.classify.apply_features(
+        create_gender_features, test, labeled=True
+    )
 
     return (train_features, test_features)
 
 
-# This function creates features based on the name field (suffixes, first and last letter...)
-def _gender_features(name):
+def create_gender_features(name: str) -> dict:
+    """This function creates features based on the name field (suffixes, first and last letter...)."""
     features = {}
     features["last_letter"] = name[-1].lower()
     features["first_letter"] = name[0].lower()
@@ -69,77 +84,35 @@ def _gender_features(name):
     return features
 
 
-keywords = {
-    "f": ["Mrs.", "Mrs", "mrs.", "mrs", "MRS.", "MRS"],
-    "m": ["Mr.", "Mr", "mr.", "mr", "MR.", "MR"],
-}
+def load_classifier():
+    """This loads the classifier"""
+    gender_data = load_database()
+    # Create the train and test features sets, and train a Naive bayes classifier on the training set.
+    train_features, test_features = create_test_train(gender_data)
+    classifier = nltk.NaiveBayesClassifier.train(train_features)
+    return classifier
 
-# Given a name and a classifier, this prints out the name, the predicted ouput, and the probability.
-def _classify(name, classifier):
+
+def _classify(name: str, classifier) -> tuple:
+    """Given a name and a classifier, this returns the predicted ouput, and the probability"""
+    # The following two conditions cover the instances where a character is called Mrs. something or Mr. something.
     if any(ele in name for ele in keywords["f"]):
         guess = "f"
         prob = 1
-        # print("%s -> %s (%.2f%%) (Mrs)" % (name, guess, prob * 100))
     elif any(ele in name for ele in keywords["m"]):
         guess = "m"
         prob = 1
-        # print("%s -> %s (%.2f%%) (Mr)" % (name, guess, prob * 100))
-    elif name.lower().split()[0] in gender_data["name"].values:
-        guess = gender_data.loc[gender_data["name"] == name.lower().split()[0]][
-            "gender"
-        ].values[0]
-        prob = 1
-        # print("%s -> %s (%.2f%%) (prénom dans la db)" % (name, guess, prob * 100))
+    # The following statement covers all other instances, and uses the classifier.
     else:
-        _name = _gender_features(name.split()[0])
+        _name = create_gender_features(name.split()[0])
         dist = classifier.prob_classify(_name)
         m, f, b = dist.prob("m"), dist.prob("f"), dist.prob("f,m")
         d = {m: "m", f: "f", b: "f,m"}
+        # If the name was most likely mixed, we select the next most likely gender.
         prob = max(m, f)
         guess = d[prob]
-        # print("%s -> %s (%.2f%%)" % (name, guess, prob * 100))
     return guess, prob
 
 
-# Given a list of names and a classifier, this prints out _classify for each of the names.
-def classify(names, classifier):
-    for name in names:
-        _classify(name, classifier)
-    print("\nClassified %d names" % (len(names)))
-
-
-# Create the train and test features sets, and train a Naive bayes classifier on the training set.
-train_features, test_features = create_test_train()
-classifier = nltk.NaiveBayesClassifier.train(train_features)
-
 if __name__ == "__main__":
-    # Inspect values in gender_data
-    print(gender_data["gender"].value_counts())
-
-    # Print the accuracy computed with the test_features set.
-    print(
-        "Classifier accuracy percent:",
-        (nltk.classify.accuracy(classifier, test_features)) * 100,
-    )
-
-    # Show the most informative features of our classifier.
-    classifier.show_most_informative_features(15)
-
-    # définir une fonction qui classifie sur de nouveaux noms
-    name_test = [
-        "marie",
-        "jack",
-        "andre",
-        "bill",
-        "paul",
-        "mike",
-        "sara",
-        "joan",
-        "elaine",
-        "willie",
-        "Mrs. J",
-        "Mr J",
-        "pretty french journalist",
-        "Harry Potter",
-    ]
-    print(classify(name_test, classifier))
+    classifier = load_classifier()

@@ -4,12 +4,14 @@ import re
 from script_parsing.naive_parsing import label, tag_script
 from topic_modeling.import_masculine_words import import_masculine_words
 from script_parsing.ml_parsing import tag_script_with_ml
-from gender.gender_name import classifier, _classify, gender_data
+from gender.gender_name import load_classifier, _classify, load_database
 from gender.narrative_approach import import_gender_tokens
 from gender.neural_coref import list_pronouns_coref
 import nltk
 import streamlit as st
 import streamlit_toggle as tog
+import spacy
+import neuralcoref
 
 
 class Script:
@@ -110,19 +112,30 @@ class Script:
 
     def identify_gender_named_chars(self):
         para = self.config["used_methods"]["character_gender_method"]
+        gender_data = load_database()
         if para == "classify":
+            classifier = load_classifier()
             function = lambda x: _classify(x, classifier)[0]
         elif para == "narrative":
             function = lambda x: self.list_narration.character_narrative_gender(x)
         elif para == "coref":
-            pronouns = list_pronouns_coref(self.list_narration.list_contents)
+            nlp = spacy.load("en")
+            neuralcoref.add_to_pipe(nlp)
+            pronouns = list_pronouns_coref(self.list_narration.list_contents, nlp)
             function = lambda x: self.list_narration.character_coref_gender(x, pronouns)
         for character in self.list_characters:
             if character.is_named:
                 if self.user_genders and (character.name in self.user_genders.keys()):
                     character.gender = self.user_genders[character.name]
                 else:
-                    character.identify_gender(function)
+                    if character.name.lower().split()[0] in gender_data["name"].values:
+                        temp = gender_data.loc[gender_data["name"] == character.name.lower().split()[0]][
+                            "gender"
+                        ].values[0]
+                        if temp != "f,m" and temp != "m,f":
+                            character.gender = temp
+                    if not character.gender:
+                        character.identify_gender(function)
 
     def load_named_males(self):
         for character in self.list_characters:
@@ -693,62 +706,46 @@ class All_Narration:
         self.tokens = import_gender_tokens(self.config)
 
     def character_narrative_gender(self, name: str):
-        res = None
-        if name.lower().split()[0] in gender_data["name"].values:
-            temp = gender_data.loc[gender_data["name"] == name.lower().split()[0]][
-                "gender"
-            ].values[0]
-            if temp != "f,m" and temp != "m,f":
-                res = temp
-        if res == None:
-            # name = char.name
-            freq_gender = {"m": 0, "f": 0, "nb": 0}
-            paragraphs = [para for para in self.list_contents if name in para]
-            for para in paragraphs:
-                freq_tokens = dict.fromkeys(self.tokens[0], 0)
-                freq = {}
-                for word in nltk.word_tokenize(para):
-                    for token in self.tokens[0]:
-                        if token == word.lower():
-                            freq_tokens[token] += 1
-                for key in freq_tokens.keys():
-                    gen = self.tokens.loc[self.tokens[0] == key][1].values[0]
-                    value = freq_tokens[key]
-                    try:
-                        freq[gen] += value
-                    except:
-                        freq[gen] = value
-                freq_gender[max(freq, key=lambda k: freq[k])] += 1
-            res = max(freq_gender, key=lambda k: freq_gender[k])
+        freq_gender = {"m": 0, "f": 0, "nb": 0}
+        paragraphs = [para for para in self.list_contents if name in para]
+        for para in paragraphs:
+            freq_tokens = dict.fromkeys(self.tokens[0], 0)
+            freq = {}
+            for word in nltk.word_tokenize(para):
+                for token in self.tokens[0]:
+                    if token == word.lower():
+                        freq_tokens[token] += 1
+            for key in freq_tokens.keys():
+                gen = self.tokens.loc[self.tokens[0] == key][1].values[0]
+                value = freq_tokens[key]
+                try:
+                    freq[gen] += value
+                except:
+                    freq[gen] = value
+            freq_gender[max(freq, key=lambda k: freq[k])] += 1
+        res = max(freq_gender, key=lambda k: freq_gender[k])
         return res
 
     def character_coref_gender(self, name: str, pronouns):
         res = None
-        if name.lower().split()[0] in gender_data["name"].values:
-            temp = gender_data.loc[gender_data["name"] == name.lower().split()[0]][
-                "gender"
-            ].values[0]
-            if (temp != "f,m") and (temp != "m,f"):
-                res = temp
-        if res == None:
-            freq = {}
-            clean_name = []
-            for key in pronouns.keys():
-                if name.lower() in str(key).lower():
-                    clean_name.append(key)
-            if clean_name != []:
-                for clean in clean_name:
-                    for key in pronouns[clean]:
-                        if str(key).lower() in self.tokens[0].values:
-                            gen = self.tokens.loc[self.tokens[0] == str(key).lower()][
-                                1
-                            ].values[0]
-                            try:
-                                freq[gen] += 1
-                            except:
-                                freq[gen] = 1
-                if freq != {}:
-                    res = max(freq, key=lambda k: freq[k])
+        freq = {}
+        clean_name = []
+        for key in pronouns.keys():
+            if name.lower() in str(key).lower():
+                clean_name.append(key)
+        if clean_name != []:
+            for clean in clean_name:
+                for key in pronouns[clean]:
+                    if str(key).lower() in self.tokens[0].values:
+                        gen = self.tokens.loc[self.tokens[0] == str(key).lower()][
+                            1
+                        ].values[0]
+                        try:
+                            freq[gen] += 1
+                        except:
+                            freq[gen] = 1
+            if freq != {}:
+                res = max(freq, key=lambda k: freq[k])
         if res == None:
             res = self.character_narrative_gender(name)
         return res
