@@ -2,8 +2,24 @@
 import './App.css';
 import React from 'react';
 
+import CharacterList from './components/characters_list';
 import FileUpload from './components/file_upload';
 
+const obj = {
+    "characters": [{
+      "name": "marge",
+      "gender": "female"
+    },
+    {
+      "name": "homer",
+      "gender": "male"
+    },
+    {
+      "name": "lisa",
+      "gender": "female"
+    }]
+  }
+  
 class App extends React.Component {
 
   constructor(props) {
@@ -45,22 +61,26 @@ class App extends React.Component {
 
     render() {
         return (
-        <div className="App">
-            <header className="App-header">
-            <p>
-                <div>Bechdel Test AI</div>
-            </p>
-            </header>
-            <body>
-            <div>
-                <FileUpload 
-                    handleFileSelect={this.handleUploadFileSelect}
-                    handleSubmit={this.handleUploadFileSubmit}
-                />
-                <div>{this.state.computed_score}</div>
+            <div className="App">
+              <header className="App-header">
+                {/* <img src={logo} className="App-logo" alt="logo" /> */}
+                <p>
+                  <div>Bechdel Test AI</div>
+                </p>
+              </header>
+              <body>
+                <div>
+                    <FileUpload 
+                            handleFileSelect={this.handleUploadFileSelect}
+                            handleSubmit={this.handleUploadFileSubmit}
+                    />
+                    <div>{this.state.computed_score}</div>
+                </div>
+                <div>
+                  <CharacterList characters={obj.characters} />
+                </div>
+              </body>
             </div>
-            </body>
-        </div>
         );
     }
 }
