@@ -27,12 +27,12 @@ class App extends React.Component {
         this.state = {
             computed_score:null,
             characters:null,
-            file: null
+            file: null,
+            error_message: null
         };
     }
 
     handleUploadFileSelect = (event) => {
-        console.log(event.target.files.item(0))
         const newFile = event.target.files.item(0);
         this.setState({
             file : newFile
@@ -48,18 +48,27 @@ class App extends React.Component {
             method: 'POST',
             body: formData,
         });
-        console.log(response);
-        // TODO : check response is valid
-        const data = await response.json();
-        console.log(data);
-        this.setState({
-            computed_score : data.computed_score,
-            characters : data.characters
-        });
+        if (response.ok) {
+            const data = await response.json();
+            console.log(data);
+            this.setState({
+                computed_score : data.computed_score,
+                characters : data.characters,
+                error_message : null
+            });
+        } else {
+            this.setState({
+                error_message : `This is an HTTP error: The status is ${response.status}`
+            });
+            throw new Error(
+                `This is an HTTP error: The status is ${response.status}`
+              );
+        }
         
     }
 
     render() {
+        const computed_score = this.state.computed_score ? `Computed score ${this.state.computed_score}` : ''
         return (
             <div className="App">
               <header className="App-header">
@@ -74,7 +83,8 @@ class App extends React.Component {
                             handleFileSelect={this.handleUploadFileSelect}
                             handleSubmit={this.handleUploadFileSubmit}
                     />
-                    <div>{this.state.computed_score}</div>
+                    <div>{this.state.error_message}</div>
+                    <div>{computed_score}</div>
                 </div>
                 <div>
                   <CharacterList characters={obj.characters} />
