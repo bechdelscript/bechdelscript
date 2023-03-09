@@ -12,12 +12,13 @@ class App extends React.Component {
 		this.state = {
 			computed_score: null,
 			characters: null,
-			file: null
+			file: null,
+			loading: false,
+			error_message: null
 		};
 	}
 
 	handleUploadFileSelect = (event) => {
-		console.log(event.target.files.item(0))
 		const newFile = event.target.files.item(0);
 		this.setState({
 			file: newFile
@@ -26,6 +27,7 @@ class App extends React.Component {
 
 	handleUploadFileSubmit = async (event) => {
 		event.preventDefault();
+		this.setState({ loading: true })
 		const formData = new FormData();
 		formData.append('file', this.state.file);
 
@@ -33,14 +35,24 @@ class App extends React.Component {
 			method: 'POST',
 			body: formData,
 		});
-		console.log(response);
-		// TODO : check response is valid
-		const data = await response.json();
-		console.log(data);
-		this.setState({
-			computed_score: data.computed_score,
-			characters: data.characters
-		});
+		this.setState({ loading: false })
+		if (response.ok) {
+			const data = await response.json();
+			console.log(data);
+			this.setState({
+				computed_score: data.computed_score,
+				characters: data.characters,
+				error_message: null
+			});
+		} else {
+			this.setState({
+				error_message: `This is an HTTP error: The status is ${response.status}`
+			});
+			throw new Error(
+				`This is an HTTP error: The status is ${response.status}`
+			);
+		}
+
 	}
 
 	handleGenderChange = async (i, event) => {
@@ -69,7 +81,6 @@ class App extends React.Component {
 		});
 	}
 
-
 	render() {
 		return (
 			<div className="App">
@@ -84,7 +95,10 @@ class App extends React.Component {
 						<FileUpload
 							handleFileSelect={this.handleUploadFileSelect}
 							handleSubmit={this.handleUploadFileSubmit}
+							loading={this.state.loading}
+							file={this.state.file}
 						/>
+						<div>{this.state.error_message}</div>
 					</div>
 					<div>
 						<Results
