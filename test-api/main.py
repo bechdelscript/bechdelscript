@@ -74,18 +74,23 @@ async def result_by_title(filename: str):
     else:
         raise HTTPException(404, f"Movie not in base")
 
+
 class Item(BaseModel):
-    filename : str
-    user_gender : dict
+    filename: str
+    user_gender: list
+
 
 @app.post("/result-with-user-gender-by-title/")
-async def result_with_user_gender_by_title(item : Item):
+async def result_with_user_gender_by_title(item: Item):
     """This POST method returns specific results based on a given filename and a dictionary of genders chosen by the user."""
+    # faire conversion user_gender into le bon format prenom : genre.
     filename = item.filename
     user_gender = item.user_gender
+    dico_gender = {k["name"]: k["gender"] for k in user_gender}
+    print(dico_gender)
     if filename in db.keys():
         temp = db[filename]["script"]
-        temp.bechdel(user_genders = user_gender)
+        temp.bechdel(user_genders=dico_gender)
         score = temp.computed_score
         chars = [x for x in temp.list_characters if x.is_named]
         db[filename] = {"score": score, "chars": chars, "script": temp}
