@@ -1,14 +1,14 @@
 import * as React from 'react';
-import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import Grid from '@mui/system/Unstable_Grid/Grid';
 
 export default function GenderSelect(props) {
 
     return (
-        <Box sx={{ minWidth: 120 }}>
+        <Grid item xs={6}>
             <FormControl fullWidth>
                 <InputLabel id="demo-simple-select-label">Gender</InputLabel>
                 <Select
@@ -23,6 +23,6 @@ export default function GenderSelect(props) {
                     <MenuItem value={'nb'}>Non Binary</MenuItem>
                 </Select>
             </FormControl>
-        </Box>
+        </Grid>
     );
 }

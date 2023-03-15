@@ -1,4 +1,4 @@
-import { Component } from "react";
+import React, { Component } from "react";
 import Character from "./character";
 import Button from '@mui/material/Button';
 
@@ -19,15 +19,14 @@ class CharacterList extends Component {
         }
         return (
             <form onSubmit={this.props.handleSubmit}>
-                <div className="characters-list">
-                    <h1>List of characters</h1>
-                    <ul>{rows}</ul>
+                <div className="characters-area-container">
+                    <h2>List of characters</h2>
+                    <div>{rows}</div>
                 </div>
                 <Button type="submit">Test again !</Button>
             </form>
             // {/* <input type="file" onChange={props.handleFileSelect} /> */ }
         )
-
     }
 }
 

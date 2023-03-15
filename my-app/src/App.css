@@ -37,3 +37,14 @@
     transform: rotate(360deg);
   }
 }
+
+.characters-area-container {
+  background: #f0f0f0;
+  /* float: left; */
+  border-radius: 25px;
+  float:none;
+  margin: 2% auto;
+  padding: 1em;
+  position: relative;
+  width: 70%;
+}

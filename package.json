@@ -1,9 +1,0 @@
-{
-  "dependencies": {
-    "@emotion/react": "^11.10.6",
-    "@emotion/styled": "^11.10.6",
-    "@mui/material": "^5.11.12",
-    "@mui/styled-engine-sc": "^5.11.11",
-    "styled-components": "^5.3.8"
-  }
-}
