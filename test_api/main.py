@@ -2,9 +2,9 @@ from typing import Union
 
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from screenplay_classes import Script
+from screenplay_classes import Script, Scene
 import configue
+from test_api.utils import Item, update_db
 
 
 """This script creates the API needed to link our backend and front end work."""
@@ -41,14 +41,11 @@ async def upload_script(
 
         response = Script(content, config)
         response.load_format()
-        response.bechdel()
-        score = response.computed_score
-        chars = [x for x in response.list_characters if x.is_named]
-        db[filename] = {"score": score, "chars": chars, "script": response}
+        db[filename] = update_db(response)
         return {
             "message": "Fichier {} lu".format(filename),
-            "score": score,
-            "chars": chars,
+            "score": db[filename]["score"],
+            "chars": db[filename]["chars"],
         }
     else:
         return {"message": "There was an error uploading the file {}".format(filename)}
@@ -75,11 +72,6 @@ async def result_by_title(filename: str):
         raise HTTPException(404, f"Movie not in base")
 
 
-class Item(BaseModel):
-    filename: str
-    user_gender: list
-
-
 @app.post("/result-with-user-gender-by-title/")
 async def result_with_user_gender_by_title(item: Item):
     """This POST method returns specific results based on a given filename and a dictionary of genders chosen by the user."""
@@ -88,10 +80,24 @@ async def result_with_user_gender_by_title(item: Item):
     dico_gender = {k["name"]: k["gender"] for k in user_gender}
     if filename in db.keys():
         temp = db[filename]["script"]
-        temp.bechdel(user_genders=dico_gender)
-        score = temp.computed_score
-        chars = [x for x in temp.list_characters if x.is_named]
-        db[filename] = {"score": score, "chars": chars, "script": temp}
-        return {"score": score, "chars": chars}
+        db[filename] = update_db(temp, dico_gender)
+        return {"score": db[filename]["score"], "chars": db[filename]["chars"]}
     else:
         raise HTTPException(404, f"Movie not in base")
+
+
+@app.get("/bechdel-scenes/{filename}")
+async def Bechdel_scenes(filename: str):
+    """This GET method returns the scenes that pass the highest score passed by the movie."""
+    score = db[filename]["score"]
+    if (score <= 1) and (score >= 0):
+        return {"message": "None of the scenes in the movie help pass the test."}
+    elif score == 2:
+        scenes = db[filename]["score_2"]
+        return {
+            "message": "The movie has two named female characters who speak together. Unfortunately, they do speak about men.",
+            "scenes": scenes,
+        }
+    elif score == 3:
+        scenes = db[filename]["score_3"]
+        return {"message": "The movie passes the Bechdel Test.", "scenes": scenes}
