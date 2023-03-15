@@ -84,8 +84,8 @@ class App extends React.Component {
         const data = await response.json();
         console.log(data);
         this.setState({
-            computed_score: data.computed_score,
-            characters: data.characters
+            computed_score: data.score,
+            characters: data.chars
         });
     }
 
