@@ -64,29 +64,32 @@ class App extends React.Component {
 
     handleCharactersListSubmit = async (event) => {
         event.preventDefault();
-        const formData = new FormData();
-        formData.append('filename', this.state.file.name);
-        formData.append('user_gender', this.state.characters);
-        let user_gender = {};
-        for (let i = 0; i < this.state.characters.length; i++) {
-            user_gender[this.state.characters[i].name] = this.state.characters[i].gender;
-        }
+        this.setState({ loading: true })
         const response = await fetch(`http://localhost:8000/result-with-user-gender-by-title/`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 filename: this.state.file.name,
-                user_gender: user_gender
+                user_gender: this.state.characters
             })
         });
-        console.log(response);
-        // TODO : check response is valid
-        const data = await response.json();
-        console.log(data);
-        this.setState({
-            computed_score: data.score,
-            characters: data.chars
-        });
+        this.setState({ loading: false })
+        if (response.ok) {
+            const data = await response.json();
+            console.log(data);
+            this.setState({
+                computed_score: data.score,
+                characters: data.chars
+            });
+        } else {
+            this.setState({
+                error_message: `This is an HTTP error: The status is ${response.status}`
+            });
+            throw new Error(
+                `This is an HTTP error: The status is ${response.status}`
+            );
+        }
+
     }
 
     render() {
@@ -110,6 +113,7 @@ class App extends React.Component {
                     </div>
                     <div>
                         <Results
+                            loading={this.state.loading}
                             characters={this.state.characters}
                             computed_score={this.state.computed_score}
                             handleChange={this.handleGenderChange}

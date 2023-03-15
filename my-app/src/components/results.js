@@ -5,7 +5,7 @@ import CharacterList from "./characters_list";
 class Results extends Component {
 
     render() {
-        if (this.props.characters === null) {
+        if (this.props.characters === null | this.props.loading) {
             return;
         }
         return (
