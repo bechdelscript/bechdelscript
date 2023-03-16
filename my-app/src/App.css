@@ -42,9 +42,31 @@
   background: #f0f0f0;
   /* float: left; */
   border-radius: 25px;
-  float:none;
+  float: none;
   margin: 2% auto;
   padding: 1em;
   position: relative;
   width: 70%;
+}
+
+.results-area-container {
+  background: #f0f0f0;
+  /* float: left; */
+  border-radius: 25px;
+  float: none;
+  margin: 2% auto;
+  padding: 1em;
+  position: relative;
+  width: 70%;
+}
+
+.score-layout {
+  background: #A9A9A9;
+  /* float: left; */
+  border-radius: 25px;
+  float: none;
+  margin: 2% auto;
+  padding: 0;
+  position: relative;
+  width: 25%;
 }

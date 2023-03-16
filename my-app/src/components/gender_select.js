@@ -10,10 +10,10 @@ export default function GenderSelect(props) {
     return (
         <Grid item xs={6}>
             <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Gender</InputLabel>
+                <InputLabel id="simple-gender-select-label">Gender</InputLabel>
                 <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
+                    labelId="simple-gender-select-label"
+                    id="simple-gender-select"
                     value={props.gender}
                     label="Gender"
                     onChange={props.handleChange}

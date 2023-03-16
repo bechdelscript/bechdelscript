@@ -25,7 +25,6 @@ class CharacterList extends Component {
                 </div>
                 <Button type="submit">Test again !</Button>
             </form>
-            // {/* <input type="file" onChange={props.handleFileSelect} /> */ }
         )
     }
 }
