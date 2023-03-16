@@ -3,9 +3,9 @@ from typing import Union
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 from fastapi.param_functions import Depends
 from fastapi.middleware.cors import CORSMiddleware
-from screenplay_classes import Script, Scene
+from screenplay_classes import Script
 import configue
-from test_api.utils import Item, update_db, Parameters, get_scenes_from_db
+from test_api.utils import Item, update_db, get_scenes_from_db
 
 
 """This script creates the API needed to link our backend and front end work."""
@@ -51,6 +51,7 @@ async def upload_script(
             "message": "Fichier {} lu".format(filename),
             "score": db[filename]["score"],
             "chars": db[filename]["chars"],
+            "test" : config
             **get_scenes_from_db(filename, db),
         }
     else:
@@ -96,18 +97,18 @@ async def result_with_user_gender_by_title(item: Item):
         raise HTTPException(404, f"Movie not in base")
 
 
-@app.get("/bechdel-scenes/{filename}")
-async def Bechdel_scenes(filename: str):
-    """This GET method returns the scenes that pass the highest score passed by the movie."""
-    score = db[filename]["score"]
-    if (score <= 1) and (score >= 0):
-        return {"message": "None of the scenes in the movie help pass the test."}
-    elif score == 2:
-        scenes = db[filename]["score_2"]
-        return {
-            "message": "The movie has two named female characters who speak together. Unfortunately, they do speak about men.",
-            "scenes": scenes,
-        }
-    elif score == 3:
-        scenes = db[filename]["score_3"]
-        return {"message": "The movie passes the Bechdel Test.", "scenes": scenes}
+# @app.get("/bechdel-scenes/{filename}")
+# async def Bechdel_scenes(filename: str):
+#     """This GET method returns the scenes that pass the highest score passed by the movie."""
+#     score = db[filename]["score"]
+#     if (score <= 1) and (score >= 0):
+#         return {"message": "None of the scenes in the movie help pass the test."}
+#     elif score == 2:
+#         scenes = db[filename]["score_2"]
+#         return {
+#             "message": "The movie has two named female characters who speak together. Unfortunately, they do speak about men.",
+#             "scenes": scenes,
+#         }
+#     elif score == 3:
+#         scenes = db[filename]["score_3"]
+#         return {"message": "The movie passes the Bechdel Test.", "scenes": scenes}
