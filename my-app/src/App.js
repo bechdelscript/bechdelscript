@@ -14,6 +14,8 @@ class App extends React.Component {
         this.state = {
             computed_score: null,
             characters: null,
+            message_result: null,
+            scenes: null,
             file: null,
             loading: false,
             error_message: null,
@@ -46,6 +48,8 @@ class App extends React.Component {
             this.setState({
                 computed_score: data.score,
                 characters: data.chars,
+                message_result: data.message_result,
+                scenes: data.scenes,
                 error_message: null
             });
         } else {
@@ -83,7 +87,9 @@ class App extends React.Component {
             console.log(data);
             this.setState({
                 computed_score: data.score,
-                characters: data.chars
+                characters: data.chars,
+                message_result: data.message_result,
+                scenes: data.scenes,
             });
         } else {
             this.setState({
@@ -159,6 +165,8 @@ class App extends React.Component {
                         <Results
                             loading={this.state.loading}
                             characters={this.state.characters}
+                            message_result={this.state.message_result}
+                            scenes={this.state.scenes}
                             computed_score={this.state.computed_score}
                             handleChange={this.handleGenderChange}
                             handleSubmit={this.handleCharactersListSubmit}

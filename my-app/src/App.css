@@ -48,6 +48,16 @@
   width: 70%;
 }
 
+.results-area-container {
+  background: #f0f0f0;
+  border-radius: 25px;
+  float: none;
+  margin: 2% auto;
+  padding: 1em;
+  position: relative;
+  width: 70%;
+}
+
 .parameters-area-container {
   background: #f0f0f0;
   border-radius: 20px;
@@ -56,6 +66,17 @@
   padding: 1em;
   position: relative;
   width: 80%;
+}
+
+
+.score-layout {
+  background: #A9A9A9;
+  border-radius: 25px;
+  float: none;
+  margin: 2% auto;
+  padding: 0;
+  position: relative;
+  width: 25%;
 }
 
 .uploader-area-container {
