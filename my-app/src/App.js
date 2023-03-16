@@ -38,6 +38,8 @@ class App extends React.Component {
         this.setState({ loading: true })
         const formData = new FormData();
         formData.append('file', this.state.file);
+        formData.append('only_women_in_whole_scene', this.state.women_only_in_scene);
+        formData.append('whole_discussion_not_about_men', this.state.whole_discussion_not_about_men);
 
         const response = await fetch("http://localhost:8000/upload-script/", {
             method: 'POST',
@@ -140,7 +142,7 @@ class App extends React.Component {
                 <header className="App-header">
                     <Typography variant='h3' className='padding-20px'>Bechdel Script Tester</Typography>
                 </header>
-                <Grid container spacing={8}>
+                <Grid container spacing={8} className="padding-20px">
                     <Grid item xs={4}>
                         <Explanation />
                     </Grid>
