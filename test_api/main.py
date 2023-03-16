@@ -1,10 +1,11 @@
 from typing import Union
 
-from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException
+from fastapi.param_functions import Depends
 from fastapi.middleware.cors import CORSMiddleware
 from screenplay_classes import Script, Scene
 import configue
-from test_api.utils import Item, update_db
+from test_api.utils import Item, update_db, Parameters
 
 
 """This script creates the API needed to link our backend and front end work."""
@@ -30,6 +31,8 @@ app.add_middleware(
 @app.post("/upload-script/")
 async def upload_script(
     file: UploadFile = File(...),
+    only_women_in_whole_scene: bool = Form(),
+    whole_discussion_not_about_men: bool = Form(),
 ):
     """This first POST method called upload_script is used with a .txt file input, and returns
     the Bechdel score associated to this file aswell as the list of named characters and their gender.

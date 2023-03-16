@@ -2,9 +2,14 @@ from screenplay_classes import Script, Scene
 from pydantic import BaseModel
 
 
+class Parameters(BaseModel):
+    only_women_in_whole_scene: bool  # these two parameters can take values (true, true), (true, false), (false, false)
+    whole_discussion_not_about_men: bool
+
 class Item(BaseModel):
     filename: str
     user_gender: list
+    parameters: Parameters
 
 
 def update_db(script: Script, user_gender: dict = None):
