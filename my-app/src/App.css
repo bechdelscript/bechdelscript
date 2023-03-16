@@ -74,7 +74,7 @@
 }
 
 .score-layout {
-  background: var(--areas-bg);
+  background: var(--header);
   border-radius: 25px;
   float: none;
   margin: 2% auto;
