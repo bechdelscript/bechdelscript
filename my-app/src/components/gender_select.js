@@ -8,7 +8,7 @@ import Grid from '@mui/system/Unstable_Grid/Grid';
 export default function GenderSelect(props) {
 
     return (
-        <Grid item xs={5}>
+        <Grid item="true" xs={5}>
             <FormControl fullWidth>
                 <InputLabel id="simple-gender-select-label">Gender</InputLabel>
                 <Select

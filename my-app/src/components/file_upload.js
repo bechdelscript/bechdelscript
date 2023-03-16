@@ -25,7 +25,7 @@ function FileUpload(props) {
                     </Grid>
                 </Grid>
             </form>
-            <div>{props.error_message}</div>
+            <div>{props.loading ? '' : props.error_message}</div>
             <div>{loading}</div>
         </div >
     );
