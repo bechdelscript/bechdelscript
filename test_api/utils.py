@@ -25,3 +25,24 @@ def update_db(script: Script, user_gender: dict = None):
         "score_2": score_2,
         "score_3": score_3,
     }
+
+
+def get_scenes_from_db(filename: str, db):
+    score = db[filename]["score"]
+    if (score <= 1) and (score >= 0):
+        return {
+            "message_result": "None of the scenes in the movie help pass the test.",
+            "scenes": [],
+        }
+    elif score == 2:
+        scenes = db[filename]["score_2"]
+        return {
+            "message_result": "The movie has two named female characters who speak together. Unfortunately, they do speak about men.",
+            "scenes": scenes,
+        }
+    elif score == 3:
+        scenes = db[filename]["score_3"]
+        return {
+            "message_result": "The movie passes the Bechdel Test.",
+            "scenes": scenes,
+        }

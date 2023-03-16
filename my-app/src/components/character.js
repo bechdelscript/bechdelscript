@@ -6,10 +6,11 @@ class Character extends Component {
 
     render() {
         return (
-            <Grid container spacing={5} columns={12}>
-                <Grid item xs={3}>{this.props.name}</Grid>
-                <Grid item xs={3}>{this.props.gender}</Grid>
+            <Grid container item="true" xs={6}>
+                <Grid item="true" xs={1} ></Grid>
+                <Grid item="true" xs={5} className="center-text">{this.props.name}</Grid>
                 <GenderSelect gender={this.props.gender} handleChange={this.props.handleChange} />
+                <Grid item="true" xs={1} ></Grid>
             </Grid>
         )
     }
