@@ -131,7 +131,9 @@ class SentenceTransformerClassifier(nn.Module):
 
     def forward(self, list_sentences):
         # model_output dimensions : batch_size * nb sentences * word_embedding_dimension (=384)
-        model_output = self.sentence_bert.encode(list_sentences, convert_to_tensor=True)
+        model_output = self.sentence_bert.encode(
+            list_sentences, convert_to_tensor=True, show_progress_bar=False
+        )
 
         # we feed the embeddings to the fully connected layers
         model_output = self.fully_connected(model_output)
