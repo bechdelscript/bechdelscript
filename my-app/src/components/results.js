@@ -11,7 +11,6 @@ class Results extends Component {
         if (this.props.characters === null | this.props.loading) {
             return;
         }
-        console.log(this.props.characters)
         return (
             <div>
                 <div>

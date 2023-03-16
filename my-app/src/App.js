@@ -57,9 +57,16 @@ class App extends React.Component {
                 error_message: null
             });
         } else {
-            this.setState({
-                error_message: `This is an HTTP error: The status is ${response.status}`
-            });
+            if (response.status === 422) {
+                this.setState({
+                    error_message: `Invalid file format : Please verify your file.`
+                });
+            }
+            else {
+                this.setState({
+                    error_message: `This is an HTTP error: The status is ${response.status}`
+                });
+            }
             throw new Error(
                 `This is an HTTP error: The status is ${response.status}`
             );
@@ -70,7 +77,6 @@ class App extends React.Component {
     handleGenderChange = async (i, event) => {
         const characters = this.state.characters.slice();
         characters[i].gender = event.target.value;
-        console.log(characters[i].gender);
         this.setState({ characters: characters });
     }
 
@@ -95,10 +101,18 @@ class App extends React.Component {
                 message_result: data.message_result,
                 scenes: data.scenes,
             });
+            console.log("scenes", data.scenes);
         } else {
-            this.setState({
-                error_message: `This is an HTTP error: The status is ${response.status}`
-            });
+            if (response.status === 422) {
+                this.setState({
+                    error_message: `Invalid file format : Please verify your file.`
+                });
+            }
+            else {
+                this.setState({
+                    error_message: `This is an HTTP error: The status is ${response.status}`
+                });
+            }
             throw new Error(
                 `This is an HTTP error: The status is ${response.status}`
             );

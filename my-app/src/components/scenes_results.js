@@ -27,7 +27,8 @@ class ScenesResults extends Component {
                 </div>
                 <h2>{this.props.message_result}</h2>
                 <div>{explanation}</div>
-                <div>{scene_displayer}</div>
+                <br />
+                <div className="center-text">{scene_displayer}</div>
             </div>);
     }
 }
