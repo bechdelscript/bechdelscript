@@ -2,6 +2,7 @@ import './App.css';
 import React from 'react';
 
 import FileUpload from './components/file_upload';
+import Parameters from './components/parameters';
 import Results from "./components/results";
 
 class App extends React.Component {
@@ -13,7 +14,9 @@ class App extends React.Component {
             characters: null,
             file: null,
             loading: false,
-            error_message: null
+            error_message: null,
+            women_only_in_scene: false,
+            whole_discussion_not_about_men: false,
         };
     }
 
@@ -91,6 +94,36 @@ class App extends React.Component {
 
     }
 
+    handleWomenSwitch = async (event) => {
+        let checked = event.target.checked;
+        let whole_discussion_not_about_men = this.state.whole_discussion_not_about_men;
+        if (!checked & whole_discussion_not_about_men) {
+            whole_discussion_not_about_men = false;
+        }
+        this.setState(
+            {
+                women_only_in_scene: checked,
+                whole_discussion_not_about_men: whole_discussion_not_about_men
+            }
+        );
+
+    }
+
+    handleDiscussionSwitch = async (event) => {
+        let checked = event.target.checked;
+        let women_only_in_scene = this.state.women_only_in_scene;
+        if (checked & !women_only_in_scene) {
+            women_only_in_scene = true;
+        }
+        this.setState(
+            {
+                women_only_in_scene: women_only_in_scene,
+                whole_discussion_not_about_men: checked
+            }
+        );
+
+    }
+
     render() {
         return (
             <div className="App">
@@ -109,6 +142,14 @@ class App extends React.Component {
                             file={this.state.file}
                         />
                         <div>{this.state.error_message}</div>
+                    </div>
+                    <div>
+                        <Parameters
+                            handleWomenSwitch={this.handleWomenSwitch}
+                            checkedWomenSwitch={this.state.women_only_in_scene}
+                            handleDiscussionSwitch={this.handleDiscussionSwitch}
+                            checkedDiscussionSwitch={this.state.whole_discussion_not_about_men}
+                        />
                     </div>
                     <div>
                         <Results
