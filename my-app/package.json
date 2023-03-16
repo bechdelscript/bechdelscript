@@ -45,5 +45,5 @@
   "devDependencies": {
     "gh-pages": "^5.0.0"
   },
-  "homepage": "http://{github-username}.github.io/{repo-name}"
+  "homepage": "http://bechdelscript.github.io/bechdelscript.github.io"
 }
