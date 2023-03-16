@@ -68,7 +68,6 @@
   width: 80%;
 }
 
-
 .score-layout {
   background: #A9A9A9;
   border-radius: 25px;
@@ -89,10 +88,24 @@
   width: 80%;
 }
 
+.explanation-area-container {
+  background: #f0f0f0;
+  border-radius: 20px;
+  float: none;
+  margin: 2% auto;
+  padding: 1em;
+  position: relative;
+  width: 80%;
+}
+
 .spinner {
   padding: 1em;
 }
 
 .center-text {
   margin: auto;
+}
+
+.left-align-text {
+  text-align: left;
 }

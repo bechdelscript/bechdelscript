@@ -4,6 +4,7 @@ import React from 'react';
 import FileUpload from './components/file_upload';
 import Parameters from './components/parameters';
 import Results from "./components/results";
+import Explanation from './components/explanations';
 
 import { Grid } from '@mui/material';
 
@@ -142,7 +143,7 @@ class App extends React.Component {
                 </header>
                 <Grid container spacing={8}>
                     <Grid item xs={4}>
-                        {/* TODO : insert explanation or whatever */}
+                        <Explanation />
                     </Grid>
                     <Grid item xs={4}>
                         <FileUpload
