@@ -38,6 +38,8 @@ async def upload_script(
     the Bechdel score associated to this file aswell as the list of named characters and their gender.
     """
     filename = file.filename
+    config["only_women_in_whole_scene"] = only_women_in_whole_scene
+    config["whole_discussion_not_about_men"] = whole_discussion_not_about_men
     if file:
         content = await file.read()
         content = content.decode("unicode_escape").replace("\r", "")
@@ -94,18 +96,18 @@ async def result_with_user_gender_by_title(item: Item):
         raise HTTPException(404, f"Movie not in base")
 
 
-# @app.get("/bechdel-scenes/{filename}")
-# async def Bechdel_scenes(filename: str):
-#     """This GET method returns the scenes that pass the highest score passed by the movie."""
-#     score = db[filename]["score"]
-#     if (score <= 1) and (score >= 0):
-#         return {"message": "None of the scenes in the movie help pass the test."}
-#     elif score == 2:
-#         scenes = db[filename]["score_2"]
-#         return {
-#             "message": "The movie has two named female characters who speak together. Unfortunately, they do speak about men.",
-#             "scenes": scenes,
-#         }
-#     elif score == 3:
-#         scenes = db[filename]["score_3"]
-#         return {"message": "The movie passes the Bechdel Test.", "scenes": scenes}
+@app.get("/bechdel-scenes/{filename}")
+async def Bechdel_scenes(filename: str):
+    """This GET method returns the scenes that pass the highest score passed by the movie."""
+    score = db[filename]["score"]
+    if (score <= 1) and (score >= 0):
+        return {"message": "None of the scenes in the movie help pass the test."}
+    elif score == 2:
+        scenes = db[filename]["score_2"]
+        return {
+            "message": "The movie has two named female characters who speak together. Unfortunately, they do speak about men.",
+            "scenes": scenes,
+        }
+    elif score == 3:
+        scenes = db[filename]["score_3"]
+        return {"message": "The movie passes the Bechdel Test.", "scenes": scenes}
