@@ -71,3 +71,7 @@
 .spinner {
   padding: 1em;
 }
+
+.center-text {
+  margin: auto;
+}

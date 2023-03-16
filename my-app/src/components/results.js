@@ -5,9 +5,11 @@ import CharacterList from "./characters_list";
 class Results extends Component {
 
     render() {
+
         if (this.props.characters === null | this.props.loading) {
             return;
         }
+        console.log(this.props.characters)
         return (
             <div>
                 <div>{this.props.computed_score}</div>
