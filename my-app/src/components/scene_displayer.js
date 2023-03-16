@@ -28,7 +28,7 @@ class SceneDisplayer extends Component {
         return (
             <>
                 <Grid container spacing={5} columns={12}>
-                    <Grid item="true" xs={6}>Choose a scene :</Grid>
+                    <Grid item="true" className="center-text" xs={6}>Choose a scene :</Grid>
                     <Grid item="true" xs={6} >
 
                         <InputLabel id="simple-scene-select-label"></InputLabel>
