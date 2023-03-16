@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import CharacterList from "./characters_list";
+import ScenesResults from "./scenes_results";
+
 
 
 class Results extends Component {
@@ -10,7 +12,13 @@ class Results extends Component {
         }
         return (
             <div>
-                <div>{this.props.computed_score}</div>
+                <div>
+                    <ScenesResults
+                        computed_score={this.props.computed_score}
+                        characters={this.props.characters}
+                        message_result={this.props.message_result}
+                        scenes={this.props.scenes} />
+                </div>
                 <div>
                     <CharacterList
                         characters={this.props.characters}
