@@ -38,8 +38,8 @@ async def upload_script(
     the Bechdel score associated to this file aswell as the list of named characters and their gender.
     """
     filename = file.filename
-    config["only_women_in_whole_scene"] = only_women_in_whole_scene
-    config["whole_discussion_not_about_men"] = whole_discussion_not_about_men
+    config["bechdel_test_rules"]["only_women_in_whole_scene"] = only_women_in_whole_scene
+    config["bechdel_test_rules"]["whole_discussion_not_about_men"] = whole_discussion_not_about_men
     if file:
         content = await file.read()
         content = content.decode("unicode_escape").replace("\r", "")
@@ -51,8 +51,8 @@ async def upload_script(
             "message": "Fichier {} lu".format(filename),
             "score": db[filename]["score"],
             "chars": db[filename]["chars"],
-            "test" : config
             **get_scenes_from_db(filename, db),
+            "test":config
         }
     else:
         return {"message": "There was an error uploading the file {}".format(filename)}
