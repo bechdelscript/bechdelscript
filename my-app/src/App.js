@@ -2,7 +2,10 @@ import './App.css';
 import React from 'react';
 
 import FileUpload from './components/file_upload';
+import Parameters from './components/parameters';
 import Results from "./components/results";
+
+import { Grid } from '@mui/material';
 
 class App extends React.Component {
 
@@ -15,7 +18,9 @@ class App extends React.Component {
             scenes: null,
             file: null,
             loading: false,
-            error_message: null
+            error_message: null,
+            women_only_in_scene: false,
+            whole_discussion_not_about_men: false,
         };
     }
 
@@ -97,26 +102,66 @@ class App extends React.Component {
 
     }
 
+    handleWomenSwitch = async (event) => {
+        let checked = event.target.checked;
+        let whole_discussion_not_about_men = this.state.whole_discussion_not_about_men;
+        if (!checked & whole_discussion_not_about_men) {
+            whole_discussion_not_about_men = false;
+        }
+        this.setState(
+            {
+                women_only_in_scene: checked,
+                whole_discussion_not_about_men: whole_discussion_not_about_men
+            }
+        );
+
+    }
+
+    handleDiscussionSwitch = async (event) => {
+        let checked = event.target.checked;
+        let women_only_in_scene = this.state.women_only_in_scene;
+        if (checked & !women_only_in_scene) {
+            women_only_in_scene = true;
+        }
+        this.setState(
+            {
+                women_only_in_scene: women_only_in_scene,
+                whole_discussion_not_about_men: checked
+            }
+        );
+
+    }
+
     render() {
         return (
             <div className="App">
                 <header className="App-header">
-                    {/* <img src={logo} className="App-logo" alt="logo" /> */}
                     <p>
                         Bechdel Test AI
                     </p>
                 </header>
-                <div>
-                    <div>
+                <Grid container spacing={8}>
+                    <Grid item xs={4}>
+                        {/* TODO : insert explanation or whatever */}
+                    </Grid>
+                    <Grid item xs={4}>
                         <FileUpload
                             handleFileSelect={this.handleUploadFileSelect}
                             handleSubmit={this.handleUploadFileSubmit}
                             loading={this.state.loading}
                             file={this.state.file}
+                            error_message={this.state.error_message}
                         />
-                        <div>{this.state.error_message}</div>
-                    </div>
-                    <div>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <Parameters
+                            handleWomenSwitch={this.handleWomenSwitch}
+                            checkedWomenSwitch={this.state.women_only_in_scene}
+                            handleDiscussionSwitch={this.handleDiscussionSwitch}
+                            checkedDiscussionSwitch={this.state.whole_discussion_not_about_men}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
                         <Results
                             loading={this.state.loading}
                             characters={this.state.characters}
@@ -126,8 +171,8 @@ class App extends React.Component {
                             handleChange={this.handleGenderChange}
                             handleSubmit={this.handleCharactersListSubmit}
                         />
-                    </div>
-                </div>
+                    </Grid>
+                </Grid>
             </div>
         );
     }

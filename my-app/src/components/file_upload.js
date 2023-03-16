@@ -1,24 +1,33 @@
 import React from "react";
-import { Button } from '@mui/material';
+import { Typography, Grid, Button, Box } from '@mui/material';
 import { CircularProgress } from '@mui/material';
 
+
 function FileUpload(props) {
-    let loading = props.loading ? <CircularProgress /> : null;
+    let loading = props.loading ? <CircularProgress className="spinner" /> : null;
     let chosen_file = props.file ? props.file.name : `No file chosen`
     return (
-        <div>
+        <div className="uploader-area-container">
+            <Typography variant="h4">Upload a file</Typography>
             <form onSubmit={props.handleSubmit}>
-                <Button component="label">
-                    Choose file
-                    <input hidden type="file" onChange={props.handleFileSelect} />
-                </Button>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                {chosen_file}
-                <br></br>
-                <Button variant="contained" type="submit">Upload</Button>
+                <Grid container>
+                    <Grid item xs={12}>
+                        <Box sx={{ justifyContent: 'center', flexWrap: 'nowrap' }}>
+                            <Button sx={{ m: 0.5 }} component="label">
+                                Choose file
+                                <input hidden type="file" onChange={props.handleFileSelect} />
+                            </Button>
+                            {chosen_file}
+                        </Box>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Button sx={{ m: 1 }} variant="contained" type="submit">Upload</Button>
+                    </Grid>
+                </Grid>
             </form>
+            <div>{props.error_message}</div>
             <div>{loading}</div>
-        </div>
+        </div >
     );
 }
 
