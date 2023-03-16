@@ -5,6 +5,8 @@ import FileUpload from './components/file_upload';
 import Parameters from './components/parameters';
 import Results from "./components/results";
 
+import { Grid } from '@mui/material';
+
 class App extends React.Component {
 
     constructor(props) {
@@ -128,30 +130,32 @@ class App extends React.Component {
         return (
             <div className="App">
                 <header className="App-header">
-                    {/* <img src={logo} className="App-logo" alt="logo" /> */}
                     <p>
                         Bechdel Test AI
                     </p>
                 </header>
-                <div>
-                    <div>
+                <Grid container spacing={8}>
+                    <Grid item xs={4}>
+                        {/* TODO : insert explanation or whatever */}
+                    </Grid>
+                    <Grid item xs={4}>
                         <FileUpload
                             handleFileSelect={this.handleUploadFileSelect}
                             handleSubmit={this.handleUploadFileSubmit}
                             loading={this.state.loading}
                             file={this.state.file}
+                            error_message={this.state.error_message}
                         />
-                        <div>{this.state.error_message}</div>
-                    </div>
-                    <div>
+                    </Grid>
+                    <Grid item xs={4}>
                         <Parameters
                             handleWomenSwitch={this.handleWomenSwitch}
                             checkedWomenSwitch={this.state.women_only_in_scene}
                             handleDiscussionSwitch={this.handleDiscussionSwitch}
                             checkedDiscussionSwitch={this.state.whole_discussion_not_about_men}
                         />
-                    </div>
-                    <div>
+                    </Grid>
+                    <Grid item xs={12}>
                         <Results
                             loading={this.state.loading}
                             characters={this.state.characters}
@@ -159,8 +163,8 @@ class App extends React.Component {
                             handleChange={this.handleGenderChange}
                             handleSubmit={this.handleCharactersListSubmit}
                         />
-                    </div>
-                </div>
+                    </Grid>
+                </Grid>
             </div>
         );
     }

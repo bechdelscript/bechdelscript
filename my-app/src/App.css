@@ -55,5 +55,19 @@
   margin: 2% auto;
   padding: 1em;
   position: relative;
-  width: 20em;
+  width: 80%;
+}
+
+.uploader-area-container {
+  background: #f0f0f0;
+  border-radius: 20px;
+  float: none;
+  margin: 2% auto;
+  padding: 1em;
+  position: relative;
+  width: 80%;
+}
+
+.spinner {
+  padding: 1em;
 }
