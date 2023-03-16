@@ -4,8 +4,10 @@ import React from 'react';
 import FileUpload from './components/file_upload';
 import Parameters from './components/parameters';
 import Results from "./components/results";
+import Explanation from './components/explanations';
 
-import { Grid } from '@mui/material';
+import { Typography, Grid } from '@mui/material';
+
 
 class App extends React.Component {
 
@@ -36,6 +38,8 @@ class App extends React.Component {
         this.setState({ loading: true })
         const formData = new FormData();
         formData.append('file', this.state.file);
+        formData.append('only_women_in_whole_scene', this.state.women_only_in_scene);
+        formData.append('whole_discussion_not_about_men', this.state.whole_discussion_not_about_men);
 
         const response = await fetch("http://localhost:8000/upload-script/", {
             method: 'POST',
@@ -150,13 +154,11 @@ class App extends React.Component {
         return (
             <div className="App">
                 <header className="App-header">
-                    <p>
-                        Bechdel Test AI
-                    </p>
+                    <Typography variant='h3' className='padding-20px'>Bechdel Script Tester</Typography>
                 </header>
-                <Grid container spacing={8}>
+                <Grid container spacing={8} className="padding-20px">
                     <Grid item xs={4}>
-                        {/* TODO : insert explanation or whatever */}
+                        <Explanation />
                     </Grid>
                     <Grid item xs={4}>
                         <FileUpload
