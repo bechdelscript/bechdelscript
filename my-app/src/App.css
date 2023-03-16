@@ -1,3 +1,8 @@
+:root {
+  --header: #cbcbcb;
+  --areas-bg: #f0f0f0;
+}
+
 .App {
   text-align: center;
 }
@@ -14,14 +19,14 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: var(--header);
   min-height: 10vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: black;
 }
 
 .App-link {
@@ -38,28 +43,28 @@
   }
 }
 
-.characters-area-container {
-  background: #f0f0f0;
-  border-radius: 25px;
+.explanation-area-container {
+  background: var(--areas-bg);
+  border-radius: 20px;
   float: none;
   margin: 2% auto;
   padding: 1em;
   position: relative;
-  width: 70%;
+  width: 80%;
 }
 
-.results-area-container {
-  background: #f0f0f0;
-  border-radius: 25px;
+.uploader-area-container {
+  background: var(--areas-bg);
+  border-radius: 20px;
   float: none;
   margin: 2% auto;
   padding: 1em;
   position: relative;
-  width: 70%;
+  width: 80%;
 }
 
 .parameters-area-container {
-  background: #f0f0f0;
+  background: var(--areas-bg);
   border-radius: 20px;
   float: none;
   margin: 2% auto;
@@ -69,7 +74,7 @@
 }
 
 .score-layout {
-  background: #A9A9A9;
+  background: var(--areas-bg);
   border-radius: 25px;
   float: none;
   margin: 2% auto;
@@ -78,24 +83,24 @@
   width: 25%;
 }
 
-.uploader-area-container {
-  background: #f0f0f0;
-  border-radius: 20px;
+.results-area-container {
+  background: var(--areas-bg);
+  border-radius: 25px;
   float: none;
   margin: 2% auto;
   padding: 1em;
   position: relative;
-  width: 80%;
+  width: 70%;
 }
 
-.explanation-area-container {
-  background: #f0f0f0;
-  border-radius: 20px;
+.characters-area-container {
+  background: var(--areas-bg);
+  border-radius: 25px;
   float: none;
   margin: 2% auto;
   padding: 1em;
   position: relative;
-  width: 80%;
+  width: 70%;
 }
 
 .spinner {
@@ -108,4 +113,8 @@
 
 .left-align-text {
   text-align: left;
+}
+
+.padding-20px {
+  padding: 20px;
 }

@@ -6,7 +6,8 @@ import Parameters from './components/parameters';
 import Results from "./components/results";
 import Explanation from './components/explanations';
 
-import { Grid } from '@mui/material';
+import { Typography, Grid } from '@mui/material';
+
 
 class App extends React.Component {
 
@@ -137,9 +138,7 @@ class App extends React.Component {
         return (
             <div className="App">
                 <header className="App-header">
-                    <p>
-                        Bechdel Test AI
-                    </p>
+                    <Typography variant='h3' className='padding-20px'>Bechdel Script Tester</Typography>
                 </header>
                 <Grid container spacing={8}>
                     <Grid item xs={4}>
