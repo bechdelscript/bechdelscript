@@ -6,6 +6,7 @@ class Parameters(BaseModel):
     only_women_in_whole_scene: bool  # these two parameters can take values (true, true), (true, false), (false, false)
     whole_discussion_not_about_men: bool
 
+
 class Item(BaseModel):
     filename: str
     user_gender: list
@@ -46,3 +47,8 @@ def get_scenes_from_db(filename: str, db):
             "message_result": "The movie passes the Bechdel Test.",
             "scenes": scenes,
         }
+
+
+def get_scene_content(script, scene_id):
+    content = script.list_scenes[scene_id].list_lines
+    return {"scene_id": scene_id, "scene_content": content}

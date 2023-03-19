@@ -52,6 +52,8 @@ class Script:
     def bechdel(self, user_genders=None):
         self.computed_score = 0
         self.user_genders = user_genders
+        self.score2_scenes = []
+        self.score3_scenes = []
         self.are_characters_named()
         self.identify_gender_named_chars()
         self.load_named_males()
