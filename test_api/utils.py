@@ -51,4 +51,5 @@ def get_scenes_from_db(filename: str, db):
 
 def get_scene_content(script, scene_id):
     content = script.list_scenes[scene_id].list_lines
-    return {"scene_id": scene_id, "scene_content": content}
+    indexes = script.list_scenes[scene_id].validating_lines
+    return {"scene_id": scene_id, "scene_content": content, "validating_lines": indexes}

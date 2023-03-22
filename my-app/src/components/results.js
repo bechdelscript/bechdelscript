@@ -18,13 +18,15 @@ class Results extends Component {
                         computed_score={this.props.computed_score}
                         characters={this.props.characters}
                         message_result={this.props.message_result}
-                        scenes={this.props.scenes} />
+                        scenes={this.props.scenes}
+                        file={this.props.file} />
                 </div>
                 <div>
                     <CharacterList
                         characters={this.props.characters}
                         handleSubmit={this.props.handleSubmit}
-                        handleChange={this.props.handleChange} />
+                        handleChange={this.props.handleChange}
+                        file={this.props.file} />
                 </div>
             </div>
         );

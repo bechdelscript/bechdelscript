@@ -410,18 +410,22 @@ class Scene:
         self.list_narration = []
         self.is_elligible_characters_gender = False
         self.is_elligible_topic = False
+        self.validating_lines = []
 
     def load_dialogues(self, characters_in_movie):
         current_speech = []
         current_speaker = None
+        current_index = []
         for i, line in enumerate(self.list_lines):
             if self.list_tags[i] == label.DIALOGUE:
                 # new dialogue, we have to find who is speaking
                 if current_speech == []:
                     current_speaker = self.find_speaker(i, characters_in_movie)
                     current_speech.append(line.lstrip())
+                    current_index.append(i)
                 else:
                     current_speech.append(line.lstrip())
+                    current_index.append(i)
 
             elif self.list_tags[i] == label.METADATA:
                 pass  # we simply ignore metadata
@@ -433,10 +437,11 @@ class Scene:
                     # likely because the line is not a real dialogue
                     if current_speaker != None:
                         self.list_dialogues.append(
-                            Dialogue(current_speaker, current_speech)
+                            Dialogue(current_speaker, current_speech, current_index)
                         )
                     current_speaker = None
                     current_speech = []
+                    current_index = []
 
     def load_narration(self):
         current_narration = ""
@@ -589,6 +594,7 @@ class Scene:
             (
                 dialogue.speaks_about_men(masculine_words, males_names),
                 dialogue.character,
+                dialogue.indexes,
             )
             for dialogue in self.list_dialogues
         ]
@@ -597,21 +603,26 @@ class Scene:
         is_elligible = False
         count_successive_false = 0
         last_person_talking = ""
-        for about_men, character in list_speak_about_men:
+        temp_validating = []
+        self.validating_lines = []
+        for about_men, character, indexes in list_speak_about_men:
             # about_men is False, said by a women, who is different that the last character talking
-            if (
-                not about_men
-                and character.gender == "f"
-                and character.name != last_person_talking
-            ):
-                count_successive_false += 1
+            if not about_men and character.gender == "f":
+                if character.name != last_person_talking:
+                    count_successive_false += 1
+                temp_validating += indexes
             else:  # about_men is True, they're talking about men
                 count_successive_false = 0
+                temp_validating = []
             last_person_talking = character.name
             # the number of successive feminine lines is reached
             if count_successive_false >= number_of_lines_in_a_row:
+                if count_successive_false == number_of_lines_in_a_row:
+                    self.validating_lines += temp_validating
+                else:
+                    self.validating_lines += indexes
                 is_elligible = True
-                break
+                # break
         return is_elligible
 
     def passes_bechdel_test(self):  ## fonction non utilisée
@@ -666,16 +677,13 @@ class Character:
 
 
 class Dialogue:
-    def __init__(
-        self,
-        character: Character,
-        speech: List[str],
-    ):
+    def __init__(self, character: Character, speech: List[str], indexes: List):
         self.character = character
         self.speech_list = speech
         self.speech_text = " ".join(speech)
         self.clean_speech_text = clean_text(self.speech_text)
         self.buzz_words = []
+        self.indexes = indexes
 
     def speaks_about_men(self, masculine_words, males_names: List[str]):
         masculine_words = masculine_words + males_names

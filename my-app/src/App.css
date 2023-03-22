@@ -118,3 +118,11 @@
 .padding-20px {
   padding: 20px;
 }
+
+.correct-text-display {
+  white-space: break-spaces;
+}
+
+.highlighted {
+  background-color: #FFFF00;
+}

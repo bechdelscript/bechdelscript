@@ -12,8 +12,8 @@ It is heavily inspired from the following git repository."""
 
 # The following dictionary represents gendered keywords for when characters are called by their last name.
 keywords = {
-    "f": ["Mrs.", "Mrs", "mrs.", "mrs", "MRS.", "MRS"],
-    "m": ["Mr.", "Mr", "mr.", "mr", "MR.", "MR"],
+    "f": ["Mrs.", "Mrs", "mrs.", "mrs", "MRS.", "MRS", "MOTHER"],
+    "m": ["Mr.", "Mr", "mr.", "mr", "MR.", "MR", "FATHER"],
 }
 
 def load_database() -> pd.DataFrame:
