@@ -42,7 +42,17 @@ class SceneDisplayer extends Component {
         });
         if (response.ok) {
             const data = await response.json();
-            let text = data.scene_content.join('\n');
+            let scene_content = data.scene_content;
+            let validating_lines = data.validating_lines;
+            console.log(data)
+            let text = [];
+            for (let i = 0; i < scene_content.length; i++) {
+                if (validating_lines.includes(i)) {
+                    text.push(<span key={'line_' + i} className="highlighted correct-text-display" >{scene_content[i] + '\n'}</span>)
+                } else {
+                    text.push(<span key={'line_' + i} className="correct-text-display">{scene_content[i] + '\n'}</span>)
+                }
+            }
             this.setState({
                 text: text
             });

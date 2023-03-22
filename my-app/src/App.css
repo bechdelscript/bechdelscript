@@ -122,3 +122,7 @@
 .correct-text-display {
   white-space: break-spaces;
 }
+
+.highlighted {
+  background-color: #FFFF00;
+}

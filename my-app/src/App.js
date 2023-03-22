@@ -47,15 +47,16 @@ class App extends React.Component {
         });
         if (response.ok) {
             const data = await response.json();
-            console.log(data);
-            await this.setState({
+            this.setState({
                 computed_score: data.score,
                 characters: data.chars,
                 message_result: data.message_result,
                 scenes: data.scenes,
-                error_message: null
+                error_message: null,
+                loading: false
             });
         } else {
+            this.setState({ loading: false })
             if (response.status === 422) {
                 this.setState({
                     error_message: `Invalid file format : Please verify your file.`
@@ -70,7 +71,6 @@ class App extends React.Component {
                 `This is an HTTP error: The status is ${response.status}`
             );
         }
-        this.setState({ loading: false })
 
     }
 
@@ -95,7 +95,6 @@ class App extends React.Component {
                 }
             })
         });
-        this.setState({ loading: false })
         if (response.ok) {
             const data = await response.json();
             console.log(data);
@@ -104,8 +103,10 @@ class App extends React.Component {
                 characters: data.chars,
                 message_result: data.message_result,
                 scenes: data.scenes,
+                loading: false
             });
         } else {
+            this.setState({ loading: false })
             if (response.status === 422) {
                 this.setState({
                     error_message: `Invalid file format : Please verify your file.`
