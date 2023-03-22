@@ -45,11 +45,10 @@ class App extends React.Component {
             method: 'POST',
             body: formData,
         });
-        this.setState({ loading: false })
         if (response.ok) {
             const data = await response.json();
             console.log(data);
-            this.setState({
+            await this.setState({
                 computed_score: data.score,
                 characters: data.chars,
                 message_result: data.message_result,
@@ -71,6 +70,7 @@ class App extends React.Component {
                 `This is an HTTP error: The status is ${response.status}`
             );
         }
+        this.setState({ loading: false })
 
     }
 
@@ -88,7 +88,11 @@ class App extends React.Component {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 filename: this.state.file.name,
-                user_gender: this.state.characters
+                user_gender: this.state.characters,
+                parameters: {
+                    only_women_in_whole_scene: this.state.women_only_in_scene,
+                    whole_discussion_not_about_men: this.state.whole_discussion_not_about_men,
+                }
             })
         });
         this.setState({ loading: false })
@@ -101,7 +105,6 @@ class App extends React.Component {
                 message_result: data.message_result,
                 scenes: data.scenes,
             });
-            console.log("scenes", data.scenes);
         } else {
             if (response.status === 422) {
                 this.setState({
@@ -186,6 +189,7 @@ class App extends React.Component {
                             computed_score={this.state.computed_score}
                             handleChange={this.handleGenderChange}
                             handleSubmit={this.handleCharactersListSubmit}
+                            file={this.state.file}
                         />
                     </Grid>
                 </Grid>
