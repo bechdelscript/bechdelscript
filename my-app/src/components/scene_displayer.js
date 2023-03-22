@@ -44,13 +44,16 @@ class SceneDisplayer extends Component {
             const data = await response.json();
             let scene_content = data.scene_content;
             let validating_lines = data.validating_lines;
-            console.log(data)
+            console.log(data);
             let text = [];
             for (let i = 0; i < scene_content.length; i++) {
                 if (validating_lines.includes(i)) {
-                    text.push(<span key={'line_' + i} className="highlighted correct-text-display" >{scene_content[i] + '\n'}</span>)
+                    // highlight the text after the tabs
+                    let first_non_whitespace_character = scene_content[i].search(/\S|$/);
+                    text.push(<span key={'line_' + i + '_whitespace'} className="correct-text-display">{scene_content[i].slice(0, first_non_whitespace_character)}</span>);
+                    text.push(<span key={'line_' + i} className="highlighted correct-text-display" >{scene_content[i].slice(first_non_whitespace_character) + '\n'}</span>);
                 } else {
-                    text.push(<span key={'line_' + i} className="correct-text-display">{scene_content[i] + '\n'}</span>)
+                    text.push(<span key={'line_' + i} className="correct-text-display">{scene_content[i] + '\n'}</span>);
                 }
             }
             this.setState({
