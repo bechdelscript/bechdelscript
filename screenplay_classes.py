@@ -701,6 +701,7 @@ class Dialogue:
         clean_speech_text = clean_speech_text.replace("(", " ")
         clean_speech_text = clean_speech_text.replace(")", " ")
         clean_speech_text = clean_speech_text.replace(":", " ")
+        clean_speech_text = clean_speech_text.replace("'", " ")
 
         clean_speech_text = clean_speech_text.lower()
 
