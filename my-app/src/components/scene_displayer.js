@@ -42,7 +42,7 @@ class SceneDisplayer extends Component {
         // (it didn't work when centerLineInDiv was called in handleChange)
 
         // text = "" the first time the component is created (the scrolling is then dealt with smoothCenterLineInWindow)
-        if (prevState.text != "") {
+        if (prevState.text !== "") {
 
             // we make sure the scene was changed (and not something else in the component)
             if (!this.comparePreviousStateTextWithCurrentStateText(prevState.text, this.state.text)) {
@@ -52,11 +52,11 @@ class SceneDisplayer extends Component {
     }
 
     comparePreviousStateTextWithCurrentStateText(previous_text, current_text) {
-        if (previous_text.length != current_text.length) {
+        if (previous_text.length !== current_text.length) {
             return false;
         }
         for (let i = 0; i < previous_text.length; i++) {
-            if (previous_text[i].props.children != current_text[i].props.children) {
+            if (previous_text[i].props.children !== current_text[i].props.children) {
                 return false;
             }
         }
