@@ -88,7 +88,11 @@ class App extends React.Component {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 filename: this.state.file.name,
-                user_gender: this.state.characters
+                user_gender: this.state.characters,
+                parameters: {
+                    only_women_in_whole_scene: this.state.women_only_in_scene,
+                    whole_discussion_not_about_men: this.state.whole_discussion_not_about_men,
+                }
             })
         });
         this.setState({ loading: false })

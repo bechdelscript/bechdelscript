@@ -88,6 +88,12 @@ async def result_with_user_gender_by_title(item: Item):
     filename = item.filename
     user_gender = item.user_gender
     dico_gender = {k["name"]: k["gender"] for k in user_gender}
+    config["bechdel_test_rules"][
+        "only_women_in_whole_scene"
+    ] = item.parameters.only_women_in_whole_scene
+    config["bechdel_test_rules"][
+        "whole_discussion_not_about_men"
+    ] = item.parameters.whole_discussion_not_about_men
     if filename in db.keys():
         temp = db[filename]["script"]
         db[filename] = update_db(temp, dico_gender)
