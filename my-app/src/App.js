@@ -45,11 +45,10 @@ class App extends React.Component {
             method: 'POST',
             body: formData,
         });
-        this.setState({ loading: false })
         if (response.ok) {
             const data = await response.json();
             console.log(data);
-            this.setState({
+            await this.setState({
                 computed_score: data.score,
                 characters: data.chars,
                 message_result: data.message_result,
@@ -71,6 +70,7 @@ class App extends React.Component {
                 `This is an HTTP error: The status is ${response.status}`
             );
         }
+        this.setState({ loading: false })
 
     }
 
@@ -105,7 +105,6 @@ class App extends React.Component {
                 message_result: data.message_result,
                 scenes: data.scenes,
             });
-            console.log("scenes", data.scenes);
         } else {
             if (response.status === 422) {
                 this.setState({

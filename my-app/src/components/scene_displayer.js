@@ -46,7 +46,6 @@ class SceneDisplayer extends Component {
             this.setState({
                 text: text
             });
-            console.log(text);
         } else {
             throw new Error(
                 `This is an HTTP error: The status is ${response.status}`
