@@ -283,8 +283,6 @@ class Script:
                         f"\n******* {str(scene_id) + 'th' if scene_id == 1 else str(scene_id) + 'st'} scene *******"
                     )
                     print(self.list_scenes[scene_id])
-                    #
-                    print(self.list_scenes[scene_id].validating_lines)
 
     def display_results_streamlit(self, nb_scenes):
         st.write(f"Computed score : {self.computed_score}")
