@@ -603,6 +603,7 @@ class Scene:
         count_successive_false = 0
         last_person_talking = ""
         temp_validating = []
+        self.validating_lines = []
         for about_men, character, indexes in list_speak_about_men:
             # about_men is False, said by a women, who is different that the last character talking
             if not about_men and character.gender == "f":
