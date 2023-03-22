@@ -7,6 +7,7 @@ from script_parsing.ml_parsing import tag_script_with_ml
 from gender.gender_name import load_classifier, _classify, load_database
 from gender.narrative_approach import import_gender_tokens
 from gender.neural_coref import list_pronouns_coref
+from utils import clean_text
 import nltk
 import streamlit as st
 import spacy
@@ -283,8 +284,6 @@ class Script:
                         f"\n******* {str(scene_id) + 'th' if scene_id == 1 else str(scene_id) + 'st'} scene *******"
                     )
                     print(self.list_scenes[scene_id])
-                    #
-                    print(self.list_scenes[scene_id].validating_lines)
 
     def display_results_streamlit(self, nb_scenes):
         st.write(f"Computed score : {self.computed_score}")
@@ -599,6 +598,8 @@ class Scene:
             )
             for dialogue in self.list_dialogues
         ]
+        for index, dialogue in enumerate(self.list_dialogues):
+            dialogue.get_buzz_words(masculine_words, males_names)
         is_elligible = False
         count_successive_false = 0
         last_person_talking = ""
@@ -680,7 +681,8 @@ class Dialogue:
         self.character = character
         self.speech_list = speech
         self.speech_text = " ".join(speech)
-        self.clean_speech_text = self.clean_text()
+        self.clean_speech_text = clean_text(self.speech_text)
+        self.buzz_words = []
         self.indexes = indexes
 
     def speaks_about_men(self, masculine_words, males_names: List[str]):
@@ -691,22 +693,25 @@ class Dialogue:
                 return True
         return False
 
-    def clean_text(self):
-        clean_speech_text = self.speech_text.strip()
-
-        clean_speech_text = clean_speech_text.replace(".", " ")
-        clean_speech_text = clean_speech_text.replace(",", " ")
-        clean_speech_text = clean_speech_text.replace(";", " ")
-        clean_speech_text = clean_speech_text.replace("?", " ")
-        clean_speech_text = clean_speech_text.replace("!", " ")
-        clean_speech_text = clean_speech_text.replace("(", " ")
-        clean_speech_text = clean_speech_text.replace(")", " ")
-        clean_speech_text = clean_speech_text.replace(":", " ")
-        clean_speech_text = clean_speech_text.replace("'", " ")
-
-        clean_speech_text = clean_speech_text.lower()
-
-        return clean_speech_text
+    def get_buzz_words(self, masculine_words, males_names: List[str]):
+        self.buzz_words = []  # reinitialization
+        masculine_words = masculine_words + males_names
+        for line in self.speech_list:
+            clean_line = clean_text(line, strip=False, add_spaces_to_extremities=True)
+            for word in masculine_words:
+                while (
+                    " " + word + " " in clean_line
+                ):  # to make sure word is not included in another word (Example: 'he' is in "where have you been")
+                    index_start = clean_line.index(
+                        " " + word + " "
+                    )  # a shift (decalage) is induced by the added space in clean_line
+                    index_end = index_start + len(word) - 1
+                    self.buzz_words.append((index_start, index_end, word, line))
+                    clean_line = (
+                        clean_line[:index_start]
+                        + " " * (len(word) - 1)
+                        + clean_line[index_end + 1 :]
+                    )
 
     def __repr__(self) -> str:
         return f"{self.character} : {self.speech_text}"
