@@ -22,12 +22,36 @@ class SceneDisplayer extends Component {
         super(props);
         this.state = {
             value: this.props.scenes[0],
-            text: " INSIDE THE TENT LUKE's eyes pop open, disoriented, realizing he's fallen asleep reading by flashlight. He's nineteen, still slightly awkward and unaware he's growing handsome. He listens as the ENGINE RUMBLES LOUDER, closer. He peers out through the tent flap. Glaring head lamps ROAR toward him. Scrambling out of his sleeping bag, he HURLS himself against the side of the tent, as... AAAAAAAAAAAAAAAAAAAAA AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA AAAAAAAAAAAAAAAAAAAAAAHHHHHHHHHHHHHHHHHHHHHHHHHHH HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi. Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, non fermentum diam nisl sit amet erat. Duis semper. Duis arcu massa, scelerisque vitae, consequat in, pretium a, enim. Pellentesque congue. Ut in risus volutpat libero pharetra tempor. Cras vestibulum bibendum augue. Praesent egestas leo in pede. Praesent blandit odio eu enim. Pellentesque sed dui ut augue blandit sodales. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aliquam nibh. Mauris ac mauris sed pede pellentesque fermentum. Maecenas adipiscing ante non diam sodales hendrerit. Ut velit mauris, egestas sed, gravida nec, ornare ut, mi. Aenean ut orci vel massa suscipit pulvinar. Nulla sollicitudin. Fusce varius, ligula non tempus aliquam, nunc turpis ullamcorper nibh, in tempus sapien eros vitae ligula. Pellentesque rhoncus nunc et augue. Integer id felis. Curabitur aliquet pellentesque diam. Integer quis metus vitae elit lobortis egestas. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Morbi vel erat non mauris convallis vehicula. Nulla et sapien. Integer tortor tellus, aliquam faucibus, convallis id, congue eu, quam. Mauris ullamcorper felis vitae erat. Proin feugiat, augue non elementum posuere, metus purus iaculis lectus, et tristique ligula justo vitae magna. Aliquam convallis sollicitudin purus. Praesent aliquam, enim at fermentum mollis, ligula massa adipiscing nisl, ac euismod nibh nisl eu lectus. Fusce vulputate sem at sapien. Vivamus leo. Aliquam euismod libero eu enim. Nulla nec felis sed leo placerat imperdiet. Aenean suscipit nulla in justo. Suspendisse cursus rutrum augue. Nulla tincidunt tincidunt mi. Curabitur iaculis, lorem vel rhoncus faucibus, felis magna fermentum augue, et ultricies lacus lorem varius purus. Curabitur eu amet",
+            text: "",
         };
     }
 
-    handleChange(event) {
-        this.setState({ value: event.target.value });
+    componentDidMount() {
+        this.fetchSceneText();
+    }
+
+    async handleChange(event) {
+        await this.setState({ value: event.target.value });
+        this.fetchSceneText();
+
+    }
+
+    async fetchSceneText() {
+        const response = await fetch(`http://localhost:8000/content-scene/` + this.props.file.name + `/` + this.state.value, {
+            method: 'GET',
+        });
+        if (response.ok) {
+            const data = await response.json();
+            let text = data.scene_content.join('\n');
+            this.setState({
+                text: text
+            });
+            console.log(text);
+        } else {
+            throw new Error(
+                `This is an HTTP error: The status is ${response.status}`
+            );
+        }
     }
 
     render() {
@@ -61,7 +85,7 @@ class SceneDisplayer extends Component {
                 </Grid>
                 <br />
                 <Box style={{ maxHeight: 250, overflow: 'auto', background: '#ffffff' }}>
-                    <div style={{ padding: '2%', textAlign: 'left' }} >{this.state.text}</div>
+                    <div style={{ padding: '2% 10%', textAlign: 'left' }} className="correct-text-display" >{this.state.text}</div>
                 </Box>
             </div>
         );

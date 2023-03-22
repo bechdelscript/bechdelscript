@@ -190,6 +190,7 @@ class App extends React.Component {
                             computed_score={this.state.computed_score}
                             handleChange={this.handleGenderChange}
                             handleSubmit={this.handleCharactersListSubmit}
+                            file={this.state.file}
                         />
                     </Grid>
                 </Grid>

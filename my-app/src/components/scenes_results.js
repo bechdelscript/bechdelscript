@@ -14,11 +14,11 @@ class ScenesResults extends Component {
         }
         else if (this.props.computed_score === 2) {
             explanation = "Find below a few scenes where they talk :";
-            scene_displayer = <SceneDisplayer scenes={this.props.scenes} />;
+            scene_displayer = <SceneDisplayer scenes={this.props.scenes} file={this.props.file} />;
         }
         else if (this.props.computed_score === 3) {
             explanation = "There are at least two named female characters in the movie, they speak together, and not about men. Find below the scenes that pass the test :";
-            scene_displayer = <SceneDisplayer scenes={this.props.scenes} />;
+            scene_displayer = <SceneDisplayer scenes={this.props.scenes} file={this.props.file} />;
         }
         return (
             <div className="results-area-container">
