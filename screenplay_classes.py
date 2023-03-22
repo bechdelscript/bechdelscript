@@ -2,12 +2,11 @@ from typing import List
 import re
 
 from script_parsing.naive_parsing import label, tag_script
-from topic_modeling.import_masculine_words import import_masculine_words
+from topic_modeling.utils import import_masculine_words, clean_text
 from script_parsing.ml_parsing import tag_script_with_ml
 from gender.gender_name import load_classifier, _classify, load_database
 from gender.narrative_approach import import_gender_tokens
 from gender.neural_coref import list_pronouns_coref
-from utils import clean_text
 import nltk
 import streamlit as st
 import spacy
@@ -183,6 +182,13 @@ class Script:
             self.computed_score = min(self.computed_score + scene.is_elligible_topic, 3)
             if scene.is_elligible_topic:
                 self.score3_scenes.append(index)
+            else:
+                for index_scene in self.score2_scenes:
+                    scene = self.list_scenes[index_scene]
+                    scene.load_scene_buzz_words(
+                        self.male_named_characters,
+                        masculine_words,
+                    )
         # return score = 3 le cas échéant et liste de scènes qui valident le test 3
 
     def passes_bechdel_test(self):
@@ -411,6 +417,7 @@ class Scene:
         self.is_elligible_characters_gender = False
         self.is_elligible_topic = False
         self.validating_lines = []
+        self.lines_with_male_words = {}
 
     def load_dialogues(self, characters_in_movie):
         current_speech = []
@@ -598,8 +605,6 @@ class Scene:
             )
             for dialogue in self.list_dialogues
         ]
-        for index, dialogue in enumerate(self.list_dialogues):
-            dialogue.get_buzz_words(masculine_words, males_names)
         is_elligible = False
         count_successive_false = 0
         last_person_talking = ""
@@ -625,13 +630,21 @@ class Scene:
                 # break
         return is_elligible
 
-    def passes_bechdel_test(self):  ## fonction non utilisée
-        passes_bechdel = True
-        if not self.is_elligible_characters_gender:
-            passes_bechdel = False
-        if not self.is_elligible_topic:
-            passes_bechdel = False
-        return passes_bechdel
+    def load_scene_buzz_words(
+        self,
+        males_names,
+        masculine_words,
+    ):
+        self.lines_with_male_words = {}
+        for dialogue in self.list_dialogues:
+            if dialogue.character.gender != "f":
+                pass
+            dialogue.get_buzz_words(
+                masculine_words,
+                males_names,
+            )
+            for k, v in dialogue.buzz_words.items():
+                self.lines_with_male_words[k] = v
 
     def __repr__(self) -> str:
         return "\n".join(self.list_lines)
@@ -682,7 +695,7 @@ class Dialogue:
         self.speech_list = speech
         self.speech_text = " ".join(speech)
         self.clean_speech_text = clean_text(self.speech_text)
-        self.buzz_words = []
+        self.buzz_words = {}
         self.indexes = indexes
 
     def speaks_about_men(self, masculine_words, males_names: List[str]):
@@ -694,19 +707,23 @@ class Dialogue:
         return False
 
     def get_buzz_words(self, masculine_words, males_names: List[str]):
-        self.buzz_words = []  # reinitialization
+        self.buzz_words = {}  # reinitialization
         masculine_words = masculine_words + males_names
-        for line in self.speech_list:
+        for index_line, line in zip(self.indexes, self.speech_list):
             clean_line = clean_text(line, strip=False, add_spaces_to_extremities=True)
             for word in masculine_words:
                 while (
                     " " + word + " " in clean_line
-                ):  # to make sure word is not included in another word (Example: 'he' is in "where have you been")
+                ):  # to make sure word is not included in another word (Example: 'he' is in "Where have you been ?!")
                     index_start = clean_line.index(
                         " " + word + " "
                     )  # a shift (decalage) is induced by the added space in clean_line
                     index_end = index_start + len(word) - 1
-                    self.buzz_words.append((index_start, index_end, word, line))
+                    if index_line not in self.buzz_words.keys():
+                        self.buzz_words[index_line] = []
+                    self.buzz_words[index_line].append(
+                        (index_start, index_end, word, line)
+                    )
                     clean_line = (
                         clean_line[:index_start]
                         + " " * (len(word) - 1)
