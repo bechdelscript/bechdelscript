@@ -1,9 +1,11 @@
+import React from "react";
 import { Component } from "react";
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import Grid from '@mui/material/Grid';
 import { Box } from "@mui/system";
+import { Button } from "@mui/material";
 
 
 const ITEM_HEIGHT = 48;
@@ -24,15 +26,46 @@ class SceneDisplayer extends Component {
             value: this.props.scenes[0],
             text: "",
         };
+        this.myHighlightedLine = React.createRef();
+        this.myScrollableDiv = React.createRef();
+
     }
 
-    componentDidMount() {
-        this.fetchSceneText();
+    async componentDidMount() {
+        await this.fetchSceneText();
+        // when component is created, center on highlighted line
+        this.smoothCenterLineInWindow(true)
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        // we want the highlighted line to be centered in the parent div when the component update with a new scene
+        // (it didn't work when centerLineInDiv was called in handleChange)
+
+        // text = "" the first time the component is created (the scrolling is then dealt with smoothCenterLineInWindow)
+        if (prevState.text != "") {
+
+            // we make sure the scene was changed (and not something else in the component)
+            if (!this.comparePreviousStateTextWithCurrentStateText(prevState.text, this.state.text)) {
+                this.centerLineInDiv(false)
+            }
+        }
+    }
+
+    comparePreviousStateTextWithCurrentStateText(previous_text, current_text) {
+        if (previous_text.length != current_text.length) {
+            return false;
+        }
+        for (let i = 0; i < previous_text.length; i++) {
+            if (previous_text[i].props.children != current_text[i].props.children) {
+                return false;
+            }
+        }
+        return true;
     }
 
     async handleChange(event) {
         await this.setState({ value: event.target.value });
-        this.fetchSceneText();
+        await this.fetchSceneText();
 
     }
 
@@ -46,17 +79,24 @@ class SceneDisplayer extends Component {
             let validating_lines = data.validating_lines;
             console.log(data);
             let text = [];
+            let ref_used = false;
             for (let i = 0; i < scene_content.length; i++) {
                 if (validating_lines.includes(i)) {
+                    // pass ref to the first highlighted line only
+                    let ref = null;
+                    if (!ref_used) {
+                        ref = this.myHighlightedLine;
+                        ref_used = true;
+                    }
                     // highlight the text after the tabs
                     let first_non_whitespace_character = scene_content[i].search(/\S|$/);
                     text.push(<span key={'line_' + i + '_whitespace'} className="correct-text-display">{scene_content[i].slice(0, first_non_whitespace_character)}</span>);
-                    text.push(<span key={'line_' + i} className="highlighted correct-text-display" >{scene_content[i].slice(first_non_whitespace_character) + '\n'}</span>);
+                    text.push(<span ref={ref} key={'line_' + i} className="highlighted correct-text-display" >{scene_content[i].slice(first_non_whitespace_character) + '\n'}</span>);
                 } else {
                     text.push(<span key={'line_' + i} className="correct-text-display">{scene_content[i] + '\n'}</span>);
                 }
             }
-            this.setState({
+            await this.setState({
                 text: text
             });
         } else {
@@ -65,6 +105,20 @@ class SceneDisplayer extends Component {
             );
         }
     }
+
+    smoothCenterLineInWindow = () => {
+        // center the whole window on the first highlighted line
+        if (this.myHighlightedLine.current != null) {
+            this.myHighlightedLine.current.scrollIntoView({ block: "center", behavior: "smooth" });
+        }
+    }
+
+    centerLineInDiv = () => {
+        // center the highlighted line in its parent div
+        let top_pos = this.myHighlightedLine.current.offsetTop;
+        this.myScrollableDiv.current.scrollTop = top_pos - this.myScrollableDiv.current.clientHeight / 2;
+    }
+
 
     render() {
         const rows = [];
@@ -96,9 +150,10 @@ class SceneDisplayer extends Component {
                     </Grid>
                 </Grid>
                 <br />
-                <Box style={{ maxHeight: 250, overflow: 'auto', background: '#ffffff' }}>
+                <Box ref={this.myScrollableDiv} style={{ maxHeight: 250, overflow: 'auto', background: '#ffffff', position: 'relative' }}>
                     <div style={{ padding: '2% 10%', textAlign: 'left' }} className="correct-text-display" >{this.state.text}</div>
                 </Box>
+                <Button sx={{ m: 1 }} onClick={() => { this.centerLineInDiv(); }}>Center validating lines</Button>
             </div>
         );
     }
