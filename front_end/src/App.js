@@ -5,6 +5,7 @@ import FileUpload from './components/file_upload';
 import Parameters from './components/parameters';
 import Results from "./components/results";
 import Explanation from './components/explanations';
+import InformationBox from './components/information_box';
 
 import { Typography, Grid } from '@mui/material';
 
@@ -180,6 +181,9 @@ class App extends React.Component {
                             handleDiscussionSwitch={this.handleDiscussionSwitch}
                             checkedDiscussionSwitch={this.state.whole_discussion_not_about_men}
                         />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <InformationBox />
                     </Grid>
                     <Grid item xs={12}>
                         <Results

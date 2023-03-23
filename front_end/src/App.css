@@ -53,6 +53,16 @@
   width: 80%;
 }
 
+.information-box-container {
+  background: var(--areas-bg);
+  border-radius: 20px;
+  float: none;
+  margin: 2% auto;
+  padding: 1em;
+  position: relative;
+  width: 80%;
+}
+
 .uploader-area-container {
   background: var(--areas-bg);
   border-radius: 20px;
