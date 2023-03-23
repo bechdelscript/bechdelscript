@@ -123,6 +123,10 @@
   white-space: break-spaces;
 }
 
-.highlighted {
+.highlighted-valid {
   background-color: #FFFF00;
+}
+
+.highlighted-invalid {
+  background-color: #ffbb00;
 }

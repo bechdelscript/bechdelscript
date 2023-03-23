@@ -2,7 +2,7 @@ from typing import List
 import re
 
 from script_parsing.naive_parsing import label, tag_script
-from topic_modeling.import_masculine_words import import_masculine_words
+from topic_modeling.utils import import_masculine_words, clean_text
 from script_parsing.ml_parsing import tag_script_with_ml
 from gender.gender_name import load_classifier, _classify, load_database
 from gender.narrative_approach import import_gender_tokens, naive_narrative_gender
@@ -182,6 +182,11 @@ class Script:
             self.computed_score = min(self.computed_score + scene.is_elligible_topic, 3)
             if scene.is_elligible_topic:
                 self.score3_scenes.append(index)
+            else:
+                scene.load_scene_buzz_words(
+                    self.male_named_characters,
+                    masculine_words,
+                )
         # return score = 3 le cas échéant et liste de scènes qui valident le test 3
 
     def passes_bechdel_test(self):
@@ -409,7 +414,10 @@ class Scene:
         self.list_narration = []
         self.is_elligible_characters_gender = False
         self.is_elligible_topic = False
-        self.validating_lines = []
+        self.validating_dialogues_score_2 = []
+        self.validating_lines_score_2 = []
+        self.lines_with_male_words_score_2 = {}
+        self.validating_lines_score_3 = []
 
     def load_dialogues(self, characters_in_movie):
         current_speech = []
@@ -533,21 +541,32 @@ class Scene:
 
         is_elligible = False
         characters_in_talking_order = [
-            dialogue.character for dialogue in self.list_dialogues
+            (dialogue.character, dialogue) for dialogue in self.list_dialogues
         ]
+
         count_successive_false = 0
         last_person_talking = ""
-        for character in characters_in_talking_order:
+        temp_validating = []
+        self.validating_dialogues_score_2 = []
+        for character, dialogue in characters_in_talking_order:
             #  A woman is talking, who is different that the last character speaking
             if character.gender == "f" and character.name != last_person_talking:
                 count_successive_false += 1
+                temp_validating.append(dialogue)
             else:
                 count_successive_false = 0
+                temp_validating = []
             last_person_talking = character.name
             # the number of successive feminine lines is reached
             if count_successive_false >= number_of_lines_in_a_row:
+                if count_successive_false == number_of_lines_in_a_row:
+                    self.validating_dialogues_score_2 += temp_validating
+                else:
+                    self.validating_dialogues_score_2.append(dialogue)
                 is_elligible = True
-                break
+        self.validating_lines_score_2 = sum(
+            [dialogue.indexes for dialogue in self.validating_dialogues_score_2], []
+        )
         return is_elligible
 
     def is_elligible_topic_method(
@@ -601,7 +620,7 @@ class Scene:
         count_successive_false = 0
         last_person_talking = ""
         temp_validating = []
-        self.validating_lines = []
+        self.validating_lines_score_3 = []
         for about_men, character, indexes in list_speak_about_men:
             # about_men is False, said by a women, who is different that the last character talking
             if not about_men and character.gender == "f":
@@ -615,20 +634,28 @@ class Scene:
             # the number of successive feminine lines is reached
             if count_successive_false >= number_of_lines_in_a_row:
                 if count_successive_false == number_of_lines_in_a_row:
-                    self.validating_lines += temp_validating
+                    self.validating_lines_score_3 += temp_validating
                 else:
-                    self.validating_lines += indexes
+                    self.validating_lines_score_3 += indexes
                 is_elligible = True
                 # break
         return is_elligible
 
-    def passes_bechdel_test(self):  ## fonction non utilisée
-        passes_bechdel = True
-        if not self.is_elligible_characters_gender:
-            passes_bechdel = False
-        if not self.is_elligible_topic:
-            passes_bechdel = False
-        return passes_bechdel
+    def load_scene_buzz_words(
+        self,
+        males_names,
+        masculine_words,
+    ):
+        self.lines_with_male_words_score_2 = {}
+        for dialogue in self.validating_dialogues_score_2:
+            if dialogue.character.gender != "f":
+                pass
+            dialogue.get_buzz_words(
+                masculine_words,
+                males_names,
+            )
+            for k, v in dialogue.buzz_words.items():
+                self.lines_with_male_words_score_2[k] = v
 
     def __repr__(self) -> str:
         return "\n".join(self.list_lines)
@@ -678,7 +705,8 @@ class Dialogue:
         self.character = character
         self.speech_list = speech
         self.speech_text = " ".join(speech)
-        self.clean_speech_text = self.clean_text()
+        self.clean_speech_text = clean_text(self.speech_text)
+        self.buzz_words = {}
         self.indexes = indexes
 
     def speaks_about_men(self, masculine_words, males_names: List[str]):
@@ -689,22 +717,29 @@ class Dialogue:
                 return True
         return False
 
-    def clean_text(self):
-        clean_speech_text = self.speech_text.strip()
-
-        clean_speech_text = clean_speech_text.replace(".", " ")
-        clean_speech_text = clean_speech_text.replace(",", " ")
-        clean_speech_text = clean_speech_text.replace(";", " ")
-        clean_speech_text = clean_speech_text.replace("?", " ")
-        clean_speech_text = clean_speech_text.replace("!", " ")
-        clean_speech_text = clean_speech_text.replace("(", " ")
-        clean_speech_text = clean_speech_text.replace(")", " ")
-        clean_speech_text = clean_speech_text.replace(":", " ")
-        clean_speech_text = clean_speech_text.replace("'", " ")
-
-        clean_speech_text = clean_speech_text.lower()
-
-        return clean_speech_text
+    def get_buzz_words(self, masculine_words, males_names: List[str]):
+        self.buzz_words = {}  # reinitialization
+        masculine_words = masculine_words + males_names
+        for index_line, line in zip(self.indexes, self.speech_list):
+            clean_line = clean_text(line, strip=False, add_spaces_to_extremities=True)
+            for word in masculine_words:
+                while (
+                    " " + word + " " in clean_line
+                ):  # to make sure word is not included in another word (Example: 'he' is in "Where have you been ?!")
+                    index_start = clean_line.index(
+                        " " + word + " "
+                    )  # a shift (decalage) is induced by the added space in clean_line
+                    index_end = index_start + len(word) - 1
+                    if index_line not in self.buzz_words.keys():
+                        self.buzz_words[index_line] = []
+                    self.buzz_words[index_line].append(
+                        (index_start, index_end, word, line)
+                    )
+                    clean_line = (
+                        clean_line[: index_start + 1]
+                        + " " * (len(word) - 1)
+                        + clean_line[index_end + 1 :]
+                    )
 
     def __repr__(self) -> str:
         return f"{self.character} : {self.speech_text}"
