@@ -17,7 +17,7 @@ def main(args):
         config["paths"]["input_folder_name"], config["names"]["db_name"]
     )
     if not os.path.exists(path_dataset):
-        build_dataset()
+        build_dataset(config)
     dataset = pd.read_csv(path_dataset)
     if args.movie_name != "":
         if args.movie_name in dataset["title"].unique():

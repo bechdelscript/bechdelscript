@@ -2,7 +2,7 @@ import streamlit as st
 from io import StringIO
 import yaml
 
-from screenplay_classes import Script
+from back_end.screenplay_classes import Script
 
 config = yaml.safe_load(open("parameters.yaml"))
 
