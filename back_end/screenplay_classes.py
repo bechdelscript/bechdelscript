@@ -5,7 +5,7 @@ from script_parsing.naive_parsing import label, tag_script
 from topic_modeling.import_masculine_words import import_masculine_words
 from script_parsing.ml_parsing import tag_script_with_ml
 from gender.gender_name import load_classifier, _classify, load_database
-from gender.narrative_approach import import_gender_tokens
+from gender.narrative_approach import import_gender_tokens, naive_narrative_gender
 from gender.neural_coref import list_pronouns_coref
 import nltk
 import streamlit as st
@@ -114,7 +114,7 @@ class Script:
 
     def identify_gender_named_chars(self):
         para = self.config["used_methods"]["character_gender_method"]
-        gender_data = load_database()
+        gender_data = load_database(self.config)
         if para == "classify":
             classifier = load_classifier()
             function = lambda x: _classify(x, classifier)[0]
@@ -717,25 +717,7 @@ class All_Narration:
         self.tokens = import_gender_tokens(self.config)
 
     def character_narrative_gender(self, name: str):
-        freq_gender = {"m": 0, "f": 0, "nb": 0}
-        paragraphs = [para for para in self.list_contents if name in para]
-        for para in paragraphs:
-            freq_tokens = dict.fromkeys(self.tokens[0], 0)
-            freq = {}
-            for word in nltk.word_tokenize(para):
-                for token in self.tokens[0]:
-                    if token == word.lower():
-                        freq_tokens[token] += 1
-            for key in freq_tokens.keys():
-                gen = self.tokens.loc[self.tokens[0] == key][1].values[0]
-                value = freq_tokens[key]
-                try:
-                    freq[gen] += value
-                except:
-                    freq[gen] = value
-            freq_gender[max(freq, key=lambda k: freq[k])] += 1
-        res = max(freq_gender, key=lambda k: freq_gender[k])
-        return res
+        return naive_narrative_gender(self.list_contents, name, self.tokens)
 
     def character_coref_gender(self, name: str, pronouns):
         res = None

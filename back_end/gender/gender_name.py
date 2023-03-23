@@ -4,6 +4,7 @@ import nltk.classify
 import pandas as pd
 from sklearn.model_selection import train_test_split
 import requests
+import os
 
 """This script creates a gender classifier based on character names.
 It is heavily inspired from the following git repository."""
@@ -16,17 +17,23 @@ keywords = {
     "m": ["Mr.", "Mr", "mr.", "mr", "MR.", "MR", "FATHER"],
 }
 
-def load_database() -> pd.DataFrame:
+
+def load_database(config: dict) -> pd.DataFrame:
     """This function creates the name to gender database."""
     # If the database isn't in the data folder already, the following will download it.
-    if "Prenoms.csv" not in "data/input/":
+
+    path = os.path.join(
+        config["paths"]["input_folder_name"], config["names"]["list_prenoms"]
+    )
+
+    if config["names"]["list_prenoms"] not in config["paths"]["input_folder_name"]:
         url = "https://www.data.gouv.fr/fr/datasets/r/55cd803a-998d-4a5c-9741-4cd0ee0a7699"
         r = requests.get(url, allow_redirects=True)
-        open("data/input/Prenoms.csv", "wb").write(r.content)
+        open(path, "wb").write(r.content)
 
     # Read the original gender database.
     gender_data = pd.read_csv(
-        "data/input/Prenoms.csv",
+        path,
         encoding="latin-1",
         header=0,
         names=["name", "gender", "language", "frequency"],

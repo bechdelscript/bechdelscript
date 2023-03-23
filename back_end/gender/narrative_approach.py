@@ -20,26 +20,27 @@ def import_gender_tokens(config: dict) -> pd.DataFrame:
     return tokens
 
 
-def pronoun_id(paragraphs: list, name: str, tokens: pd.DataFrame) -> str:
+def naive_narrative_gender(paragraphs: list, name: str, tokens: pd.DataFrame) -> str:
     """
     Given a list of paragraphs, a character name, and a gendered tokens dataframe,
     this function returns the gender associated with the most frequent pronouns present in
     paragraphs where the character is named."""
-    freq_gender = {"M": 0, "F": 0, "NB": 0}
+    freq_gender = {"m": 0, "f": 0, "nb": 0}
     paragraphs = [para for para in paragraphs if name in para]
     for para in paragraphs:
-        freq_tokens = {}
+        freq_tokens = dict.fromkeys(tokens[0], 0)
+        freq = {}
         for word in nltk.word_tokenize(para):
             for token in tokens[0]:
                 if token == word.lower():
-                    try:
-                        freq_tokens[token] += 1
-                    except:
-                        freq_tokens[token] = 1
-        freq_tokens = {
-            tokens.loc[tokens[0] == key][1].values[0]: freq_tokens[key]
-            for key in freq_tokens.keys()
-        }
-        freq_gender[max(freq_tokens, key=lambda k: freq_tokens[k])] += 1
+                    freq_tokens[token] += 1
+        for key in freq_tokens.keys():
+            gen = tokens.loc[tokens[0] == key][1].values[0]
+            value = freq_tokens[key]
+            try:
+                freq[gen] += value
+            except:
+                freq[gen] = value
+        freq_gender[max(freq, key=lambda k: freq[k])] += 1
     res = max(freq_gender, key=lambda k: freq_gender[k])
     return res

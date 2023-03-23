@@ -16,6 +16,7 @@ names :
     db_name : dataset.csv
     list_of_words_about_men : keywords.json
     list_pronoun_tokens : pronouns.csv
+    list_prenoms : Prenoms.csv
     coherently_parsed_scripts : coherent_parsing.csv
     tagged_lines : tagged_lstripped_lines.csv
     dataset_embeddings : dataset_embeddings.pt
