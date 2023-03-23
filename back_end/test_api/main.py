@@ -8,7 +8,10 @@ import configue
 from test_api.utils import Item, update_db, get_scenes_from_db, get_scene_content
 
 
-"""This script creates the API needed to link our backend and front end work."""
+""" 
+    This script creates the API needed to link our backend and front end work.
+    Command to run uvicorn API : "uvicorn test_api.main:app --reload"
+"""
 
 config = configue.load("parameters.yaml")
 
