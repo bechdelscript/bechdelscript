@@ -24,7 +24,7 @@ If you are curious to see how it works, or if you would like to improve this too
 
 ## Back end code structure and files
 
-###### File and folders
+### File and folders
 Within the back end files, you'll find the following structure :
 - A [data](back_end/data) folder, filled with both input and output data (more on that below).
 - The [dataset_building](back_end/dataset_building) folder, necessary to create a script dataset used to train our models and quantify the project's performance.
@@ -35,7 +35,7 @@ Within the back end files, you'll find the following structure :
 - The [screenplay_classes.py](back_end/screenplay_classes.py) file is the heart of this project. In it, we create the Script object, and with it the different methods needed to properly parse a text file into a script, and to evaluate which criteria the script validates.
 - Finally, the [main.py](back_end/main.py) file, which you can run to test a random movie from the database, or that you can run on a specific movie using  arguments.
 
-###### Parameter choice
+### Parameter choice
 There are two ways to personalize the code's performance and the approach.
 1. The first focuses on the test itself : how flexible are we willing to be regarding the criteria ? If two women have a conversation that also involves a man, but they exchange a couple of lines without his intervention, does it count as a score 2 ? If two women have a conversation and they exchange a few lines about something else than a man, does it count as a score 3 ? To allow the user to answer these questions however they please, we introduced the concept of *Bechdel Test Rules*. In the [parameters file](back_end/parameters.yaml), the `bechdel_test_rules` section allows the user to choose the boolean values of `only_women_in_whole_scene` and `whole_conversation_not_about_men`.
 
@@ -53,7 +53,7 @@ For these three steps, we have iterated from basic to elaborate methods to impro
     - The indentation based method (`reparse_with_ml= False`) which is based on decision rules and indentation frequency,
     - The Deep Learning method (to be used exclusively on script the indentation based method couldn't parse) (`reparse_with_ml = True`).
 
-###### Installation
+### Installation
 The [requirements.txt](requirements.txt) file, run with `pip3 install -r requirements.txt`, allows you to download most of the needed modules to use this code.
 However, two other models need to be imported :
 - If you choose to use the Co-reference gender prediction method, the `neuralcoref` module requires a python version lower than 3.7. Then, it can be downloaded using `python -m spacy download en` and `nltk.download('punkt')` in a terminal.
