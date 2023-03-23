@@ -15,14 +15,14 @@ This git repository, and associated website : ... bring to light part of the ans
 ## Name
 Bechdel Script Tester
 
-## Description
+## Description :writing_hand:
 If you are just looking to test your favorite movie, check out the front-end side of this project : ....
 If you are curious to see how it works, or if you would like to improve this tool, this repository is the way to go. The structure is as follows :
 - The [front_end](front_end/) folder is at the root of the website.
 - The [back_end](back_end/) folder is where the magic happens !
 
 
-## Back end code structure and files
+## Back end code structure and files :file_folder:
 
 ### File and folders
 Within the back end files, you'll find the following structure :
@@ -59,10 +59,10 @@ However, two other models need to be imported :
 - If you choose to use the Co-reference gender prediction method, the `neuralcoref` module requires a python version lower than 3.7. Then, it can be downloaded using `python -m spacy download en` and `nltk.download('punkt')` in a terminal.
 - The parsing model can be found [here](add/link) and can be downloaded by running [this script](to/create).
 
-## Contributing
+## Contributing :open_hands:
 If you would like to improve on this project, feel free to do so, while ensuring you respect the license below. Please remember to credit the project authors.
 
-## Authors and acknowledgment
+## Authors and acknowledgment :handshake:
 The three authors of this project are listed as contributors on this repository : Lucie Clemot, Sacha Muller, Guilhem Prince.
 This open source contribution and project is the result of an academic project which took place in the French engineering school CentraleSupélec.
 We would like to give a shoutout to the school, along with the company that helped us build this tool : Illuin Technology. More specifically, thank you to Theo Rubenach for your help and guidance.
