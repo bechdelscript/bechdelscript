@@ -182,9 +182,7 @@ class App extends React.Component {
                             checkedDiscussionSwitch={this.state.whole_discussion_not_about_men}
                         />
                     </Grid>
-                    <Grid item xs={12}>
-                        <InformationBox />
-                    </Grid>
+                    <InformationBox characters={this.state.characters} loading={this.state.loading} />
                     <Grid item xs={12}>
                         <Results
                             loading={this.state.loading}
