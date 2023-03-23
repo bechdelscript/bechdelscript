@@ -1,4 +1,5 @@
 import { Component } from "react";
+import { Switch, Typography } from "@mui/material";
 
 
 class Explanation extends Component {
@@ -7,10 +8,9 @@ class Explanation extends Component {
         return (
             <>
                 <div className="explanation-area-container">
-                    <b>Welcome to the Bechdel Script Tester !</b>
+                    <Typography variant="h4">The Bechdel-Wallace Test</Typography>
                     <div className="left-align-text">
-                        A movie passes the Bechdel test if :
-                        <ol>
+                        A movie passes the Bechdel test if :<ol>
                             <li>There are two named female characters</li>
                             <li>They talk with each other</li>
                             <li>About something other than a man</li>
