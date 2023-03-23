@@ -51,8 +51,18 @@ def get_scenes_from_db(filename: str, db):
 
 def get_scene_content(script, scene_id):
     content = script.list_scenes[scene_id].list_lines
-    indexes_validating_lines = script.list_scenes[scene_id].validating_lines
-    indexes_lines_male_words = script.list_scenes[scene_id].lines_with_male_words
+    if script.computed_score == 3:
+        indexes_validating_lines = script.list_scenes[scene_id].validating_lines_score_3
+        indexes_lines_male_words = {}
+    elif script.computed_score == 2:
+        indexes_validating_lines = script.list_scenes[scene_id].validating_lines_score_2
+        indexes_lines_male_words = script.list_scenes[
+            scene_id
+        ].lines_with_male_words_score_2
+    else:
+        indexes_validating_lines = []
+        indexes_lines_male_words = {}
+
     return {
         "scene_id": scene_id,
         "scene_content": content,

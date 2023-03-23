@@ -183,12 +183,10 @@ class Script:
             if scene.is_elligible_topic:
                 self.score3_scenes.append(index)
             else:
-                for index_scene in self.score2_scenes:
-                    scene = self.list_scenes[index_scene]
-                    scene.load_scene_buzz_words(
-                        self.male_named_characters,
-                        masculine_words,
-                    )
+                scene.load_scene_buzz_words(
+                    self.male_named_characters,
+                    masculine_words,
+                )
         # return score = 3 le cas échéant et liste de scènes qui valident le test 3
 
     def passes_bechdel_test(self):
@@ -416,8 +414,10 @@ class Scene:
         self.list_narration = []
         self.is_elligible_characters_gender = False
         self.is_elligible_topic = False
-        self.validating_lines = []
-        self.lines_with_male_words = {}
+        self.validating_dialogues_score_2 = []
+        self.validating_lines_score_2 = []
+        self.lines_with_male_words_score_2 = {}
+        self.validating_lines_score_3 = []
 
     def load_dialogues(self, characters_in_movie):
         current_speech = []
@@ -541,21 +541,32 @@ class Scene:
 
         is_elligible = False
         characters_in_talking_order = [
-            dialogue.character for dialogue in self.list_dialogues
+            (dialogue.character, dialogue) for dialogue in self.list_dialogues
         ]
+
         count_successive_false = 0
         last_person_talking = ""
-        for character in characters_in_talking_order:
+        temp_validating = []
+        self.validating_dialogues_score_2 = []
+        for character, dialogue in characters_in_talking_order:
             #  A woman is talking, who is different that the last character speaking
             if character.gender == "f" and character.name != last_person_talking:
                 count_successive_false += 1
+                temp_validating.append(dialogue)
             else:
                 count_successive_false = 0
+                temp_validating = []
             last_person_talking = character.name
             # the number of successive feminine lines is reached
             if count_successive_false >= number_of_lines_in_a_row:
+                if count_successive_false == number_of_lines_in_a_row:
+                    self.validating_dialogues_score_2 += temp_validating
+                else:
+                    self.validating_dialogues_score_2.append(dialogue)
                 is_elligible = True
-                break
+        self.validating_lines_score_2 = sum(
+            [dialogue.indexes for dialogue in self.validating_dialogues_score_2], []
+        )
         return is_elligible
 
     def is_elligible_topic_method(
@@ -609,7 +620,7 @@ class Scene:
         count_successive_false = 0
         last_person_talking = ""
         temp_validating = []
-        self.validating_lines = []
+        self.validating_lines_score_3 = []
         for about_men, character, indexes in list_speak_about_men:
             # about_men is False, said by a women, who is different that the last character talking
             if not about_men and character.gender == "f":
@@ -623,9 +634,9 @@ class Scene:
             # the number of successive feminine lines is reached
             if count_successive_false >= number_of_lines_in_a_row:
                 if count_successive_false == number_of_lines_in_a_row:
-                    self.validating_lines += temp_validating
+                    self.validating_lines_score_3 += temp_validating
                 else:
-                    self.validating_lines += indexes
+                    self.validating_lines_score_3 += indexes
                 is_elligible = True
                 # break
         return is_elligible
@@ -635,8 +646,8 @@ class Scene:
         males_names,
         masculine_words,
     ):
-        self.lines_with_male_words = {}
-        for dialogue in self.list_dialogues:
+        self.lines_with_male_words_score_2 = {}
+        for dialogue in self.validating_dialogues_score_2:
             if dialogue.character.gender != "f":
                 pass
             dialogue.get_buzz_words(
@@ -644,7 +655,7 @@ class Scene:
                 males_names,
             )
             for k, v in dialogue.buzz_words.items():
-                self.lines_with_male_words[k] = v
+                self.lines_with_male_words_score_2[k] = v
 
     def __repr__(self) -> str:
         return "\n".join(self.list_lines)
@@ -725,7 +736,7 @@ class Dialogue:
                         (index_start, index_end, word, line)
                     )
                     clean_line = (
-                        clean_line[:index_start]
+                        clean_line[: index_start + 1]
                         + " " * (len(word) - 1)
                         + clean_line[index_end + 1 :]
                     )
