@@ -1,7 +1,6 @@
 import os
 
 import pandas as pd
-import yaml
 from tqdm import tqdm
 from sklearn.metrics import confusion_matrix, precision_recall_fscore_support
 
@@ -9,6 +8,8 @@ from screenplay_classes import Script
 import json
 from datetime import datetime
 import git
+import argparse
+import configue
 
 
 def get_git_info():
@@ -18,8 +19,8 @@ def get_git_info():
     return sha, message
 
 
-def load_scripts():
-    config = yaml.safe_load(open("parameters.yaml"))
+def load_scripts(args):
+    config = configue.load(args.parameters_path)
 
     dataset = pd.read_csv(
         os.path.join(config["paths"]["input_folder_name"], config["names"]["db_name"])
@@ -293,7 +294,7 @@ def create_results_folder(
     )
 
 
-def main():
+def main(args):
     (
         bechdel_predicted_scores,
         bechdel_true_scores,
@@ -301,7 +302,7 @@ def main():
         bechdel_truths,
         dataset_with_predictions,
         config,
-    ) = load_scripts()
+    ) = load_scripts(args)
 
     nb_of_scripts = len(bechdel_truths)
 
@@ -332,5 +333,14 @@ def main():
     )
 
 
+parser = argparse.ArgumentParser()
+parser.add_argument("--parameters_path", type=str, default="parameters.yaml")
+parser.add_argument("--nb_movies", type=int, default=None)
+parser.add_argument("--random", type=bool, default=False)
+parser.add_argument("--script_filenames", type=list, default=None)
+
+parser.set_defaults(predict=True)
+
 if __name__ == "__main__":
-    main()
+    args = parser.parse_args()
+    main(args)
