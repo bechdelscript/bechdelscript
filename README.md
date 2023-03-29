@@ -37,7 +37,7 @@ Within the back end files, you'll find the following structure :
 
 ### Parameter choice
 There are two ways to personalize the code's performance and the approach.
-1. The first focuses on the test itself : how flexible are we willing to be regarding the criteria ? If two women have a conversation that also involves a man, but they exchange a couple of lines without his intervention, does it count as a score 2 ? If two women have a conversation and they exchange a few lines about something else than a man, does it count as a score 3 ? To allow the user to answer these questions however they please, we introduced the concept of *Bechdel Test Rules*. In the [parameters file](back_end/parameters.yaml), the `bechdel_test_rules` section allows the user to choose the boolean values of `only_women_in_whole_scene` and `whole_conversation_not_about_men`.
+1. The first focuses on the test itself : how flexible are we willing to be regarding the criteria ? If two women have a conversation that also involves a man, but they exchange a couple of lines without his intervention, does it count as a score 2 ? If two women have a conversation and they exchange only a few lines about something else than a man, does it count as a score 3 ? To allow the user to answer these questions however they please, we introduced the concept of *Bechdel Test Rules*. In the [parameters file](back_end/parameters.yaml), the `bechdel_test_rules` section allows the user to choose the boolean values of `only_women_in_whole_scene` and `whole_conversation_not_about_men`, as well as `lines_of_dialogues_in_a_row` the number of successive lines from female characters needed to validate score 2 or 3, respectively without being interrupted by a man or without speaking about men.
 
 2. The second focuses on how the code will implement these rules. There are three main steps applied to a script file before returning results :
     - The script parsing, which enables the code to identify the dialogues, the characters, the narrative passages...
@@ -46,7 +46,7 @@ There are two ways to personalize the code's performance and the approach.
 
 For these three steps, we have iterated from basic to elaborate methods to improve their performance. By default, the more elaborate methods are applied when running the code. The user can however choose to downgrade to the naive methods by updating the `used_methods`parameters in the [parameters file](back_end/parameters.yaml). More specifically, the user can :
 - Choose a gender prediction method, between :
-    - Name classification (`classify`): using a Machine Learning Classification approach, this method predicts the character's gender based on their name.
+    - Name classification (`classify`): using a Machine Learning Classification approach (Naïve Bayes), this method predicts the character's gender based on their name.
     - Naive narrative (`narrative`): this method counts the pronouns used in narrative paragraphs the character is quoted in, and predicts their gender based on the most frequent pronouns.
     - Neural Co-reference (`coref`): this method used the [neuralcoref](https://github.com/huggingface/neuralcoref) module, which uses the NLP Library [SpaCy](https://spacy.io) to apply co-reference method to associate pronouns with the person they are referring to.
 - Choose the parsing method, between :
