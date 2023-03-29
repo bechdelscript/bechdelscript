@@ -33,7 +33,7 @@ Within the back end files, you'll find the following structure :
 - The [parameters.yaml](back_end/parameters.yaml) file, used to choose the parameters you want to run the main script on. This includes the different methods used to estimate the different criteria, as well as the harshness of the criteria (see Parameter choice below).
 - The [performance.py](back_end/performance.py) script computes the confusion matrix of our work, based on the official Bechdel website scores.
 - The [screenplay_classes.py](back_end/screenplay_classes.py) file is the heart of this project. In it, we create the Script object, and with it the different methods needed to properly parse a text file into a script, and to evaluate which criteria the script validates.
-- Finally, the [main.py](back_end/main.py) file, which you can run to test a random movie from the database, or that you can run on a specific movie using  arguments.
+- Finally, the [main.py](back_end/main.py) file, which you can run to test a random movie from the database, or that you can run on a specific movie using arguments.
 
 ### Parameter choice
 There are two ways to personalize the code's performance and the approach.
@@ -58,6 +58,36 @@ The [requirements.txt](requirements.txt) file, run with `pip3 install -r require
 However, two other models need to be imported :
 - If you choose to use the Co-reference gender prediction method, the `neuralcoref` module requires a python version lower than 3.7. Then, it can be downloaded using `python -m spacy download en` and `nltk.download('punkt')` in a terminal.
 - The parsing model can be found [here](https://drive.google.com/file/d/1u8tJT1nlmsQJQ0fA1OW0AUlCjfi9Bdzm/view?usp=share_link) and can be downloaded by running [this script](to/create).
+
+### Usage
+As specified above, you can run two scripts to test our algorithm : [main.py](back_end/main.py) and [performance.py](back_end/performance.py). You must be conscious that these scripts will use the parameters in the `parameters.yaml` file to run, so make sure you are using the ones you want.
+
+The `main.py` script allows you to test a random movie. To execute the script, from the root of the repository, run the following commands :  
+```
+cd ./back_end/
+python main.py
+```
+You might want to test our model on a precise movie, you can do that by specifying the `movie_name` or `script_filename` argument:
+```
+python main.py --movie_name "Cars 2"
+python main.py --script_filename "Cars-2.txt"
+```
+You can also modify the number of validating scenes returned by the script, with the argument `nb_scenes`, of type `int`.
+
+Running the `performance.py` without arguments will basically run the `main.py` script on each movie of your dataset, located at `back_end/data/input/dataset.csv`. That is to say, it will compute a score for each movie, compare it to the official score, and keep track of metrics such as the confusion matrix, accuracy, precision, recall and f1-score of our model. Results will be stored in `back_end/data/output/YYYY-MM-DD_HHmmSS`. It might run for a little while, depending on the chosen parameters. You can do this by running, from the root of the repository:  
+```
+cd ./back_end/
+python performance.py
+```
+You might not want to test our performances on the whole dataset, but on a fraction of it : you can use the `nb_movies` argument. `random = False` means you would be mesuring performance on the `nb_movies` first rows of the dataset.
+```
+python performance.py --nb_movies 100 --random True
+```
+You can also measure performance on a subset of film of your choice, specifying the argument `script_filenames`, a string containing the filenames of your choice (with .txt), separated by commas, no spaces :
+```
+python performance.py --script_filenames "Jaws-2.txt,Alien.txt,Apocalypse-Now.txt"
+```
+
 
 ## Contributing :open_hands:
 If you would like to improve on this project, feel free to do so, while ensuring you respect the license below. Please remember to credit the project authors.
