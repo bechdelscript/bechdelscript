@@ -63,7 +63,7 @@ However, two other models need to be imported :
 If you would like to improve on this project, feel free to do so, while ensuring you respect the license below. Please remember to credit the project authors.
 
 ## Authors and acknowledgment :handshake:
-The three authors of this project are listed as contributors on this repository : Lucie Clemot [(@osnapitzlu)](github.com/osnapitzlu), Sacha Muller [(@sachamuller)](github.com/sachamuller), Guilhem Prince [(@guilhemprince)](github.com/guilhemprince).
+The three authors of this project are listed as contributors on this repository : Lucie Clemot [(@osnapitzlu)](https://github.com/osnapitzlu), Sacha Muller [(@sachamuller)](https://github.com/sachamuller), Guilhem Prince [(@guilhemprince)](https://github.com/guilhemprince).
 This open source contribution and project is the result of an academic project which took place in the French engineering school CentraleSupélec.
 We would like to give a shoutout to the school, along with the company that helped us build this tool : Illuin Technology. More specifically, thank you to Theo Rubenach for your help and guidance.
 
