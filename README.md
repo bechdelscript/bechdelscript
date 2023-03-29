@@ -71,4 +71,4 @@ We would like to give a shoutout to the school, along with the company that help
 [See license here.](LICENSE.txt)
 
 ## Project status
-This project, along with the front-end website, will not be worked on further by our team. Any potential updates would have to be done by collaborators.
+This project, along with the front-end website, will not be worked on further by our team. Any potential updates would have to be done by the open source community.
