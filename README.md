@@ -57,13 +57,13 @@ For these three steps, we have iterated from basic to elaborate methods to impro
 The [requirements.txt](requirements.txt) file, run with `pip3 install -r requirements.txt`, allows you to download most of the needed modules to use this code.
 However, two other models need to be imported :
 - If you choose to use the Co-reference gender prediction method, the `neuralcoref` module requires a python version lower than 3.7. Then, it can be downloaded using `python -m spacy download en` and `nltk.download('punkt')` in a terminal.
-- The parsing model can be found [here](add/link) and can be downloaded by running [this script](to/create).
+- The parsing model can be found [here](https://drive.google.com/file/d/1u8tJT1nlmsQJQ0fA1OW0AUlCjfi9Bdzm/view?usp=share_link) and can be downloaded by running [this script](to/create).
 
 ## Contributing :open_hands:
 If you would like to improve on this project, feel free to do so, while ensuring you respect the license below. Please remember to credit the project authors.
 
 ## Authors and acknowledgment :handshake:
-The three authors of this project are listed as contributors on this repository : Lucie Clemot, Sacha Muller, Guilhem Prince.
+The three authors of this project are listed as contributors on this repository : Lucie Clemot [(@osnapitzlu)](https://github.com/osnapitzlu), Sacha Muller [(@sachamuller)](https://github.com/sachamuller), Guilhem Prince [(@guilhemprince)](https://github.com/guilhemprince).
 This open source contribution and project is the result of an academic project which took place in the French engineering school CentraleSupélec.
 We would like to give a shoutout to the school, along with the company that helped us build this tool : Illuin Technology. More specifically, thank you to Theo Rubenach for your help and guidance.
 
@@ -71,7 +71,4 @@ We would like to give a shoutout to the school, along with the company that help
 [See license here.](LICENSE.txt)
 
 ## Project status
-fini?
-
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
+This project, along with the front-end website, will not be worked on further by our team. Any potential updates would have to be done by collaborators.
