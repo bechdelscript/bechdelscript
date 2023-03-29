@@ -25,11 +25,24 @@ def load_scripts(args):
     dataset = pd.read_csv(
         os.path.join(config["paths"]["input_folder_name"], config["names"]["db_name"])
     )
+
+    nb_movies = len(list(dataset)) if args.nb_movies is None else args.nb_movies
+
+    if args.random:
+        dataset = dataset.sample(frac=1).reset_index(drop=True)
+
+    if args.script_filenames:
+        dataset = dataset[
+            dataset["path"]
+            .apply(lambda path: path.split("/")[-1])
+            .isin(args.script_filenames)
+        ].reset_index(drop=True)
+
     bechdel_computed_scores = []
     bechdel_true_scores = []
     bechdel_approved_predictions = []
     bechdel_approved_truths = []
-    for path in tqdm(list(dataset["path"])[:8]):
+    for path in tqdm(list(dataset["path"])[:nb_movies]):
         ground_truth = dataset[dataset["path"] == path].iloc[0]["rating"]
         script = Script.from_path(path, config, ground_truth=ground_truth)
         script.load_format()
@@ -58,8 +71,17 @@ def load_scripts(args):
     )
 
 
-def compute_confusion_matrix(bechdel_truths, bechdel_approved_predictions, average):
-    conf_matrix = confusion_matrix(bechdel_truths, bechdel_approved_predictions)
+def compute_confusion_matrix(
+    bechdel_truths, bechdel_approved_predictions, average, binary=False
+):
+    if binary:
+        conf_matrix = confusion_matrix(
+            bechdel_truths, bechdel_approved_predictions, labels=[0, 1]
+        )
+    else:
+        conf_matrix = confusion_matrix(
+            bechdel_truths, bechdel_approved_predictions, labels=[0, 1, 2, 3]
+        )
 
     conf_matrix_percents = conf_matrix * 100 / len(bechdel_truths)
 
@@ -69,9 +91,6 @@ def compute_confusion_matrix(bechdel_truths, bechdel_approved_predictions, avera
             bechdel_truths, bechdel_approved_predictions, average=average
         )[:-1]
     ]
-
-    print(metrics)
-
     return conf_matrix, conf_matrix_percents, metrics
 
 
@@ -310,7 +329,9 @@ def main(args):
         conf_matrix_binary,
         conf_matrix_percents_binary,
         metrics_binary,
-    ) = compute_confusion_matrix(bechdel_truths, bechdel_predictions, average="binary")
+    ) = compute_confusion_matrix(
+        bechdel_truths, bechdel_predictions, average="binary", binary=True
+    )
 
     (
         conf_matrix_scores,
@@ -333,12 +354,16 @@ def main(args):
     )
 
 
+def get_list_script_filenames(string):
+    return string.split(",")
+
+
 parser = argparse.ArgumentParser()
 parser.add_argument("--parameters_path", type=str, default="parameters.yaml")
 parser.add_argument("--nb_movies", type=int, default=None)
 parser.add_argument("--random", type=bool, default=False)
-parser.add_argument("--script_filenames", type=list, default=None)
-
+# str of the form "script1.txt,script2.txt,script3.txt" (script filenames separated by commas)
+parser.add_argument("--script_filenames", type=get_list_script_filenames, default=None)
 parser.set_defaults(predict=True)
 
 if __name__ == "__main__":
