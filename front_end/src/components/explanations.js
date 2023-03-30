@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { Switch, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 
 
 class Explanation extends Component {
