@@ -16,6 +16,7 @@ names :
     db_name : dataset.csv
     list_of_words_about_men : keywords.json
     list_pronoun_tokens : pronouns.csv
+    list_prenoms : Prenoms.csv
     coherently_parsed_scripts : coherent_parsing.csv
     tagged_lines : tagged_lstripped_lines.csv
     dataset_embeddings : dataset_embeddings.pt
@@ -53,10 +54,10 @@ urls :
 
 bechdel_test_rules :
     only_women_in_whole_scene : false           # these two parameters can take values (true, true), (true, false), (false, false)
-    whole_discussion_not_about_men : false      # For now we forbid (false, true) for reasons of bechdel test coherence as well as implementation complexity  
+    whole_discussion_not_about_men : false      # We forbid (false, true) for reasons of bechdel test coherence as well as implementation complexity  
 
     # in case "whole_discussion_not_about_men" or "only_women_in_whole_scene" is false 
-    # "lines_of_dialogues_in_a_row" is a parameter that indicates the number of successive feminie lines to validate 
+    # "lines_of_dialogues_in_a_row" is a parameter that indicates the number of successive feminine lines to validate 
     # criteria 2 or 3 when they are set to soft
     lines_of_dialogues_in_a_row : 2 # minimum 2
 

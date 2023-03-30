@@ -5,7 +5,7 @@ from fastapi.param_functions import Depends
 from fastapi.middleware.cors import CORSMiddleware
 from screenplay_classes import Script
 import configue
-from test_api.utils import Item, update_db, get_scenes_from_db, get_scene_content
+from api.utils import Item, update_db, get_scenes_from_db, get_scene_content
 
 
 """ 
