@@ -26,7 +26,7 @@ export default function InformationBox(props) {
                         The Parameters options in the upper right hand corner correspond to how strict you want to be in the Bechdel test criteria.
                         Does the conversation have to only include women ?
                         Does the entire conversation have to be about something else than a man ? You have three possible options :
-                        <li>By putting both parameters to True, a movie will only pass the test if there's a conversation only women speaks in that never mentions a man. This is the strictest option.</li>
+                        <li>By putting both parameters to True, a movie will only pass the test if there's a conversation only women speak in that never mentions a man. This is the strictest option.</li>
                         <li>By putting Only women in the scene to True and Whole discussion not about men to False, a movie will pass the test if there is a conversation in the movie where only women and present, but they are allowed to mention a man at some point, as long as they exchange a few lines about something else.</li>
                         <li>By putting both parameters to False, a movie will pass the test even if a man is included in a conversation where at least two women exchange a few consecutive lines about something other than a man.</li>
                         <li>The last option (Only women in the scene as False and Whole discussion not about men as True) is forbidden : we consider that it's impossible for a man to be in a conversation and for the conversation to not mention men.</li>
@@ -40,8 +40,12 @@ export default function InformationBox(props) {
                     </div><br />
                     <div>
                         <i><b>Exploring the characters</b></i><br /><br />
-                        The character list with their predicted genders is a way for you to identify potential errors. If you believe a character has been wrongly gendered,
+                        The character list with their predicted genders (F, M, NB) is a way for you to identify potential errors. If you believe a character has been wrongly gendered,
                         correct it and re-test the script. This way, you'll get a more accurate score and validating scenes thanks to your insight.
+                    </div>
+                    <div>
+                        <i><b>Disclaimer</b></i><br /><br />
+                        Please note that, in order to promote inclusivity, the module can gender a character as a Woman, a Man or a Non-Binary individual. However, we have not implemented Bechdel rules that allow a conversation between two gender minorities (a woman and a non-binary person, for instance) to validate the second criteria. That is because we felt it was out of our scope to swerve away from the original test that much. However, we feel that as Non-binary folk representation in movies is increasing, it would be ideal to update the test rules and implement our module accordingly.
                     </div>
                 </div>
             </Grid>
