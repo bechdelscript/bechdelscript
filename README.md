@@ -15,6 +15,12 @@ This git repository, and associated website : ... bring to light part of the ans
 ## Name
 Bechdel Script Tester
 
+## Disclaimers
+
+This work is imperfect and has flaws we might not have in mind. We still considered that it was worth sharing, since it can be useful to most, and help make the Bechdel test more accessible.
+
+Please note that, in order to promote inclusivity, the module can gender a character as a Woman, a Man or a Non-Binary individual. However, we have not implemented Bechdel rules that allow a conversation between two gender minorities (a woman and a non-binary person, for instance) to validate the second criteria. That is because we felt it was out of our scope to swerve away from the original test that much. However, we feel that as Non-binary folk representation in movies is increasing, it would be ideal to update the test rules and implement our module accordingly.
+
 ## Description :writing_hand:
 If you are just looking to test your favorite movie, check out the front-end side of this project : ....
 If you are curious to see how it works, or if you would like to improve this tool, this repository is the way to go. The structure is as follows :
@@ -38,8 +44,6 @@ Within the back end files, you'll find the following structure :
 ### Parameter choice
 There are two ways to personalize the code's performance and the approach.
 1. The first focuses on the test itself : how flexible are we willing to be regarding the criteria ? If two women have a conversation that also involves a man, but they exchange a couple of lines without his intervention, does it count as a score 2 ? If two women have a conversation and they exchange only a few lines about something else than a man, does it count as a score 3 ? To allow the user to answer these questions however they please, we introduced the concept of *Bechdel Test Rules*. In the [parameters file](back_end/parameters.yaml), the `bechdel_test_rules` section allows the user to choose the boolean values of `only_women_in_whole_scene` and `whole_conversation_not_about_men`, as well as `lines_of_dialogues_in_a_row` the number of successive lines from female characters needed to validate score 2 or 3, respectively without being interrupted by a man or without speaking about men.
-
-Please note that, in order to promote inclusivity, the module can gender a character as a Woman, a Man or a Non-Binary individual. However, we have not implemented Bechdel rules that allow a conversation between two gender minorities (a woman and a non-binary person, for instance) to validate the second criteria. That is because we felt it was out of our scope to swerve away from the original test that much. However, we feel that as Non-binary folk representation in movies is increasing, it would be ideal to update the test rules and implement our module accordingly.
 
 2. The second focuses on how the code will implement these rules. There are three main steps applied to a script file before returning results :
     - The script parsing, which enables the code to identify the dialogues, the characters, the narrative passages...
