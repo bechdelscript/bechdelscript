@@ -15,6 +15,12 @@ This git repository, and associated website : ... bring to light part of the ans
 ## Name
 Bechdel Script Tester
 
+## Disclaimers
+
+This work is imperfect and has flaws we might not have in mind. We still considered that it was worth sharing, since it can be useful to most, and help make the Bechdel test more accessible.
+
+Please note that, in order to promote inclusivity, the module can gender a character as a Woman, a Man or a Non-Binary individual. However, we have not implemented Bechdel rules that allow a conversation between two gender minorities (a woman and a non-binary person, for instance) to validate the second criteria. That is because we felt it was out of our scope to swerve away from the original test that much. However, we feel that as Non-binary folk representation in movies is increasing, it would be ideal to update the test rules and implement our module accordingly.
+
 ## Description :writing_hand:
 If you are just looking to test your favorite movie, check out the front-end side of this project : ....
 If you are curious to see how it works, or if you would like to improve this tool, this repository is the way to go. The structure is as follows :
