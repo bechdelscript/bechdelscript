@@ -628,13 +628,14 @@ class Dialogue:
         for index_line, line in zip(self.indexes, self.speech_list):
             clean_line = clean_text(line, strip=False, add_spaces_to_extremities=True)
             for word in masculine_words:
+                count = 0
                 while (
                     " " + word + " " in clean_line
                 ):  # to make sure word is not included in another word (Example: 'he' is in "Where have you been ?!")
                     index_start = clean_line.index(
                         " " + word + " "
                     )  # a shift (decalage) is induced by the added space in clean_line
-                    index_end = index_start + len(word) - 1
+                    index_end = index_start + len(word) + 1
                     if index_line not in self.buzz_words.keys():
                         self.buzz_words[index_line] = []
                     self.buzz_words[index_line].append(
@@ -642,9 +643,12 @@ class Dialogue:
                     )
                     clean_line = (
                         clean_line[: index_start + 1]
-                        + " " * (len(word) - 1)
-                        + clean_line[index_end + 1 :]
+                        + " " * len(word)
+                        + clean_line[index_end:]
                     )
+                    count += 1
+                    if count > 1000:
+                        raise ValueError("Code likely stuck in this while loop")
 
     def __repr__(self) -> str:
         return f"{self.character} : {self.speech_text}"

@@ -26,12 +26,12 @@ def load_scripts(args):
         os.path.join(config["paths"]["input_folder_name"], config["names"]["db_name"])
     )
 
-    nb_movies = len(list(dataset)) if args.nb_movies is None else args.nb_movies
+    nb_movies = len(dataset.index) if args.nb_movies is None else args.nb_movies
 
     if args.random:
         dataset = dataset.sample(frac=1).reset_index(drop=True)
 
-    if args.script_filenames:
+    if args.script_filenames is not None:
         dataset = dataset[
             dataset["path"]
             .apply(lambda path: path.split("/")[-1])

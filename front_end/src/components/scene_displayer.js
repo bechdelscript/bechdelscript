@@ -95,7 +95,7 @@ class SceneDisplayer extends Component {
                     if (Object.keys(lines_with_male_words).includes(i.toString())) {
                         for (let j = 0; j < lines_with_male_words[i].length; j++) {
                             let buzzword_beginning = lines_with_male_words[i][j][0] + first_non_whitespace_character;
-                            let buzzword_ending = lines_with_male_words[i][j][1] + first_non_whitespace_character + 1;
+                            let buzzword_ending = lines_with_male_words[i][j][1] + first_non_whitespace_character - 1;
                             text.push(<span key={'line_' + i + '_before_' + j} className="highlighted-valid correct-text-display">{scene_content[i].slice(marker, buzzword_beginning)}</span>);
                             text.push(<span key={'line_' + i + '_' + j} className="highlighted-invalid correct-text-display">{scene_content[i].slice(buzzword_beginning, buzzword_ending)}</span>);
                             marker = buzzword_ending;
