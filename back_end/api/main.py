@@ -31,7 +31,7 @@ app.add_middleware(
 )
 
 
-@app.post("/upload-script/")
+@app.post("/api/upload-script/")
 async def upload_script(
     file: UploadFile = File(...),
     only_women_in_whole_scene: bool = Form(),
@@ -64,19 +64,19 @@ async def upload_script(
         return {"message": "There was an error uploading the file {}".format(filename)}
 
 
-@app.get("/")
+@app.get("/api/")
 async def home():
     """This GET method is the basic method of our API."""
     return {"Message": "Welcome to the Bechdel Script Tester"}
 
 
-@app.get("/list-scripts")
+@app.get("/api/list-scripts")
 async def list_scripts():
     """This GET method returns the movie database over a run."""
     return {"Movies in base": db}
 
 
-@app.get("/result-by-title/{filename}")
+@app.get("/api/result-by-title/{filename}")
 async def result_by_title(filename: str):
     """This GET method returns specific results based on a given filename."""
     if filename in db.keys():
@@ -85,7 +85,7 @@ async def result_by_title(filename: str):
         raise HTTPException(404, f"Movie not in base")
 
 
-@app.post("/result-with-user-gender-by-title/")
+@app.post("/api/result-with-user-gender-by-title/")
 async def result_with_user_gender_by_title(item: Item):
     """This POST method returns specific results based on a given filename and a dictionary of genders chosen by the user."""
     filename = item.filename
@@ -109,7 +109,7 @@ async def result_with_user_gender_by_title(item: Item):
         raise HTTPException(404, f"Movie not in base")
 
 
-@app.get("/content-scene/{filename}/{scene_id}")
+@app.get("/api/content-scene/{filename}/{scene_id}")
 async def content_scene(filename: str, scene_id: int):
     """This GET method returns the scene content given a filename and scene id."""
     if filename in db.keys():
@@ -120,7 +120,7 @@ async def content_scene(filename: str, scene_id: int):
         raise HTTPException(404, f"Movie not in base")
 
 
-# @app.get("/bechdel-scenes/{filename}")
+# @app.get("/api/bechdel-scenes/{filename}")
 # async def Bechdel_scenes(filename: str):
 #     """This GET method returns the scenes that pass the highest score passed by the movie."""
 #     score = db[filename]["score"]
