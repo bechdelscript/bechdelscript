@@ -42,7 +42,7 @@ class App extends React.Component {
         formData.append('only_women_in_whole_scene', this.state.women_only_in_scene);
         formData.append('whole_discussion_not_about_men', this.state.whole_discussion_not_about_men);
 
-        const response = await fetch("http://localhost:8000/api/upload-script/", {
+        const response = await fetch("http://34.82.179.52:8000/api/upload-script/", {
             method: 'POST',
             body: formData,
         });
@@ -84,7 +84,7 @@ class App extends React.Component {
     handleCharactersListSubmit = async (event) => {
         event.preventDefault();
         this.setState({ loading: true })
-        const response = await fetch(`http://localhost:8000/api/result-with-user-gender-by-title/`, {
+        const response = await fetch(`http://34.82.179.52:8000/api/result-with-user-gender-by-title/`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
