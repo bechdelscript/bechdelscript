@@ -20,7 +20,7 @@ db = {}
 
 origins = [
     "http://localhost:3000",
-    "http://34.82.179.52",
+    "*"
 ]
 
 app.add_middleware(
