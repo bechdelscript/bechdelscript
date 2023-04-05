@@ -1,6 +1,6 @@
 from typing import Union
 
-from fastapi import FastAPI, UploadFile, File, Form, HTTPException
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException, BackgroundTasks
 from fastapi.param_functions import Depends
 from fastapi.middleware.cors import CORSMiddleware
 from screenplay_classes import Script
@@ -20,7 +20,7 @@ db = {}
 
 origins = [
     "http://localhost:3000",
-    "*"
+    "*",
 ]
 
 app.add_middleware(
@@ -34,6 +34,7 @@ app.add_middleware(
 
 @app.post("/api/upload-script/")
 async def upload_script(
+    background_task: BackgroundTasks,
     file: UploadFile = File(...),
     only_women_in_whole_scene: bool = Form(),
     whole_discussion_not_about_men: bool = Form(),
@@ -51,18 +52,20 @@ async def upload_script(
     if file:
         content = await file.read()
         content = content.decode("unicode_escape").replace("\r", "")
-
-        response = Script(content, config)
-        response.load_format()
-        db[filename] = update_db(response)
+        background_task.add_task(
+            upload_script_bg_task, content=content, config=config, filename=filename
+        )
         return {
-            "message": "Fichier {} lu".format(filename),
-            "score": db[filename]["score"],
-            "chars": db[filename]["chars"],
-            **get_scenes_from_db(filename, db),
+            "message": "The computations are launched",
         }
     else:
         return {"message": "There was an error uploading the file {}".format(filename)}
+
+
+def upload_script_bg_task(content, config, filename):
+    response = Script(content, config)
+    response.load_format()
+    db[filename] = update_db(response)
 
 
 @app.get("/api/")
@@ -81,13 +84,21 @@ async def list_scripts():
 async def result_by_title(filename: str):
     """This GET method returns specific results based on a given filename."""
     if filename in db.keys():
-        return {"score": db[filename]["score"], "chars": db[filename]["chars"]}
+        return {
+            "message": "available",
+            "score": db[filename]["score"],
+            "chars": db[filename]["chars"],
+            **get_scenes_from_db(filename, db),
+        }
     else:
-        raise HTTPException(404, f"Movie not in base")
+        return {"message": "unavailable"}
+        # raise HTTPException(404, f"Movie not in base")
 
 
 @app.post("/api/result-with-user-gender-by-title/")
-async def result_with_user_gender_by_title(item: Item):
+async def result_with_user_gender_by_title(
+    item: Item, background_tasks: BackgroundTasks
+):
     """This POST method returns specific results based on a given filename and a dictionary of genders chosen by the user."""
     filename = item.filename
     user_gender = item.user_gender
@@ -100,14 +111,22 @@ async def result_with_user_gender_by_title(item: Item):
     ] = item.parameters.whole_discussion_not_about_men
     if filename in db.keys():
         temp = db[filename]["script"]
-        db[filename] = update_db(temp, dico_gender)
+        del db[filename]
+        background_tasks.add_task(
+            result_with_user_gender_by_title_bg_task,
+            temp=temp,
+            dico_gender=dico_gender,
+            filename=filename,
+        )
         return {
-            "score": db[filename]["score"],
-            "chars": db[filename]["chars"],
-            **get_scenes_from_db(filename, db),
+            "message": "The computations are launched",
         }
     else:
         raise HTTPException(404, f"Movie not in base")
+
+
+def result_with_user_gender_by_title_bg_task(temp, dico_gender, filename):
+    db[filename] = update_db(temp, dico_gender)
 
 
 @app.get("/api/content-scene/{filename}/{scene_id}")

@@ -17,6 +17,10 @@ const MenuProps = {
         },
     },
 };
+let url = window.location.origin
+if (url.startsWith("http://localhost:")) {
+    url = "http://localhost"
+}
 
 class SceneDisplayer extends Component {
 
@@ -70,7 +74,7 @@ class SceneDisplayer extends Component {
     }
 
     async fetchSceneText() {
-        const response = await fetch(window.location.origin + ":8000/api/content-scene/" + this.props.file.name + `/` + this.state.value, {
+        const response = await fetch(url + ":8000/api/content-scene/" + this.props.file.name + `/` + this.state.value, {
             method: 'GET',
         });
         if (response.ok) {
