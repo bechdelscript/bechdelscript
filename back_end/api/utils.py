@@ -1,5 +1,6 @@
 from screenplay_classes import Script, Scene
 from pydantic import BaseModel
+from random import randrange
 
 
 class Parameters(BaseModel):
@@ -8,7 +9,7 @@ class Parameters(BaseModel):
 
 
 class Item(BaseModel):
-    filename: str
+    key: int
     user_gender: list
     parameters: Parameters
 
@@ -28,21 +29,21 @@ def update_db(script: Script, user_gender: dict = None):
     }
 
 
-def get_scenes_from_db(filename: str, db):
-    score = db[filename]["score"]
+def get_scenes_from_db(key: int, db):
+    score = db[key]["score"]
     if (score <= 1) and (score >= 0):
         return {
             "message_result": "None of the scenes in the movie help pass the test.",
             "scenes": [],
         }
     elif score == 2:
-        scenes = db[filename]["score_2"]
+        scenes = db[key]["score_2"]
         return {
             "message_result": "The movie has two named female characters who speak together. Unfortunately, they do speak about men.",
             "scenes": scenes,
         }
     elif score == 3:
-        scenes = db[filename]["score_3"]
+        scenes = db[key]["score_3"]
         return {
             "message_result": "The movie passes the Bechdel Test.",
             "scenes": scenes,
@@ -69,3 +70,10 @@ def get_scene_content(script, scene_id):
         "validating_lines": indexes_validating_lines,
         "lines_with_male_words": indexes_lines_male_words,
     }
+
+
+def get_unique_random_user_key(db, max_random=10000):
+    key = randrange(0, max_random)
+    while key in db.keys():
+        key = randrange(0, max_random)
+    return key

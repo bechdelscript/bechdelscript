@@ -19,14 +19,13 @@ class Results extends Component {
                         characters={this.props.characters}
                         message_result={this.props.message_result}
                         scenes={this.props.scenes}
-                        file={this.props.file} />
+                        user_key={this.props.user_key} />
                 </div>
                 <div>
                     <CharacterList
                         characters={this.props.characters}
                         handleSubmit={this.props.handleSubmit}
-                        handleChange={this.props.handleChange}
-                        file={this.props.file} />
+                        handleChange={this.props.handleChange} />
                 </div>
             </div>
         );

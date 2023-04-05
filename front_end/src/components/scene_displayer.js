@@ -74,7 +74,7 @@ class SceneDisplayer extends Component {
     }
 
     async fetchSceneText() {
-        const response = await fetch(url + ":8000/api/content-scene/" + this.props.file.name + `/` + this.state.value, {
+        const response = await fetch(url + ":8000/api/content-scene/" + this.props.user_key + `/` + this.state.value, {
             method: 'GET',
         });
         if (response.ok) {

@@ -24,6 +24,7 @@ class App extends React.Component {
             message_result: null,
             scenes: null,
             file: null,
+            user_key: null,
             loading: false,
             error_message: null,
             women_only_in_scene: false,
@@ -51,7 +52,11 @@ class App extends React.Component {
             body: formData,
         });
         if (response.ok) {
-            await this.waitAndRetrieveResults(this.state.file)
+            const data = await response.json();
+            await this.setState({
+                user_key: data.key
+            })
+            await this.waitAndRetrieveResults(data.key)
         } else {
             this.setState({ loading: false })
             if (response.status === 422) {
@@ -77,10 +82,10 @@ class App extends React.Component {
         });
     }
 
-    waitAndRetrieveResults = async (file) => {
+    waitAndRetrieveResults = async (user_key) => {
         let message = "unavailable";
         while (message === "unavailable") {
-            let response = await fetch(url + ":8000/api/result-by-title/" + file.name, {
+            let response = await fetch(url + ":8000/api/result-by-key/" + user_key, {
                 method: 'GET',
             });
             if (response.ok) {
@@ -122,11 +127,11 @@ class App extends React.Component {
     handleCharactersListSubmit = async (event) => {
         event.preventDefault();
         this.setState({ loading: true })
-        const response = await fetch(url + ":8000/api/result-with-user-gender-by-title/", {
+        const response = await fetch(url + ":8000/api/result-with-user-gender-by-key/", {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                filename: this.state.file.name,
+                key: this.state.user_key,
                 user_gender: this.state.characters,
                 parameters: {
                     only_women_in_whole_scene: this.state.women_only_in_scene,
@@ -135,7 +140,7 @@ class App extends React.Component {
             })
         });
         if (response.ok) {
-            await this.waitAndRetrieveResults(this.state.file)
+            await this.waitAndRetrieveResults(this.state.user_key)
         } else {
             this.setState({ loading: false })
             if (response.status === 422) {
@@ -222,7 +227,7 @@ class App extends React.Component {
                             computed_score={this.state.computed_score}
                             handleChange={this.handleGenderChange}
                             handleSubmit={this.handleCharactersListSubmit}
-                            file={this.state.file}
+                            user_key={this.state.user_key}
                         />
                     </Grid>
                 </Grid>

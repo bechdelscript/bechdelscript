@@ -5,7 +5,13 @@ from fastapi.param_functions import Depends
 from fastapi.middleware.cors import CORSMiddleware
 from screenplay_classes import Script
 import configue
-from api.utils import Item, update_db, get_scenes_from_db, get_scene_content
+from api.utils import (
+    Item,
+    update_db,
+    get_scenes_from_db,
+    get_scene_content,
+    get_unique_random_user_key,
+)
 
 
 """ 
@@ -52,20 +58,19 @@ async def upload_script(
     if file:
         content = await file.read()
         content = content.decode("unicode_escape").replace("\r", "")
+        key = get_unique_random_user_key(db)
         background_task.add_task(
-            upload_script_bg_task, content=content, config=config, filename=filename
+            upload_script_bg_task, content=content, config=config, key=key
         )
-        return {
-            "message": "The computations are launched",
-        }
+        return {"message": "The computations are launched", "key": key}
     else:
         return {"message": "There was an error uploading the file {}".format(filename)}
 
 
-def upload_script_bg_task(content, config, filename):
+def upload_script_bg_task(content, config, key):
     response = Script(content, config)
     response.load_format()
-    db[filename] = update_db(response)
+    db[key] = update_db(response)
 
 
 @app.get("/api/")
@@ -80,27 +85,27 @@ async def list_scripts():
     return {"Movies in base": db}
 
 
-@app.get("/api/result-by-title/{filename}")
-async def result_by_title(filename: str):
-    """This GET method returns specific results based on a given filename."""
-    if filename in db.keys():
+@app.get("/api/result-by-key/{key}")
+async def result_by_title(key: int):
+    """This GET method returns specific results based on a given user's key."""
+    if key in db.keys():
         return {
             "message": "available",
-            "score": db[filename]["score"],
-            "chars": db[filename]["chars"],
-            **get_scenes_from_db(filename, db),
+            "score": db[key]["score"],
+            "chars": db[key]["chars"],
+            **get_scenes_from_db(key, db),
         }
     else:
         return {"message": "unavailable"}
         # raise HTTPException(404, f"Movie not in base")
 
 
-@app.post("/api/result-with-user-gender-by-title/")
+@app.post("/api/result-with-user-gender-by-key/")
 async def result_with_user_gender_by_title(
     item: Item, background_tasks: BackgroundTasks
 ):
-    """This POST method returns specific results based on a given filename and a dictionary of genders chosen by the user."""
-    filename = item.filename
+    """This POST method returns specific results based on a given user's key and a dictionary of genders chosen by the user."""
+    key = item.key
     user_gender = item.user_gender
     dico_gender = {k["name"]: k["gender"] for k in user_gender}
     config["bechdel_test_rules"][
@@ -109,14 +114,14 @@ async def result_with_user_gender_by_title(
     config["bechdel_test_rules"][
         "whole_discussion_not_about_men"
     ] = item.parameters.whole_discussion_not_about_men
-    if filename in db.keys():
-        temp = db[filename]["script"]
-        del db[filename]
+    if key in db.keys():
+        temp = db[key]["script"]
+        del db[key]
         background_tasks.add_task(
             result_with_user_gender_by_title_bg_task,
             temp=temp,
             dico_gender=dico_gender,
-            filename=filename,
+            key=key,
         )
         return {
             "message": "The computations are launched",
@@ -125,17 +130,17 @@ async def result_with_user_gender_by_title(
         raise HTTPException(404, f"Movie not in base")
 
 
-def result_with_user_gender_by_title_bg_task(temp, dico_gender, filename):
-    db[filename] = update_db(temp, dico_gender)
+def result_with_user_gender_by_title_bg_task(temp, dico_gender, key):
+    db[key] = update_db(temp, dico_gender)
 
 
-@app.get("/api/content-scene/{filename}/{scene_id}")
-async def content_scene(filename: str, scene_id: int):
-    """This GET method returns the scene content given a filename and scene id."""
-    if filename in db.keys():
-        script = db[filename]["script"]
+@app.get("/api/content-scene/{key}/{scene_id}")
+async def content_scene(key: int, scene_id: int):
+    """This GET method returns the scene content given a user's key and scene id."""
+    if key in db.keys():
+        script = db[key]["script"]
         scene_content = get_scene_content(script, scene_id)
-        return {"filename": filename, **scene_content}
+        return {"key": key, **scene_content}
     else:
         raise HTTPException(404, f"Movie not in base")
 
