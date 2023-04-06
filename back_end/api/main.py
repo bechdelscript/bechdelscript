@@ -1,7 +1,5 @@
 from typing import Union
-
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException, BackgroundTasks
-from fastapi.param_functions import Depends
 from fastapi.middleware.cors import CORSMiddleware
 from screenplay_classes import Script
 import configue
@@ -16,7 +14,7 @@ from api.utils import (
 
 """ 
     This script creates the API needed to link our backend and front end work.
-    Command to run uvicorn API : "uvicorn test_api.main:app --reload"
+    Command to run uvicorn API : "uvicorn api.main:app --reload"
 """
 
 config = configue.load("parameters.yaml")
@@ -144,19 +142,3 @@ async def content_scene(key: int, scene_id: int):
     else:
         raise HTTPException(404, f"Movie not in base")
 
-
-# @app.get("/api/bechdel-scenes/{filename}")
-# async def Bechdel_scenes(filename: str):
-#     """This GET method returns the scenes that pass the highest score passed by the movie."""
-#     score = db[filename]["score"]
-#     if (score <= 1) and (score >= 0):
-#         return {"message": "None of the scenes in the movie help pass the test."}
-#     elif score == 2:
-#         scenes = db[filename]["score_2"]
-#         return {
-#             "message": "The movie has two named female characters who speak together. Unfortunately, they do speak about men.",
-#             "scenes": scenes,
-#         }
-#     elif score == 3:
-#         scenes = db[filename]["score_3"]
-#         return {"message": "The movie passes the Bechdel Test.", "scenes": scenes}

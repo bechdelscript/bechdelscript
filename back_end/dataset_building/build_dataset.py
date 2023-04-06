@@ -3,8 +3,8 @@ import os
 import configue
 import pandas as pd
 
-from dataset_building.download_imsdb_scripts import main_imsdb
-from dataset_building.get_kaggle_scripts import main_kaggle
+from download_imsdb_scripts import main_imsdb
+from get_kaggle_scripts import main_kaggle
 
 
 def create_bechdel_db(config):
@@ -60,7 +60,10 @@ def merge_datasets(config):
     for script_path in (
         duplicate_scripts_to_delete["path"].tolist() + list_unparsable_scripts
     ):
-        if os.path.exists(script_path) and not script_path in df_dataset["path"].tolist():
+        if (
+            os.path.exists(script_path)
+            and not script_path in df_dataset["path"].tolist()
+        ):
             os.remove(script_path)
 
     df_dataset.to_csv(

@@ -6,6 +6,7 @@ from typing import List, Tuple
 from urllib.parse import quote
 
 import bs4
+import configue
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
@@ -28,7 +29,7 @@ top.location.href=location.href
 """,
         "",
     )
-    return text.replace(r"\r", "")
+    return text.replace("\r", "")
 
 
 def get_script(relative_link: str, BASE_URL: str) -> Tuple[str, str]:
@@ -156,4 +157,5 @@ def main_imsdb(config):
 
 
 if __name__ == "__main__":
-    main_imsdb()
+    config = configue.load("parameters.yaml")
+    main_imsdb(config)
