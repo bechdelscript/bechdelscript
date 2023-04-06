@@ -83,7 +83,10 @@ However, some other models and data need to be imported manually:
     python dataset_building/build_dataset.py 
     ``` 
 
-- You also need to download our parsing model, that can be found [here](https://drive.google.com/file/d/1u8tJT1nlmsQJQ0fA1OW0AUlCjfi9Bdzm/view?usp=share_link) and can be downloaded by running [this script](https://github.com/bechdelscript/bechdelscript/blob/main/download_model.sh).
+- You also need to download our parsing model, that can be found [here](https://drive.google.com/file/d/1u8tJT1nlmsQJQ0fA1OW0AUlCjfi9Bdzm/view?usp=share_link) and can be downloaded by running [this script](https://github.com/bechdelscript/bechdelscript/blob/main/download_model.sh), with the command :
+``` 
+bash download_model.sh 
+``` 
 
 
 ### Usage
