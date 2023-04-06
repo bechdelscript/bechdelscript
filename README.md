@@ -59,7 +59,7 @@ For these three steps, we have iterated from basic to elaborate methods to impro
     - The indentation based method (`reparse_with_ml= False`) which is based on decision rules and indentation frequency,
     - The Deep Learning method (to be used exclusively on script the indentation based method couldn't parse) (`reparse_with_ml = True`).
 
-### Installation and Downloading the dataset 
+### Installation and Downloading of the dataset 
 The [requirements.txt](requirements.txt) file, run with `pip3 install -r requirements.txt`, allows you to download most of the needed modules to use this code.
 However, some other models and data need to be imported manually:
 - If you choose to use the Co-reference gender prediction method, the `neuralcoref` module requires a python version lower than 3.7. Then, it can be downloaded using `python -m spacy download en` and `python -m nltk.downloader 'punkt'` in a terminal.
@@ -72,7 +72,10 @@ However, some other models and data need to be imported manually:
         2. We have a gound truth score, available on the Bechdel Test website. 
     This file thus groups the movies on which our algorithm’s results can be compared to a certain truth. 
 
-    First, you need to download the Kaggle scripts,  that can be found [here](https://drive.google.com/drive/folders/16Ae_Dqz7RjFTXc7reiNvnHpXZ3jfkQhg?usp=share_link) and can be downloaded by running [this script](todo). Store this folder inside `data/input`.
+    First, you need to download the Kaggle scripts, that can be found [here](https://drive.google.com/drive/folders/16Ae_Dqz7RjFTXc7reiNvnHpXZ3jfkQhg?usp=share_link) and stored inside `data/input/scripts_kaggle`. Or you can run [this script](https://github.com/bechdelscript/bechdelscript/blob/main/download_kaggle_scripts.sh) with the following command (at the root):
+    ``` 
+    bash download_kaggle_scripts.sh
+    ``` 
 
     Then, to download the IMSDb scripts and create the CSVs, you’ll have have to execute, from the root of the repository : 
     ``` 
@@ -80,7 +83,10 @@ However, some other models and data need to be imported manually:
     python dataset_building/build_dataset.py 
     ``` 
 
-- You also need to download our parsing model, that can be found [here](https://drive.google.com/file/d/1u8tJT1nlmsQJQ0fA1OW0AUlCjfi9Bdzm/view?usp=share_link) and can be downloaded by running [this script](to/create).
+- You also need to download our parsing model, that can be found [here](https://drive.google.com/file/d/1u8tJT1nlmsQJQ0fA1OW0AUlCjfi9Bdzm/view?usp=share_link) and can be downloaded by running [this script](https://github.com/bechdelscript/bechdelscript/blob/main/download_model.sh), with the command :
+``` 
+bash download_model.sh 
+``` 
 
 
 ### Usage
