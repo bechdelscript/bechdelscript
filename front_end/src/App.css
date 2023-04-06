@@ -1,16 +1,44 @@
 :root {
   --header: #cbcbcb;
   --areas-bg: #f0f0f0;
-  --blue: #71c0d4;
-  --yellow: #ffd24d;
-  --green: #a7ce67;
-  --purple: #c796cb;
-  --pink: #df87a1;
-  --red: #c95159;
+  --dark-green: #426559;
+  --dark-green-0: #21322c;
+  --dark-green-1: #304b42;
+  --dark-green-2: #82b3a3;
+  --dark-green-3: #abccc1;
+  --dark-green-4: #d4e5e0;
+  --light-green: #95b459;
+  --light-green-0: #4a5a2c;
+  --light-green-1: #708642;
+  --light-green-2: #c0e3cd;
+  --light-green-3: #d4e0ba;
+  --light-green-4: #eaefdc;
+  --blue-green: #99d2ac;
+  --grey: #989fa6;
+  --grey-0: #494f55;
+  --grey-1: #6e7780;
+  --grey-2: #c1c5c9;
+  --grey-3: #d5d8db;
+  --grey-4: #eaebed;
+  --sand: #c4b894;
+  --sand-0: #6e623f;
+  --sand-1: #a6945e;
+  --sand-2: #dbd4be;
+  --sand-3: #e7e2d4;
+  --sand-4: #f3f0e9;
+  --light-pink: #ebdfdf;
+  --light-pink-0: #1c1010;
+  --light-pink-1: #46292a;
+  --light-pink-2: #8e5254;
+  --light-pink-3: #be9496;
+  --light-pink-4: #d9c0c1;
+
+
 }
 
 .App {
   text-align: center;
+  background: var(--light-green-4);
 }
 
 .App-logo {
@@ -25,8 +53,7 @@
 }
 
 .App-header {
-  background-color: var(--purple);
-  /* background-color: var(--header); */
+  background-color: var(--dark-green);
   min-height: 10vh;
   display: flex;
   flex-direction: column;
@@ -51,8 +78,7 @@
 }
 
 .explanation-area-container {
-  /* background: var(--areas-bg); */
-  background: var(--blue);
+  background: var(--light-green);
   border-radius: 20px;
   float: none;
   margin: 2% auto;
@@ -62,8 +88,6 @@
 }
 
 .information-box-container {
-  /* background: var(--areas-bg); */
-  /* border-radius: 20px; */
   float: none;
   margin: 50% auto;
   padding: 3em;
@@ -72,8 +96,7 @@
 }
 
 .uploader-area-container {
-  /* background: var(--areas-bg); */
-  background: var(--yellow);
+  background: var(--light-green);
   border-radius: 20px;
   float: none;
   margin: 2% auto;
@@ -83,8 +106,7 @@
 }
 
 .parameters-area-container {
-  /* background: var(--areas-bg); */
-  background: var(--green);
+  background: var(--light-green);
   border-radius: 20px;
   float: none;
   margin: 2% auto;
@@ -104,7 +126,6 @@
 }
 
 .results-area-container {
-  /* background: var(--areas-bg); */
   background-color: var(--purple);
   border-radius: 25px;
   float: none;
@@ -202,26 +223,27 @@
   width: 90%;
 }
 
-.green {
-  background: var(--green);
+
+.info-bubble-general {
+  background: var(--light-pink-4);
 }
 
-.blue {
-  background: var(--blue);
+.info-bubble-upload {
+  background: var(--sand-2);
 }
 
-.yellow {
-  background: var(--yellow);
+.info-bubble-results {
+  background: var(--sand-2);
 }
 
-.purple {
-  background: var(--purple);
+.info-bubble-parameters {
+  background: var(--sand);
 }
 
-.pink {
-  background: var(--pink);
+.info-bubble-characters {
+  background: var(--sand-2);
 }
 
-.red {
-  background: var(--red);
+.info-bubble-disclaimer {
+  background: var(--sand);
 }
