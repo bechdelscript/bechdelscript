@@ -59,11 +59,29 @@ For these three steps, we have iterated from basic to elaborate methods to impro
     - The indentation based method (`reparse_with_ml= False`) which is based on decision rules and indentation frequency,
     - The Deep Learning method (to be used exclusively on script the indentation based method couldn't parse) (`reparse_with_ml = True`).
 
-### Installation
+### Installation and Downloading the dataset 
 The [requirements.txt](requirements.txt) file, run with `pip3 install -r requirements.txt`, allows you to download most of the needed modules to use this code.
-However, two other models need to be imported :
-- If you choose to use the Co-reference gender prediction method, the `neuralcoref` module requires a python version lower than 3.7. Then, it can be downloaded using `python -m spacy download en` and `nltk.download('punkt')` in a terminal.
-- The parsing model can be found [here](https://drive.google.com/file/d/1u8tJT1nlmsQJQ0fA1OW0AUlCjfi9Bdzm/view?usp=share_link) and can be downloaded by running [this script](to/create).
+However, some other models and data need to be imported manually:
+- If you choose to use the Co-reference gender prediction method, the `neuralcoref` module requires a python version lower than 3.7. Then, it can be downloaded using `python -m spacy download en` and `python -m nltk.downloader 'punkt'` in a terminal.
+
+- The data folder is composed of different things : 
+    - A lot of scripts, coming of different sources : `scripts_imsdb` or `scripts_kaggle`. Special mention to [The Internet Movie Script Database](https://imsdb.com/), that provides a gigantic amount of movie scripts. 
+    - A CSV file `bechdel_db.csv`, containing all bechdel scores for the movies rated on the [Bechdel Test website](https://bechdeltest.com/). This data will be used as the ground truth to measures our performances later on. 
+    - Another CSV file, `dataset.csv`, which corresponds to the merge of the movies for which :  
+        1. We found a script, on IMSDb or Kaggle. 
+        2. We have a gound truth score, available on the Bechdel Test website. 
+    This file thus groups the movies on which our algorithm’s results can be compared to a certain truth. 
+
+    First, you need to download the Kaggle scripts,  that can be found [here](https://drive.google.com/drive/folders/16Ae_Dqz7RjFTXc7reiNvnHpXZ3jfkQhg?usp=share_link) and can be downloaded by running [this script](todo). Store this folder inside `data/input`.
+
+    Then, to download the IMSDb scripts and create the CSVs, you’ll have have to execute, from the root of the repository : 
+    ``` 
+    cd ./back_end/ 
+    python dataset_building/build_dataset.py 
+    ``` 
+
+- You also need to download our parsing model, that can be found [here](https://drive.google.com/file/d/1u8tJT1nlmsQJQ0fA1OW0AUlCjfi9Bdzm/view?usp=share_link) and can be downloaded by running [this script](to/create).
+
 
 ### Usage
 As specified above, you can run two scripts to test our algorithm : [main.py](back_end/main.py) and [performance.py](back_end/performance.py). You must be conscious that these scripts will use the parameters in the `parameters.yaml` file to run, so make sure you are using the ones you want.

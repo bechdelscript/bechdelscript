@@ -9,6 +9,10 @@ import InformationBox from './components/information_box';
 
 import { Typography, Grid } from '@mui/material';
 
+let url = window.location.origin
+if (url.startsWith("http://localhost:")) {
+    url = "http://localhost"
+}
 
 class App extends React.Component {
 
@@ -20,6 +24,7 @@ class App extends React.Component {
             message_result: null,
             scenes: null,
             file: null,
+            user_key: null,
             loading: false,
             error_message: null,
             women_only_in_scene: false,
@@ -42,20 +47,16 @@ class App extends React.Component {
         formData.append('only_women_in_whole_scene', this.state.women_only_in_scene);
         formData.append('whole_discussion_not_about_men', this.state.whole_discussion_not_about_men);
 
-        const response = await fetch("http://localhost:8000/upload-script/", {
+        const response = await fetch(url + ":8000/api/upload-script/", {
             method: 'POST',
             body: formData,
         });
         if (response.ok) {
             const data = await response.json();
-            this.setState({
-                computed_score: data.score,
-                characters: data.chars,
-                message_result: data.message_result,
-                scenes: data.scenes,
-                error_message: null,
-                loading: false
-            });
+            await this.setState({
+                user_key: data.key
+            })
+            await this.waitAndRetrieveResults(data.key)
         } else {
             this.setState({ loading: false })
             if (response.status === 422) {
@@ -75,6 +76,48 @@ class App extends React.Component {
 
     }
 
+    delay = (milliseconds) => {
+        return new Promise(resolve => {
+            setTimeout(resolve, milliseconds);
+        });
+    }
+
+    waitAndRetrieveResults = async (user_key) => {
+        let message = "unavailable";
+        while (message === "unavailable") {
+            let response = await fetch(url + ":8000/api/result-by-key/" + user_key, {
+                method: 'GET',
+            });
+            if (response.ok) {
+                const data = await response.json();
+                console.log("data", data)
+                let message = data.message;
+                if (message === "available") {
+                    this.setState({
+                        computed_score: data.score,
+                        characters: data.chars,
+                        message_result: data.message_result,
+                        scenes: data.scenes,
+                        error_message: null,
+                        loading: false
+                    });
+                    return;
+                } else {
+                    await this.delay(5000);
+                }
+
+            } else {
+                this.setState({ loading: false })
+                this.setState({
+                    error_message: `This is an HTTP error: The status is ${response.status}`
+                });
+                throw new Error(
+                    `This is an HTTP error: The status is ${response.status}`
+                );
+            }
+        }
+    }
+
     handleGenderChange = async (i, event) => {
         const characters = this.state.characters.slice();
         characters[i].gender = event.target.value;
@@ -84,11 +127,11 @@ class App extends React.Component {
     handleCharactersListSubmit = async (event) => {
         event.preventDefault();
         this.setState({ loading: true })
-        const response = await fetch(`http://localhost:8000/result-with-user-gender-by-title/`, {
+        const response = await fetch(url + ":8000/api/result-with-user-gender-by-key/", {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                filename: this.state.file.name,
+                key: this.state.user_key,
                 user_gender: this.state.characters,
                 parameters: {
                     only_women_in_whole_scene: this.state.women_only_in_scene,
@@ -97,15 +140,7 @@ class App extends React.Component {
             })
         });
         if (response.ok) {
-            const data = await response.json();
-            console.log(data);
-            this.setState({
-                computed_score: data.score,
-                characters: data.chars,
-                message_result: data.message_result,
-                scenes: data.scenes,
-                loading: false
-            });
+            await this.waitAndRetrieveResults(this.state.user_key)
         } else {
             this.setState({ loading: false })
             if (response.status === 422) {
@@ -192,7 +227,7 @@ class App extends React.Component {
                             computed_score={this.state.computed_score}
                             handleChange={this.handleGenderChange}
                             handleSubmit={this.handleCharactersListSubmit}
-                            file={this.state.file}
+                            user_key={this.state.user_key}
                         />
                     </Grid>
                 </Grid>
