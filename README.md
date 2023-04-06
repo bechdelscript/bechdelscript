@@ -72,7 +72,7 @@ However, some other models and data need to be imported manually:
         2. We have a gound truth score, available on the Bechdel Test website. 
     This file thus groups the movies on which our algorithm’s results can be compared to a certain truth. 
 
-    First, you need to download the Kaggle scripts,  that can be found [here](https://drive.google.com/file/d/1u8tJT1nlmsQJQ0fA1OW0AUlCjfi9Bdzm/view?usp=share_link) TODO UPDATE LINK. Store this folder inside `data/input`.
+    First, you need to download the Kaggle scripts,  that can be found [here](https://drive.google.com/drive/folders/16Ae_Dqz7RjFTXc7reiNvnHpXZ3jfkQhg?usp=share_link) and can be downloaded by running [this script](todo). Store this folder inside `data/input`.
 
     Then, to download the IMSDb scripts and create the CSVs, you’ll have have to execute, from the root of the repository : 
     ``` 
