@@ -8,7 +8,6 @@ from gender.gender_name import load_classifier, _classify, load_database
 from gender.narrative_approach import import_gender_tokens, naive_narrative_gender
 from gender.neural_coref import list_pronouns_coref
 import nltk
-import streamlit as st
 import spacy
 import neuralcoref
 
@@ -288,100 +287,6 @@ class Script:
                         f"\n******* {str(scene_id) + 'th' if scene_id == 1 else str(scene_id) + 'st'} scene *******"
                     )
                     print(self.list_scenes[scene_id])
-
-    def display_results_streamlit(self, nb_scenes):
-        st.write(f"Computed score : {self.computed_score}")
-        if self.computed_score == 0:
-            st.write("There aren't two named women in the movie.")
-            st.write("List of named characters in the movie :")
-            for character in self.list_characters:
-                if character.is_named:
-                    st.write(f"- {character.name} ({character.gender})")
-        elif self.computed_score >= 1:
-            named_women_characters = [
-                character.name
-                for character in self.list_characters
-                if character.is_named and character.gender == "f"
-            ]
-            st.write(
-                f"""There is at least two women who are named : {
-                    ", ".join(named_women_characters)
-                }\n"""
-            )
-            if self.computed_score == 1:
-                st.write(
-                    "However, they never talk in the same scene without other men, here are some scenes where they appear :"
-                )
-                current_nb_scenes = 0
-                for i, scene in enumerate(self.list_scenes):
-                    for named_woman in named_women_characters:
-                        if (
-                            any(
-                                [
-                                    named_woman.startswith(character.name)
-                                    or character.name.startswith(named_woman)
-                                    for character in scene.list_characters_in_scene
-                                ]
-                            )
-                            > 0
-                        ):
-                            st.write(
-                                f"""- Scene number {i} with characters : {
-                                    ", ".join(
-                                        [
-                                            f"{character.name} ({character.gender})"
-                                            for character in scene.list_characters_in_scene
-                                        ]
-                                    )
-                                }"""
-                            )
-                            current_nb_scenes += 1
-                    if current_nb_scenes == 5:
-                        break
-            else:
-                if self.computed_score == 2:
-                    relevant_scenes = self.score2_scenes
-                    st.write(
-                        f"And they talk with each other in {len(self.score2_scenes)} scenes, here are some of them :"
-                    )
-                    for i in self.score2_scenes[:5]:
-                        st.write(
-                            f"""- Scene number {i} with characters : {
-                                ", ".join(
-                                    [
-                                        f"{character.name} ({character.gender})"
-                                        for character in self.list_scenes[i].list_characters_in_scene
-                                    ]
-                                )
-                            }"""
-                        )
-                    st.write("However, they talk about men in all of those scenes.")
-
-                elif self.computed_score == 3:
-                    relevant_scenes = self.score3_scenes
-                    st.write(
-                        f"And they talk with each other about things other than men in {len(self.score3_scenes)} scenes, here are some of them :"
-                    )
-                    for i in self.score3_scenes[:5]:
-                        st.write(
-                            f"""- Scene number {i} with characters : {
-                                ", ".join(
-                                    [
-                                        f"{character.name} ({character.gender})"
-                                        for character in self.list_scenes[i].list_characters_in_scene
-                                    ]
-                                )
-                            }"""
-                        )
-                nb_scenes_to_print = min(nb_scenes, len(relevant_scenes))
-                st.write(
-                    f"\nHere {'are' if nb_scenes_to_print > 1 else 'is'} {nb_scenes_to_print} {'scenes' if nb_scenes_to_print > 1 else 'scene'} that validate this score :"
-                )
-                for scene_id in relevant_scenes[:nb_scenes_to_print]:
-                    st.write(
-                        f"\n******* {str(scene_id) + 'th' if scene_id == 1 else str(scene_id) + 'st'} scene *******"
-                    )
-                    st.write(self.list_scenes[scene_id])
 
     def check_parsing_is_coherent(self):
         all_tags = sum(self.list_list_tags, [])
