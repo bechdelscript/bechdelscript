@@ -59,7 +59,7 @@ For these three steps, we have iterated from basic to elaborate methods to impro
     - The indentation based method (`reparse_with_ml= False`) which is based on decision rules and indentation frequency,
     - The Deep Learning method (to be used exclusively on script the indentation based method couldn't parse) (`reparse_with_ml = True`).
 
-### Installation and Downloading the dataset 
+### Installation and Downloading of the dataset 
 The [requirements.txt](requirements.txt) file, run with `pip3 install -r requirements.txt`, allows you to download most of the needed modules to use this code.
 However, some other models and data need to be imported manually:
 - If you choose to use the Co-reference gender prediction method, the `neuralcoref` module requires a python version lower than 3.7. Then, it can be downloaded using `python -m spacy download en` and `python -m nltk.downloader 'punkt'` in a terminal.
