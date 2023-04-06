@@ -1,6 +1,16 @@
 import React from "react";
 import { Typography, Grid, Button, Box } from '@mui/material';
 import { CircularProgress } from '@mui/material';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+
+const yellow_theme = createTheme({
+    palette: {
+        primary: {
+            main: '#c29f37',
+        },
+    },
+});
 
 
 function FileUpload(props) {
@@ -13,15 +23,19 @@ function FileUpload(props) {
                 <Grid container>
                     <Grid item xs={12}>
                         <Box sx={{ justifyContent: 'center', flexWrap: 'nowrap' }}>
-                            <Button sx={{ m: 0.5 }} component="label">
-                                Choose file
-                                <input hidden type="file" onChange={props.handleFileSelect} />
-                            </Button>
+                            <ThemeProvider theme={yellow_theme}>
+                                <Button sx={{ m: 0.5 }} component="label">
+                                    Choose file
+                                    <input hidden type="file" onChange={props.handleFileSelect} />
+                                </Button>
+                            </ThemeProvider>
                             {chosen_file}
                         </Box>
                     </Grid>
                     <Grid item xs={12}>
-                        <Button sx={{ m: 1 }} variant="contained" type="submit">Upload</Button>
+                        <ThemeProvider theme={yellow_theme}>
+                            <Button sx={{ m: 1 }} variant="contained" type="submit">Upload</Button>
+                        </ThemeProvider>
                     </Grid>
                 </Grid>
             </form>

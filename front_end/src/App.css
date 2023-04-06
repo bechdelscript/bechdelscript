@@ -1,6 +1,12 @@
 :root {
   --header: #cbcbcb;
   --areas-bg: #f0f0f0;
+  --blue: #71c0d4;
+  --yellow: #ffd24d;
+  --green: #a7ce67;
+  --purple: #c796cb;
+  --pink: #df87a1;
+  --red: #c95159;
 }
 
 .App {
@@ -19,7 +25,8 @@
 }
 
 .App-header {
-  background-color: var(--header);
+  background-color: var(--purple);
+  /* background-color: var(--header); */
   min-height: 10vh;
   display: flex;
   flex-direction: column;
@@ -44,7 +51,8 @@
 }
 
 .explanation-area-container {
-  background: var(--areas-bg);
+  /* background: var(--areas-bg); */
+  background: var(--blue);
   border-radius: 20px;
   float: none;
   margin: 2% auto;
@@ -54,17 +62,18 @@
 }
 
 .information-box-container {
-  background: var(--areas-bg);
-  border-radius: 20px;
+  /* background: var(--areas-bg); */
+  /* border-radius: 20px; */
   float: none;
-  margin: 2% auto;
-  padding: 1em;
+  margin: 50% auto;
+  padding: 3em;
   position: relative;
-  width: 80%;
+  width: 2%;
 }
 
 .uploader-area-container {
-  background: var(--areas-bg);
+  /* background: var(--areas-bg); */
+  background: var(--yellow);
   border-radius: 20px;
   float: none;
   margin: 2% auto;
@@ -74,7 +83,8 @@
 }
 
 .parameters-area-container {
-  background: var(--areas-bg);
+  /* background: var(--areas-bg); */
+  background: var(--green);
   border-radius: 20px;
   float: none;
   margin: 2% auto;
@@ -94,7 +104,8 @@
 }
 
 .results-area-container {
-  background: var(--areas-bg);
+  /* background: var(--areas-bg); */
+  background-color: var(--purple);
   border-radius: 25px;
   float: none;
   margin: 2% auto;
@@ -121,12 +132,52 @@
   margin: auto;
 }
 
+.counter-balance {
+  margin: 64px 0px 0px 64px;
+}
+
 .left-align-text {
   text-align: left;
 }
 
+.margin-auto {
+  margin: auto;
+}
+
 .padding-20px {
   padding: 20px;
+}
+
+.padding-20px-horizontal {
+  padding: 0px 20px;
+}
+
+.padding-40px {
+  padding: 40px;
+}
+
+.padding-40px-horizontal-20px-vertical {
+  padding: 20px 40px;
+}
+
+.width-80percent {
+  width: 80%;
+}
+
+.width-70percent {
+  width: 70%;
+}
+
+.width-60percent {
+  width: 60%;
+}
+
+.max-height-fit-content {
+  max-height: fit-content;
+}
+
+.max-height-200px {
+  max-height: 250px;
 }
 
 .correct-text-display {
@@ -139,4 +190,38 @@
 
 .highlighted-invalid {
   background-color: #ffbb00;
+}
+
+
+.bubble {
+  border-radius: 10px;
+  float: none;
+  margin: auto;
+  padding: 10px;
+  position: relative;
+  width: 90%;
+}
+
+.green {
+  background: var(--green);
+}
+
+.blue {
+  background: var(--blue);
+}
+
+.yellow {
+  background: var(--yellow);
+}
+
+.purple {
+  background: var(--purple);
+}
+
+.pink {
+  background: var(--pink);
+}
+
+.red {
+  background: var(--red);
 }

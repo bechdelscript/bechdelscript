@@ -192,11 +192,11 @@ class App extends React.Component {
 
     render() {
         return (
-            <div className="App">
+            <div className="App margin-auto">
                 <header className="App-header">
                     <Typography variant='h3' className='padding-20px'>Bechdel Script Tester</Typography>
                 </header>
-                <Grid container spacing={8} className="padding-20px">
+                <Grid container spacing={8} className="padding-20px counter-balance">
                     <Grid item xs={4}>
                         <Explanation />
                     </Grid>
