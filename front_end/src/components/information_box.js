@@ -93,18 +93,6 @@ export default function InformationBox(props) {
                         </div>
                     </div>
                 </Grid>
-
-
-                <div>
-
-                </div><br />
-                <div>
-
-                </div>
-                <div>
-
-
-                </div>
             </Grid>
         </>
     );
