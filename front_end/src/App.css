@@ -9,7 +9,7 @@
   --dark-green-4: #d4e5e0;
   --light-green: #95b459;
   --light-green-0: #4a5a2c;
-  --light-green-1: #708642;
+  --light-green-1: #8f9f6d;
   --light-green-2: #c0e3cd;
   --light-green-3: #d4e0ba;
   --light-green-4: #eaefdc;
@@ -38,7 +38,7 @@
 
 .App {
   text-align: center;
-  background: var(--light-green-4);
+  background: var(--sand-4);
 }
 
 .App-logo {
@@ -53,14 +53,14 @@
 }
 
 .App-header {
-  background-color: var(--dark-green);
+  background-color: var(--dark-green-1);
   min-height: 10vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: black;
+  color: var(--sand-3);
 }
 
 .App-link {
@@ -78,7 +78,7 @@
 }
 
 .explanation-area-container {
-  background: var(--light-green);
+  background: var(--light-pink-4);
   border-radius: 20px;
   float: none;
   margin: 2% auto;
@@ -96,7 +96,7 @@
 }
 
 .uploader-area-container {
-  background: var(--light-green);
+  background: var(--light-pink-4);
   border-radius: 20px;
   float: none;
   margin: 2% auto;
@@ -106,7 +106,7 @@
 }
 
 .parameters-area-container {
-  background: var(--light-green);
+  background: var(--light-pink-4);
   border-radius: 20px;
   float: none;
   margin: 2% auto;
@@ -225,7 +225,8 @@
 
 
 .info-bubble-general {
-  background: var(--light-pink-4);
+  background: var(--dark-green);
+  color: var(--sand-4);
 }
 
 .info-bubble-upload {
@@ -237,7 +238,7 @@
 }
 
 .info-bubble-parameters {
-  background: var(--sand);
+  background: var(--sand-2);
 }
 
 .info-bubble-characters {
@@ -245,5 +246,5 @@
 }
 
 .info-bubble-disclaimer {
-  background: var(--sand);
+  background: var(--sand-2);
 }

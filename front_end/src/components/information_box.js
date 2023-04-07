@@ -23,8 +23,8 @@ export default function InformationBox(props) {
                     <div className='bubble info-bubble-general max-height-fit-content'>
                         <div className="padding-40px">
                             This tool was made to facilitate the process of assessing if a movie passes the <b>Bechdel-Wallace Test</b> or not. If you don't know what the Bechdel test is, check out <Link href="https://bechdeltest.com" underline="hover">this site</Link> !
-                            <br /><br />Our tool is not perfect in any way, but it is useful, and was made to be used and accessible.
-                            <br /><br />It tool is also fully <b>open source</b>. You can explore our code <Link href="https://github.com/bechdelscript" underline="hover">here</Link>.
+                            <br /><br />Our tool is not perfect in any way, but it is useful, and was made to be accessible and useful.
+                            <br /><br />The tool is also fully <b>open source</b>. You can explore our code <Link href="https://github.com/bechdelscript" underline="hover">here</Link>.
                         </div>
                     </div>
                 </Grid>
