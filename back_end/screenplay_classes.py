@@ -36,7 +36,7 @@ class Script:
     def from_path(
         cls, script_path: str, config: dict, ground_truth=None, user_genders=None
     ):
-        with open(script_path, "r") as f:
+        with open(script_path, "r", encoding="utf-8") as f:
             script_text = f.read()
         return cls(script_text, config, ground_truth, user_genders)
 
@@ -115,7 +115,7 @@ class Script:
         para = self.config["used_methods"]["character_gender_method"]
         gender_data = load_database(self.config)
         if para == "classify":
-            classifier = load_classifier()
+            classifier = load_classifier(self.config)
             function = lambda x: _classify(x, classifier)[0]
         elif para == "narrative":
             function = lambda x: self.list_narration.character_narrative_gender(x)
