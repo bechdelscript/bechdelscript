@@ -91,9 +91,9 @@ def create_gender_features(name: str) -> dict:
     return features
 
 
-def load_classifier():
+def load_classifier(config: dict):
     """This loads the classifier"""
-    gender_data = load_database()
+    gender_data = load_database(config)
     # Create the train and test features sets, and train a Naive bayes classifier on the training set.
     train_features, test_features = create_test_train(gender_data)
     classifier = nltk.NaiveBayesClassifier.train(train_features)
