@@ -20,11 +20,11 @@ export default function InformationBox(props) {
                 <WelcomeText className="padding-20px width-70percent center-text" />
 
                 <Grid item xs={6} >
-                    <div className='bubble blue max-height-fit-content'>
+                    <div className='bubble info-bubble-general max-height-fit-content'>
                         <div className="padding-40px">
                             This tool was made to facilitate the process of assessing if a movie passes the <b>Bechdel-Wallace Test</b> or not. If you don't know what the Bechdel test is, check out <Link href="https://bechdeltest.com" underline="hover">this site</Link> !
-                            <br /><br />Our tool is not perfect in any way, but it is useful, and was made to be used and accessible.
-                            <br /><br />It tool is also fully <b>open source</b>. You can explore our code <Link href="https://github.com/bechdelscript" underline="hover">here</Link>.
+                            <br /><br />Our tool is not perfect in any way, but it is useful, and was made to be accessible and useful.
+                            <br /><br />The tool is also fully <b>open source</b>. You can explore our code <Link href="https://github.com/bechdelscript" underline="hover">here</Link>.
                         </div>
                     </div>
                 </Grid>
@@ -32,7 +32,7 @@ export default function InformationBox(props) {
                     <TestIllustration className="padding-40px-horizontal-20px-vertical max-height-200px" />
                 </Grid>
                 <Grid container item xs={6} rowSpacing={2} >
-                    <div className='bubble yellow max-height-fit-content'>
+                    <div className='bubble info-bubble-upload max-height-fit-content'>
                         <div className='padding-20px'>
                             <i><b>Uploading a File</b></i><br /><br />
                             <div className='left-align-text'>
@@ -40,7 +40,7 @@ export default function InformationBox(props) {
                             </div>
                         </div>
                     </div>
-                    <div className='bubble purple max-height-fit-content'>
+                    <div className='bubble info-bubble-results max-height-fit-content'>
                         <div className='padding-40px-horizontal-20px-vertical'>
                             <i><b>Understanding the Score and Results</b></i><br /><br />
                             <div className="left-align-text">
@@ -55,7 +55,7 @@ export default function InformationBox(props) {
                     </div>
                 </Grid>
                 <Grid item xs={6}>
-                    <div className='bubble green  max-height-fit-content'>
+                    <div className='bubble info-bubble-parameters  max-height-fit-content'>
                         <div className="padding-40px-horizontal-20px-vertical">
                             <i><b>Choosing the parameters</b></i><br /><br />
                             <div className="left-align-text">
@@ -73,7 +73,7 @@ export default function InformationBox(props) {
                     </div><br />
                 </Grid>
                 <Grid xs={6}>
-                    <div className='bubble pink max-height-fit-content'>
+                    <div className='bubble info-bubble-characters max-height-fit-content'>
                         <div className="padding-40px-horizontal-20px-vertical">
                             <i><b>Exploring the characters</b></i><br /><br />
                             <div className='left-align-text'>
@@ -84,7 +84,7 @@ export default function InformationBox(props) {
                     </div>
                 </Grid>
                 <Grid xs={6}>
-                    <div className='bubble red max-height-fit-content'>
+                    <div className='bubble info-bubble-disclaimer max-height-fit-content'>
                         <div className="padding-40px-horizontal-20px-vertical">
                             <i><b>Disclaimer</b></i><br /><br />
                             <div className='left-align-text'>
@@ -93,18 +93,6 @@ export default function InformationBox(props) {
                         </div>
                     </div>
                 </Grid>
-
-
-                <div>
-
-                </div><br />
-                <div>
-
-                </div>
-                <div>
-
-
-                </div>
             </Grid>
         </>
     );

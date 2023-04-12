@@ -7,7 +7,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 const yellow_theme = createTheme({
     palette: {
         primary: {
-            main: '#c29f37',
+            main: '#4a5a2c',
         },
     },
 });

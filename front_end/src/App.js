@@ -6,6 +6,7 @@ import Parameters from './components/parameters';
 import Results from "./components/results";
 import Explanation from './components/explanations';
 import InformationBox from './components/information_box';
+import Footer from './components/footer';
 
 import { Typography, Grid } from '@mui/material';
 
@@ -231,6 +232,9 @@ class App extends React.Component {
                         />
                     </Grid>
                 </Grid>
+                <footer className="App-footer">
+                    <Footer />
+                </footer>
             </div>
         );
     }
