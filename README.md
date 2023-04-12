@@ -80,7 +80,7 @@ However, some other models and data need to be imported manually:
     Then, to download the IMSDb scripts and create the CSVs, you’ll have have to execute, from the root of the repository : 
     ``` 
     cd ./back_end/ 
-    python dataset_building/build_dataset.py 
+    python -m dataset_building.build_dataset 
     ``` 
 
 - You also need to download our parsing model, that can be found [here](https://drive.google.com/file/d/1u8tJT1nlmsQJQ0fA1OW0AUlCjfi9Bdzm/view?usp=share_link) and can be downloaded by running [this script](https://github.com/bechdelscript/bechdelscript/blob/main/download_model.sh), with the command :

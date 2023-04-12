@@ -3,8 +3,8 @@ import os
 import configue
 import pandas as pd
 
-from download_imsdb_scripts import main_imsdb
-from get_kaggle_scripts import main_kaggle
+from dataset_building.download_imsdb_scripts import main_imsdb
+from dataset_building.get_kaggle_scripts import main_kaggle
 
 
 def create_bechdel_db(config):
