@@ -72,8 +72,16 @@
   color: black;
 }
 
-.App-link {
-  color: #61dafb;
+.text-link-green {
+  color: var(--dark-green-3);
+}
+
+.text-link-pink {
+  color: var(--light-pink-2);
+}
+
+.text-link-sand {
+  color: var(--sand-0);
 }
 
 @keyframes App-logo-spin {
@@ -125,7 +133,7 @@
 }
 
 .score-layout {
-  background: var(--header);
+  background: var(--sand-1);
   border-radius: 25px;
   float: none;
   margin: 2% auto;
@@ -135,7 +143,7 @@
 }
 
 .results-area-container {
-  background-color: var(--purple);
+  background-color: var(--sand-3);
   border-radius: 25px;
   float: none;
   margin: 2% auto;
@@ -145,7 +153,7 @@
 }
 
 .characters-area-container {
-  background: var(--areas-bg);
+  background: var(--sand-3);
   border-radius: 25px;
   float: none;
   margin: 2% auto;
@@ -168,6 +176,10 @@
 
 .left-align-text {
   text-align: left;
+}
+
+.middle-vertical-align {
+  vertical-align: middle
 }
 
 .margin-auto {

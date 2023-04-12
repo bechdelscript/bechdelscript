@@ -7,8 +7,9 @@ import Results from "./components/results";
 import Explanation from './components/explanations';
 import InformationBox from './components/information_box';
 import Footer from './components/footer';
+import Header from './components/header';
 
-import { Typography, Grid } from '@mui/material';
+import { Grid } from '@mui/material';
 
 let url = window.location.origin
 if (url.startsWith("http://localhost:")) {
@@ -195,7 +196,7 @@ class App extends React.Component {
         return (
             <div className="App margin-auto">
                 <header className="App-header">
-                    <Typography variant='h3' className='padding-20px'>Bechdel Script Tester</Typography>
+                    <Header />
                 </header>
                 <Grid container spacing={8} className="padding-20px counter-balance">
                     <Grid item xs={4}>
