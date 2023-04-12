@@ -139,6 +139,7 @@ class Script:
                         character.identify_gender(function)
 
     def load_named_males(self):
+        self.male_named_characters = []
         for character in self.list_characters:
             if character.is_named:
                 if character.gender == "m":

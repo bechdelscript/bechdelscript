@@ -10,10 +10,10 @@ export default function Footer(props) {
         <Grid container>
             <Grid item xs={1}></Grid>
             <Grid item xs={3}>
-                <img src={logo_illuin} height={50}></img>
+                <img src={logo_illuin} height={50} alt="logo-illuin"></img>
             </Grid>
             <Grid item xs={3}>
-                <img src={logo_centralesupelec} height={50}></img>
+                <img src={logo_centralesupelec} height={50} alt="logo-CentraleSupelec"></img>
             </Grid>
             <Grid item xs={3}>
                 <Link href="mailto:bechdelscript@gmail.com" underline="hover"> Send us an email</Link>
