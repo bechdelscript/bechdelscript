@@ -22,9 +22,9 @@ export default function InformationBox(props) {
                 <Grid item xs={6} >
                     <div className='bubble info-bubble-general max-height-fit-content'>
                         <div className="padding-40px">
-                            This tool was made to facilitate the process of assessing if a movie passes the <b>Bechdel-Wallace Test</b> or not. If you don't know what the Bechdel test is, check out <Link href="https://bechdeltest.com" underline="hover">this site</Link> !
+                            This tool was made to facilitate the process of assessing if a movie passes the <b>Bechdel-Wallace Test</b> or not. If you don't know what the Bechdel test is, check out <span className="text-link-green"><Link href="https://bechdeltest.com" underline="hover" color="inherit">this site</Link></span> !
                             <br /><br />Our tool is not perfect in any way, but it is useful, and was made to be accessible and useful.
-                            <br /><br />The tool is also fully <b>open source</b>. You can explore our code <Link href="https://github.com/bechdelscript" underline="hover">here</Link>.
+                            <br /><br />The tool is also fully <b>open source</b>. You can explore our code <span className="text-link-green"><Link href="https://github.com/bechdelscript" underline="hover" color="inherit">here</Link></span>.
                         </div>
                     </div>
                 </Grid>
@@ -36,7 +36,7 @@ export default function InformationBox(props) {
                         <div className='padding-20px'>
                             <i><b>Uploading a File</b></i><br /><br />
                             <div className='left-align-text'>
-                                You can upload a movie script to test it using a .txt format file. Lots of scripts can easily be found online, if you don't know where to look we recommend the <Link href='https://imsdb.com/' underline="hover"> IMSDB website</Link>.
+                                You can upload a movie script to test it using a .txt format file. Lots of scripts can easily be found online, if you don't know where to look we recommend the <span className="text-link-sand"><Link href='https://imsdb.com/' underline="hover" color="inherit"> IMSDB website</Link></span>.
                             </div>
                         </div>
                     </div>

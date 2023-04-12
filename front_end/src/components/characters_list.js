@@ -3,7 +3,15 @@ import Character from "./character";
 import Button from '@mui/material/Button';
 import Grid from "@mui/system/Unstable_Grid/Grid";
 import { Typography } from "@mui/material";
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
+const yellow_theme = createTheme({
+    palette: {
+        primary: {
+            main: '#c4b894',
+        },
+    },
+});
 
 class CharacterList extends Component {
 
@@ -24,7 +32,9 @@ class CharacterList extends Component {
                 <div className="characters-area-container">
                     <Typography variant="h4" sx={{ m: 2 }}>List of characters</Typography>
                     <Grid container rowGap={2}>{rows}</Grid>
-                    <Button sx={{ m: 2 }} type="submit" variant="contained">Test again !</Button>
+                    <ThemeProvider theme={yellow_theme}>
+                        <Button sx={{ m: 2 }} type="submit" variant="contained">Test again !</Button>
+                    </ThemeProvider>
                 </div>
             </form >
         )

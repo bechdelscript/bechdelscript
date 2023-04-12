@@ -6,6 +6,7 @@ import Select from '@mui/material/Select';
 import Grid from '@mui/material/Grid';
 import { Box } from "@mui/system";
 import { Button } from "@mui/material";
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 
 const ITEM_HEIGHT = 48;
@@ -21,6 +22,13 @@ let url = window.location.origin
 if (url.startsWith("http://localhost:")) {
     url = "http://localhost"
 }
+const button_theme = createTheme({
+    palette: {
+        primary: {
+            main: '#6e623f',
+        },
+    },
+});
 
 class SceneDisplayer extends Component {
 
@@ -169,7 +177,9 @@ class SceneDisplayer extends Component {
                 <Box ref={this.myScrollableDiv} style={{ maxHeight: 250, overflow: 'auto', background: '#ffffff', position: 'relative' }}>
                     <div style={{ padding: '2% 10%', textAlign: 'left' }} className="correct-text-display" >{this.state.text}</div>
                 </Box>
-                <Button sx={{ m: 1 }} onClick={() => { this.centerLineInDiv(); }}>Center validating lines</Button>
+                <ThemeProvider theme={button_theme}>
+                    <Button sx={{ m: 1 }} onClick={() => { this.centerLineInDiv(); }}>Center validating lines</Button>
+                </ThemeProvider>
             </div>
         );
     }
