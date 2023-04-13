@@ -134,13 +134,13 @@ The results were computed on our 694 movies of our dataset. Here is a summary of
 |:----:|:----:|:----:|:----:|
 |Definition Reminder| Women have to be alone and not mention a man the whole discussion. | Women have to be alone and should exchange 2 replicas without mentionning a man. | Women should exchange 2 replicas without mentionning a man. |
 |**Accuracy**| **62%** | **65%** | **69%** | 
-|Precision| 79% | 81% | 72% |
-|Recall| 37% | 45% | 67% |
-|**F1-score**| **50%** | **58%** | **69%** |
-|True Positive| 137 | 164 | 248 |
+|Precision| 80% | 81% | 72% |
+|Recall| 37% | 45% | 68% |
+|**F1-score**| **51%** | **58%** | **70%** |
+|True Positive| 136 | 164 | 248 |
 |False Positive | 35 | 38 | 95 |
 |True Negative | 292 | 289 | 232 |
-|False Negative | 230 | 203 | 119 |
+|False Negative | 231 | 203 | 119 |
 
 As we can see, the results are better with the 'soft configuration' of the Bechdel test, in terms of accuracy as well as F1-score. Please keep in mind that our goal was to help understand if a movie passes the Bechdel test or not by providing the needed information. On our web-app, these performances would be much greater with user's common sense and correction of characters' genders. 
 
