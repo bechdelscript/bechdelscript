@@ -1,0 +1,97 @@
+{
+    "date": "2023-04-09_153945",
+    "commit_sha": "7d4f8fbdc556c0ceb30358e079df0d3982d4914c",
+    "commit_message": "Merge branch 'main' of https://github.com/bechdelscript/bechdelscript.github.io into main\n",
+    "config": {
+        "bechdel_test_rules": {
+            "only_women_in_whole_scene": false,
+            "whole_discussion_not_about_men": false,
+            "lines_of_dialogues_in_a_row": 2
+        },
+        "used_methods": {
+            "character_gender_method": "coref",
+            "reparse_with_ml": true
+        }
+    },
+    "metrics": {
+        "number_of_scripts": 694,
+        "binary_performance": {
+            "confusion_matrix": {
+                "true_pos": 248,
+                "false_pos": 95,
+                "false_neg": 119,
+                "true_neg": 232
+            },
+            "confusion_matrix_percents": {
+                "true_pos": 35.73,
+                "false_pos": 13.69,
+                "false_neg": 17.15,
+                "true_neg": 33.43
+            },
+            "nb_correctly_classified_scripts": 480,
+            "accuracy": 0.6916,
+            "precision": 0.723,
+            "recall": 0.6757,
+            "f1-score": 0.6986
+        },
+        "score_metrics": {
+            "confusion_matrix": {
+                "true_score_0": [
+                    31,
+                    12,
+                    3,
+                    5
+                ],
+                "true_score_1": [
+                    66,
+                    69,
+                    10,
+                    47
+                ],
+                "true_score_2": [
+                    14,
+                    22,
+                    5,
+                    43
+                ],
+                "true_score_3": [
+                    60,
+                    49,
+                    10,
+                    248
+                ]
+            },
+            "confusion_matrix_percents": {
+                "true_score_0": [
+                    4.47,
+                    1.73,
+                    0.43,
+                    0.72
+                ],
+                "true_score_1": [
+                    9.51,
+                    9.94,
+                    1.44,
+                    6.77
+                ],
+                "true_score_2": [
+                    2.02,
+                    3.17,
+                    0.72,
+                    6.2
+                ],
+                "true_score_3": [
+                    8.65,
+                    7.06,
+                    1.44,
+                    35.73
+                ]
+            },
+            "nb_correctly_classified_scripts": 353,
+            "accuracy": 0.5086,
+            "precision": 0.3842,
+            "recall": 0.4256,
+            "f1-score": 0.3671
+        }
+    }
+}
