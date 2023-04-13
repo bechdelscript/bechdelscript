@@ -1,6 +1,6 @@
 # Bechdel Script Tester
 
-## Introduction :wave:
+## :wave: Introduction 
 Have you ever wondered how many of your favorite movies pass the Bechdel Test ? Or maybe you don't know what the Bechdel Test is all about !
 
 The Bechdel-Wallace Test is a tool aiming to estimate how much space and importance we give to female protagonists in the media, and more specifically in movies. It was first introduced in one of Alison Bechdel's comics, *Dykes to Watch Out For*. More information can be found [here](https://bechdeltest.com).
@@ -10,7 +10,7 @@ We consider that a movie passes the Bechdel Test if it matches the following cri
 - They speak at least once with one another (resulting in a score of 2),
 - About something different than a man (resulting in a score of 3).
 
-This git repository, and associated website : ... bring to light part of the answer. This work, given a movie script file, returns a Bechdel score prediction, along with the different characters and scenes in the movie that pass - or refute - the test.
+This git repository, and associated website [here](http://34.105.15.131/) bring to light part of the answer. This work, given a movie script file, returns a Bechdel score prediction, along with the different characters and scenes in the movie that pass - or refute - the test.
 
 ## Name
 Bechdel Script Tester
@@ -21,14 +21,14 @@ This work is imperfect and has flaws we might not have in mind. We still conside
 
 Please note that, in order to promote inclusivity, the module can gender a character as a Woman, a Man or a Non-Binary individual. However, we have not implemented Bechdel rules that allow a conversation between two gender minorities (a woman and a non-binary person, for instance) to validate the second criteria. That is because we felt it was out of our scope to swerve away from the original test that much. However, we feel that as Non-binary folk representation in movies is increasing, it would be ideal to update the test rules and implement our module accordingly.
 
-## Description :writing_hand:
-If you are just looking to test your favorite movie, check out the front-end side of this project : ....
+## :writing_hand: Description 
+If you are just looking to test your favorite movie, check out our website for the front-end side of this project : [http://34.105.15.131/](http://34.105.15.131/)
 If you are curious to see how it works, or if you would like to improve this tool, this repository is the way to go. The structure is as follows :
 - The [front_end](front_end/) folder is at the root of the website.
 - The [back_end](back_end/) folder is where the magic happens !
 
 
-## Back end code structure and files :file_folder:
+## :file_folder: Back end code structure and files
 
 ### File and folders
 Within the back end files, you'll find the following structure :
@@ -118,11 +118,24 @@ You can also measure performance on a subset of film of your choice, specifying 
 python performance.py --script_filenames "Jaws-2.txt,Alien.txt,Apocalypse-Now.txt"
 ```
 
+## Run the webapp locally
+To launch the website on localhost, nothing simpler : you just have to run the following commands in two distincts terminals.
+```
+cd ./front_end/
+npm start
+```
+```
+cd ./back_end/
+uvicorn api.main:app --reload
+```
 
-## Contributing :open_hands:
+## :chart_with_upwards_trend: Our Results 
+
+
+## :open_hands: Contributing 
 If you would like to improve on this project, feel free to do so, while ensuring you respect the license below. Please remember to credit the project authors.
 
-## Authors and acknowledgment :handshake:
+## :handshake: Authors and acknowledgment 
 The three authors of this project are listed as contributors on this repository : Lucie Clemot [(@osnapitzlu)](https://github.com/osnapitzlu), Sacha Muller [(@sachamuller)](https://github.com/sachamuller), Guilhem Prince [(@guilhemprince)](https://github.com/guilhemprince).
 This open source contribution and project is the result of an academic project which took place in the French engineering school CentraleSupélec.
 We would like to give a shoutout to the school, along with the company that helped us build this tool : [Illuin Technology](https://www.illuin.tech). More specifically, thank you to Theo Rubenach [(@Toz3wm)](https://github.com/Toz3wm) for your help and guidance.
