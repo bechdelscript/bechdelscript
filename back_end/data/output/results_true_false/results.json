@@ -1,0 +1,97 @@
+{
+    "date": "2023-04-07_001750",
+    "commit_sha": "08f3414d30a30fadc1d2208ced64bfe3b95a6d63",
+    "commit_message": "remove test file\n",
+    "config": {
+        "bechdel_test_rules": {
+            "only_women_in_whole_scene": true,
+            "whole_discussion_not_about_men": false,
+            "lines_of_dialogues_in_a_row": 2
+        },
+        "used_methods": {
+            "character_gender_method": "coref",
+            "reparse_with_ml": true
+        }
+    },
+    "metrics": {
+        "number_of_scripts": 694,
+        "binary_performance": {
+            "confusion_matrix": {
+                "true_pos": 164,
+                "false_pos": 38,
+                "false_neg": 203,
+                "true_neg": 289
+            },
+            "confusion_matrix_percents": {
+                "true_pos": 23.63,
+                "false_pos": 5.48,
+                "false_neg": 29.25,
+                "true_neg": 41.64
+            },
+            "nb_correctly_classified_scripts": 453,
+            "accuracy": 0.6527,
+            "precision": 0.8119,
+            "recall": 0.4469,
+            "f1-score": 0.5764
+        },
+        "score_metrics": {
+            "confusion_matrix": {
+                "true_score_0": [
+                    31,
+                    15,
+                    2,
+                    3
+                ],
+                "true_score_1": [
+                    66,
+                    108,
+                    2,
+                    16
+                ],
+                "true_score_2": [
+                    14,
+                    50,
+                    1,
+                    19
+                ],
+                "true_score_3": [
+                    61,
+                    126,
+                    16,
+                    164
+                ]
+            },
+            "confusion_matrix_percents": {
+                "true_score_0": [
+                    4.47,
+                    2.16,
+                    0.29,
+                    0.43
+                ],
+                "true_score_1": [
+                    9.51,
+                    15.56,
+                    0.29,
+                    2.31
+                ],
+                "true_score_2": [
+                    2.02,
+                    7.2,
+                    0.14,
+                    2.74
+                ],
+                "true_score_3": [
+                    8.79,
+                    18.16,
+                    2.31,
+                    23.63
+                ]
+            },
+            "nb_correctly_classified_scripts": 304,
+            "accuracy": 0.438,
+            "precision": 0.3502,
+            "recall": 0.4073,
+            "f1-score": 0.3284
+        }
+    }
+}
