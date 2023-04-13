@@ -131,7 +131,7 @@ uvicorn api.main:app --reload
 The results were computed on our 694 movies of our dataset. Here is a summary of it all : 
 
 | --- |Strict rules (True, True)| Intermediate rules (True, False)| Soft rules (False, False)|
-|-----|-----|-----|-----|
+|:----:|:----:|:----:|:----:|
 |Definition Reminder| Women have to be alone and not mention a man the whole discussion. | Women have to be alone and should exchange 2 replicas without mentionning a man. | Women should exchange 2 replicas without mentionning a man. |
 |Accuracy| 62% | 65% | 69% | 
 |Precision| 79% | 81% | 72% |
