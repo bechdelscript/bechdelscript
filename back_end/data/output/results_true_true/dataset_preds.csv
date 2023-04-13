@@ -1,0 +1,696 @@
+year,imdbid,title,rating,Unnamed:0,path,prediction_bechdel_approved,predicted_rating
+1927,18033,It,3,569.0,data/input/scripts_imsdb/I.txt,False,0
+1932,22958,Grand Hotel,3,465.0,data/input/scripts_imsdb/Grand-Hote.txt,False,2
+1932,23427,Scarface,1,900.0,data/input/scripts_imsdb/Scarface.txt,False,0
+1933,23969,Duck Soup,1,344.0,data/input/scripts_imsdb/Duck-Soup.txt,False,1
+1933,24216,King Kong,0,603.0,data/input/scripts_imsdb/King-Kong.txt,False,0
+1934,25316,It Happened One Night,3,570.0,data/input/scripts_imsdb/It-Happened-One-Nig.txt,False,1
+1935,26071,Anna Karenina,2,82.0,data/input/scripts_imsdb/Anna-Karenina.txt,True,3
+1937,29162,Lost Horizon,2,665.0,data/input/scripts_imsdb/Lost-Horizon.txt,False,1
+1939,31725,Ninotchka,3,771.0,data/input/scripts_imsdb/Ninotchka.txt,True,3
+1940,32599,His Girl Friday,3,516.0,data/input/scripts_imsdb/His-Girl-Friday.txt,True,3
+1940,32943,Pride and Prejudice,3,831.0,data/input/scripts_imsdb/Pride-and-Prejudice.txt,True,3
+1941,33467,Citizen Kane,1,252.0,data/input/scripts_imsdb/Citizen-Kane.txt,False,1
+1941,33891,Meet John Doe,3,704.0,data/input/scripts_imsdb/Meet-John-Doe.txt,False,2
+1944,36613,Arsenic and Old Lace,3,99.0,data/input/scripts_imsdb/Arsenic-and-Old-Lace.txt,False,1
+1944,36775,Double Indemnity,3,337.0,data/input/scripts_imsdb/Double-Indemnity.txt,True,3
+1943,36969,Jane Eyre,3,578.0,data/input/scripts_imsdb/Jane-Eyre.txt,True,3
+1946,38348,Beauty and the Beast,3,144.0,data/input/scripts_imsdb/Beauty-and-the-Beas.txt,False,1
+1946,38461,Deception,0,314.0,data/input/scripts_imsdb/Deception.txt,False,0
+1948,40098,Anna Karenina,2,82.0,data/input/scripts_imsdb/Anna-Karenina.txt,True,3
+1949,41113,all the king's men,1,,data/input/scripts_kaggle/ALL THE KING_S MEN.TXT,False,1
+1949,41650,Mighty Joe Young,0,715.0,data/input/scripts_imsdb/Mighty-Joe-Young.txt,False,1
+1950,42192,All About Eve,3,51.0,data/input/scripts_imsdb/All-About-Eve.txt,False,1
+1950,43014,Sunset Blvd.,3,997.0,data/input/scripts_imsdb/Sunset-Blvd.txt,False,1
+1951,44079,Strangers on a Train,2,993.0,data/input/scripts_imsdb/Strangers-on-a-Train.txt,False,2
+1953,45793,From Here to Eternity,3,418.0,data/input/scripts_imsdb/From-Here-to-Eternity.txt,False,2
+1954,47396,Rear Window,3,856.0,data/input/scripts_imsdb/Rear-Window.txt,False,2
+1954,47673,White Christmas,3,1111.0,data/input/scripts_imsdb/White-Christmas.txt,False,2
+1955,47849,Bad Day at Black Rock,0,123.0,data/input/scripts_imsdb/Bad-Day-at-Black-Rock.txt,False,0
+1955,48356,Marty,3,693.0,data/input/scripts_imsdb/Marty.txt,False,1
+1957,51036,Sweet Smell of Success,1,1007.0,data/input/scripts_imsdb/Sweet-Smell-of-Success.txt,False,1
+1960,54167,Peeping Tom,2,801.0,data/input/scripts_imsdb/Peeping-To.txt,False,1
+1960,54215,Psycho,3,841.0,data/input/scripts_imsdb/Psycho.txt,False,1
+1963,56923,Charade,2,239.0,data/input/scripts_imsdb/Charade.txt,False,1
+1964,58331,Mary Poppins,3,694.0,data/input/scripts_imsdb/Mary-Poppins.txt,False,0
+1967,61418,Bonnie and Clyde,3,187.0,data/input/scripts_imsdb/Bonnie-and-Clyde.txt,True,3
+1968,62622,2001: A Space Odyssey,0,010.0,data/input/scripts_imsdb/2001-A-Space-Odyssey.txt,False,0
+1969,64665,Midnight Cowboy,1,712.0,data/input/scripts_imsdb/Midnight-Cowboy.txt,False,1
+1969,65126,True Grit,3,1065.0,data/input/scripts_imsdb/True-Gri.txt,False,0
+1970,65724,Five Easy Pieces,3,396.0,data/input/scripts_imsdb/Five-Easy-Pieces.txt,False,2
+1971,67128,Get Carter,1,435.0,data/input/scripts_imsdb/Get-Carter.txt,False,1
+1971,67309,Klute,3,607.0,data/input/scripts_imsdb/Klute.txt,False,1
+1973,69704,American Graffiti,2,61.0,data/input/scripts_imsdb/American-Graffiti.txt,False,1
+1973,69762,Badlands,0,128.0,data/input/scripts_imsdb/Badlands.txt,False,2
+1974,69945,Dark Star,0,299.0,data/input/scripts_imsdb/Dark-Star.txt,False,0
+1973,70379,Mean Streets,1,701.0,data/input/scripts_imsdb/Mean-Streets.txt,False,1
+1972,70849,Last Tango in Paris,3,626.0,data/input/scripts_imsdb/Last-Tango-in-Paris.txt,False,0
+1974,71315,Chinatown,2,244.0,data/input/scripts_imsdb/Chinatown.txt,False,1
+1975,72684,Barry Lyndon,1,130.0,data/input/scripts_imsdb/Barry-Lyndon.txt,False,1
+1975,72890,Dog Day Afternoon,3,333.0,data/input/scripts_imsdb/Dog-Day-Afternoon.txt,False,1
+1975,73195,Jaws,3,580.0,data/input/scripts_imsdb/Jaws.txt,False,1
+1975,73440,Nashville,3,751.0,data/input/scripts_imsdb/Nashville.txt,False,2
+1976,74285,Carrie,3,225.0,data/input/scripts_imsdb/Carrie.txt,False,1
+1976,75148,Rocky,1,879.0,data/input/scripts_imsdb/Rocky.txt,False,0
+1976,75314,Taxi Driver,1,1019.0,data/input/scripts_imsdb/Taxi-Driver.txt,False,1
+1977,75686,Annie Hall,3,83.0,data/input/scripts_imsdb/Annie-Ha.txt,False,1
+1977,76759,star wars,1,,data/input/scripts_kaggle/STAR WARS.TXT,False,0
+1978,77402,Dawn of the Dead,0,303.0,data/input/scripts_imsdb/Dawn-of-the-Dead.txt,False,0
+1978,77405,Days of Heaven,3,307.0,data/input/scripts_imsdb/Days-of-Heaven.txt,True,3
+1978,77651,Halloween,3,480.0,data/input/scripts_imsdb/Halloween.txt,True,3
+1978,77713,I Spit on Your Grave,0,538.0,data/input/scripts_imsdb/I-Spit-on-Your-Grave.txt,False,1
+1978,77766,Jaws 2,2,581.0,data/input/scripts_imsdb/Jaws-2.txt,False,1
+1978,77928,Midnight Express,0,713.0,data/input/scripts_imsdb/Midnight-Express.txt,False,0
+1979,78748,Alien,3,45.0,data/input/scripts_imsdb/Alien.txt,False,0
+1979,78788,Apocalypse Now,0,89.0,data/input/scripts_imsdb/Apocalypse-Now.txt,False,1
+1979,78841,Being There,2,149.0,data/input/scripts_imsdb/Being-There.txt,False,1
+1979,79945,Star Trek: The Motion Picture,1,975.0,data/input/scripts_imsdb/Star-Trek-The-Motion-Picture.txt,False,0
+1980,80745,Flash Gordon,3,397.0,data/input/scripts_imsdb/Flash-Gordon.txt,False,2
+1980,80761,Friday the 13th,3,413.0,data/input/scripts_imsdb/Friday-the-13.txt,False,1
+1980,81283,Ordinary People,2,786.0,data/input/scripts_imsdb/Ordinary-People.txt,False,1
+1980,81398,Raging Bull,1,850.0,data/input/scripts_imsdb/Raging-Bu.txt,False,1
+1981,82089,Body Heat,2,182.0,data/input/scripts_imsdb/Body-Hea.txt,False,1
+1981,82186,Clash of the Titans,3,254.0,data/input/scripts_imsdb/Clash-of-the-Titans.txt,True,3
+1981,82288,Dragonslayer,1,339.0,data/input/scripts_imsdb/Dragonslayer.txt,False,0
+1981,82348,Excalibur,1,373.0,data/input/scripts_imsdb/Excalibur.txt,False,1
+1981,82509,Heavy Metal,1,497.0,data/input/scripts_imsdb/Heavy-Meta.txt,False,1
+1982,83511,48 Hrs.,2,17.0,data/input/scripts_imsdb/48-Hrs.txt,False,1
+1982,83658,Blade Runner,1,172.0,data/input/scripts_imsdb/Blade-Runner.txt,False,1
+1982,83833,Diner,1,328.0,data/input/scripts_imsdb/Diner.txt,False,1
+1982,83929,Fast Times at Ridgemont High,2,383.0,data/input/scripts_imsdb/Fast-Times-at-Ridgemont-Hig.txt,True,3
+1982,83967,Frances,3,406.0,data/input/scripts_imsdb/Frances.txt,True,3
+1982,83987,Gandhi,2,430.0,data/input/scripts_imsdb/Gandhi.txt,False,0
+1982,84726,star trek: the wrath of khan,3,,data/input/scripts_kaggle/STAR TREK_ THE WRATH OF KHAN.TXT,False,0
+1982,84827,TRON,0,1062.0,data/input/scripts_imsdb/TRON.txt,False,0
+1983,86250,Scarface,1,900.0,data/input/scripts_imsdb/Scarface.txt,False,0
+1983,86510,Under Fire,1,1078.0,data/input/scripts_imsdb/Under-Fire.txt,False,1
+1984,86879,Amadeus,3,57.0,data/input/scripts_imsdb/Amadeus.txt,False,1
+1984,86927,Bachelor Party,3,117.0,data/input/scripts_imsdb/Bachelor-Party.txt,True,3
+1984,87182,Dune,3,346.0,data/input/scripts_imsdb/Dune.txt,True,3
+1984,87332,Ghostbusters,2,446.0,data/input/scripts_imsdb/Ghostbusters.txt,False,1
+1984,87363,Gremlins,1,471.0,data/input/scripts_imsdb/Gremlins.txt,True,3
+1984,87469,Indiana Jones and the Temple of Doom,0,552.0,data/input/scripts_imsdb/Indiana-Jones-and-the-Temple-of-Doo.txt,False,0
+1984,87957,Purple Rain,3,845.0,data/input/scripts_imsdb/Purple-Rain.txt,False,1
+1984,87995,Repo Man,2,864.0,data/input/scripts_imsdb/Repo-Man.txt,False,1
+1984,88172,Starman,0,983.0,data/input/scripts_imsdb/Starman.txt,False,0
+1984,88206,Supergirl,3,1001.0,data/input/scripts_imsdb/Supergir.txt,True,3
+1985,88683,Agnes of God,3,39.0,data/input/scripts_imsdb/Agnes-of-God.txt,True,3
+1985,88846,Brazil,3,202.0,data/input/scripts_imsdb/Brazi.txt,False,0
+1985,88993,Day of the Dead,0,304.0,data/input/scripts_imsdb/Day-of-the-Dead.txt,True,3
+1985,89155,Fletch,1,398.0,data/input/scripts_imsdb/Fletc.txt,False,1
+1985,89175,Fright Night,2,415.0,data/input/scripts_imsdb/Fright-Nig.txt,False,1
+1985,89469,Legend,3,631.0,data/input/scripts_imsdb/Legend.txt,False,0
+1985,89886,Real Genius,1,855.0,data/input/scripts_imsdb/Real-Genius.txt,False,0
+1985,90329,Witness,3,1127.0,data/input/scripts_imsdb/Witness.txt,False,2
+1986,90605,Aliens,3,50.0,data/input/scripts_imsdb/Aliens.txt,False,1
+1986,90655,april fool's day,3,,data/input/scripts_kaggle/APRIL FOOL_S DAY.TXT,True,3
+1986,90756,Blue Velvet,1,181.0,data/input/scripts_imsdb/Blue-Velve.txt,False,0
+1986,91167,Hannah and Her Sisters,3,485.0,data/input/scripts_imsdb/Hannah-and-Her-Sisters.txt,True,3
+1986,91203,Highlander,2,513.0,data/input/scripts_imsdb/Highlander.txt,False,0
+1986,91369,Labyrinth,3,615.0,data/input/scripts_imsdb/Labyrin.txt,False,0
+1986,91474,Manhunter,1,686.0,data/input/scripts_imsdb/Manhunter.txt,False,1
+1986,91738,Peggy Sue Got Married,3,802.0,data/input/scripts_imsdb/Peggy-Sue-Got-Married.txt,True,3
+1986,91763,Platoon,0,820.0,data/input/scripts_imsdb/Platoon.txt,False,0
+1986,92099,Top Gun,2,1052.0,data/input/scripts_imsdb/Top-Gun.txt,False,0
+1987,92699,Broadcast News,3,210.0,data/input/scripts_imsdb/Broadcast-News.txt,False,1
+1987,93177,Hellraiser,3,503.0,data/input/scripts_imsdb/Hellraiser.txt,True,3
+1987,93565,Moonstruck,3,733.0,data/input/scripts_imsdb/Moonstruck.txt,False,2
+1987,93773,Predator,0,827.0,data/input/scripts_imsdb/Predator.txt,False,0
+1987,93822,Raising Arizona,3,851.0,data/input/scripts_imsdb/Raising-Arizona.txt,False,1
+1988,94631,Alien Nation,1,47.0,data/input/scripts_imsdb/Alien-Nation.txt,False,0
+1988,94737,Big,1,154.0,data/input/scripts_imsdb/Big.txt,False,1
+1988,94812,Bull Durham,2,216.0,data/input/scripts_imsdb/Bull-Durha.txt,False,1
+1988,95016,Die Hard,3,326.0,data/input/scripts_imsdb/Die-Hard.txt,False,1
+1988,95294,Hellbound: Hellraiser II,1,500.0,data/input/scripts_imsdb/Hellbound-Hellraiser-II.txt,True,3
+1988,95765,Cinema Paradiso,1,250.0,data/input/scripts_imsdb/Cinema-Paradiso.txt,False,0
+1988,96320,Twins,3,1072.0,data/input/scripts_imsdb/Twins.txt,False,1
+1988,96446,Willow,3,1123.0,data/input/scripts_imsdb/Willow.txt,True,3
+1989,96895,Batman,1,135.0,data/input/scripts_imsdb/Batman.txt,False,1
+1989,97165,Dead Poets Society,1,308.0,data/input/scripts_imsdb/Dead-Poets-Society.txt,False,1
+1989,97216,do the right thing,2,,data/input/scripts_kaggle/DO THE RIGHT THING.TXT,False,1
+1989,97351,Field of Dreams,2,389.0,data/input/scripts_imsdb/Field-of-Dreams.txt,False,1
+1989,97388,Friday the 13th Part VIII: Jason Takes Manhattan,3,414.0,data/input/scripts_imsdb/Friday-the-13th-Part-VIII-Jason-Takes-Manhattan.txt,True,3
+1989,97428,ghostbusters ii,2,,data/input/scripts_kaggle/GHOSTBUSTERS II.TXT,True,3
+1988,97493,Heathers,3,495.0,data/input/scripts_imsdb/Heathers.txt,False,2
+1989,97576,Indiana Jones and the Last Crusade,0,550.0,data/input/scripts_imsdb/Indiana-Jones-and-the-Last-Crusade.txt,False,1
+1989,97737,Leviathan,3,636.0,data/input/scripts_imsdb/Leviathan.txt,False,0
+1989,97815,Major League,1,675.0,data/input/scripts_imsdb/Major-League.txt,False,1
+1990,99348,Dances with Wolves,1,295.0,data/input/scripts_imsdb/Dances-with-Wolves.txt,False,0
+1990,99365,Darkman,0,300.0,data/input/scripts_imsdb/Darkman.txt,False,0
+1990,99423,Die Hard 2,3,327.0,data/input/scripts_imsdb/Die-Hard-2.txt,False,0
+1990,99487,Edward Scissorhands,3,353.0,data/input/scripts_imsdb/Edward-Scissorhands.txt,False,1
+1990,99653,Ghost,3,441.0,data/input/scripts_imsdb/Ghos.txt,False,1
+1990,99864,It,1,569.0,data/input/scripts_imsdb/I.txt,False,0
+1990,100157,Misery,1,724.0,data/input/scripts_imsdb/Misery.txt,False,1
+1990,100260,Nightbreed,3,763.0,data/input/scripts_imsdb/Nightbreed.txt,False,0
+1990,100405,Pretty Woman,3,829.0,data/input/scripts_imsdb/Pretty-Woman.txt,True,3
+1990,100802,Total Recall,1,1053.0,data/input/scripts_imsdb/Total-Reca.txt,False,0
+1990,100814,Tremors,3,1060.0,data/input/scripts_imsdb/Tremors.txt,False,1
+1991,101410,Barton Fink,1,131.0,data/input/scripts_imsdb/Barton-Fink.txt,False,1
+1991,101414,Beauty and the Beast,3,144.0,data/input/scripts_imsdb/Beauty-and-the-Beas.txt,False,1
+1991,102070,Hudson Hawk,3,530.0,data/input/scripts_imsdb/Hudson-Hawk.txt,False,1
+1991,102138,JFK,3,587.0,data/input/scripts_imsdb/JFK.txt,False,1
+2011,102411,Warrior,0,1102.0,data/input/scripts_imsdb/Warrior.txt,False,1
+1991,102492,My Girl,3,746.0,data/input/scripts_imsdb/My-Gir.txt,True,3
+1991,102685,Point Break,0,822.0,data/input/scripts_imsdb/Point-Break.txt,False,0
+1991,102798,Robin Hood: Prince of Thieves,3,876.0,data/input/scripts_imsdb/Robin-Hood-Prince-of-Thieves.txt,False,1
+1991,103064,Terminator 2: Judgement Day,3,1022.0,data/input/scripts_imsdb/Terminator-2-Judgement-Day.txt,False,1
+1992,103639,Aladdin,0,43.0,data/input/scripts_imsdb/Aladdin.txt,False,0
+1992,103644,Alien 3,0,46.0,data/input/scripts_imsdb/Alien-3.txt,False,1
+1992,103772,Basic Instinct,1,133.0,data/input/scripts_imsdb/Basic-Instinc.txt,False,1
+1992,103893,Buffy the Vampire Slayer,3,215.0,data/input/scripts_imsdb/Buffy-the-Vampire-Slayer.txt,False,2
+1992,104257,A Few Good Men,1,22.0,data/input/scripts_imsdb/A-Few-Good-Men.txt,False,1
+1992,104409,hellraiser iii: hell on earth,3,,data/input/scripts_kaggle/HELLRAISER III_ HELL ON EARTH.TXT,False,1
+1992,104797,Malcolm X,3,676.0,data/input/scripts_imsdb/Malcolm-X.txt,False,1
+1992,104815,El Mariachi,0,355.0,data/input/scripts_imsdb/El-Mariachi.txt,False,0
+1992,104990,Newsies,1,756.0,data/input/scripts_imsdb/Newsies.txt,False,1
+1992,105236,Reservoir Dogs,0,866.0,data/input/scripts_imsdb/Reservoir-Dogs.txt,False,0
+1992,105414,Single White Female,3,940.0,data/input/scripts_imsdb/Single-White-Female.txt,True,3
+1992,105417,Sister Act,3,941.0,data/input/scripts_imsdb/Sister-Ac.txt,False,1
+1993,106303,Arctic Blue,1,95.0,data/input/scripts_imsdb/Arctic-Blue.txt,False,0
+1992,106308,Army of Darkness,2,98.0,data/input/scripts_imsdb/Army-of-Darkness.txt,False,0
+1993,106453,Body of Evidence,3,183.0,data/input/scripts_imsdb/Body-of-Evidence.txt,False,1
+1993,106582,Cliffhanger,1,256.0,data/input/scripts_imsdb/Cliffhanger.txt,False,1
+1993,106834,even cowgirls get the blues,3,,data/input/scripts_kaggle/EVEN COWGIRLS GET THE BLUES.TXT,False,1
+1993,106873,Fatal Instinct,3,384.0,data/input/scripts_imsdb/Fatal-Instinc.txt,False,1
+1993,107048,Groundhog Day,2,475.0,data/input/scripts_imsdb/Groundhog-Day.txt,False,1
+1993,107290,Jurassic Park,3,594.0,data/input/scripts_imsdb/Jurassic-Park.txt,False,0
+1993,107507,Manhattan Murder Mystery,3,685.0,data/input/scripts_imsdb/Manhattan-Murder-Mystery.txt,False,1
+1993,107808,a perfect world,1,,data/input/scripts_kaggle/A PERFECT WORLD.TXT,False,1
+1993,107818,Philadelphia,2,809.0,data/input/scripts_imsdb/Philadelphia.txt,False,1
+1993,108149,Six Degrees of Separation,3,942.0,data/input/scripts_imsdb/Six-Degrees-of-Separation.txt,True,3
+1993,108160,Sleepless in Seattle,2,944.0,data/input/scripts_imsdb/Sleepless-in-Seattle.txt,True,3
+1993,108174,So I Married an Axe Murderer,3,954.0,data/input/scripts_imsdb/So-I-Married-an-Axe-Murderer.txt,False,2
+1993,108358,Tombstone,3,1050.0,data/input/scripts_imsdb/Tombstone.txt,False,1
+1993,108399,True Romance,1,1067.0,data/input/scripts_imsdb/True-Romance.txt,False,0
+1994,109040,Ace Ventura: Pet Detective,2,31.0,data/input/scripts_imsdb/Ace-Ventura-Pet-Detective.txt,False,1
+1994,109456,Color of Night,3,265.0,data/input/scripts_imsdb/Color-of-Nig.txt,True,3
+1994,109707,Ed Wood,3,352.0,data/input/scripts_imsdb/Ed-Wood.txt,False,1
+1994,109830,Forrest Gump,1,401.0,data/input/scripts_imsdb/Forrest-Gump.txt,False,1
+1994,110005,Heavenly Creatures,3,496.0,data/input/scripts_imsdb/Heavenly-Creatures.txt,True,3
+1994,110148,Interview with the Vampire,1,560.0,data/input/scripts_imsdb/Interview-with-the-Vampire.txt,False,1
+1994,110632,Natural Born Killers,3,752.0,data/input/scripts_imsdb/Natural-Born-Killers.txt,False,1
+1994,110889,Priest,3,832.0,data/input/scripts_imsdb/Pries.txt,False,1
+1994,110912,Pulp Fiction,3,843.0,data/input/scripts_imsdb/Pulp-Fiction.txt,False,1
+1994,111127,Serial Mom,3,913.0,data/input/scripts_imsdb/Serial-Mo.txt,False,1
+1994,111503,True Lies,3,1066.0,data/input/scripts_imsdb/True-Lies.txt,True,3
+1995,112130,Pride and Prejudice,3,831.0,data/input/scripts_imsdb/Pride-and-Prejudice.txt,True,3
+1995,112401,Assassins,1,103.0,data/input/scripts_imsdb/Assassins.txt,True,3
+1995,112442,Bad Boys,1,121.0,data/input/scripts_imsdb/Bad-Boys.txt,True,3
+1995,112573,Braveheart,2,201.0,data/input/scripts_imsdb/Bravehear.txt,False,1
+1995,112641,Casino,2,228.0,data/input/scripts_imsdb/Casino.txt,True,3
+1995,112697,Clueless,3,257.0,data/input/scripts_imsdb/Clueless.txt,False,2
+1995,112722,Copycat,3,272.0,data/input/scripts_imsdb/Copyca.txt,False,2
+1995,112857,Devil in a Blue Dress,1,323.0,data/input/scripts_imsdb/Devil-in-a-Blue-Dress.txt,False,1
+1995,113243,Hackers,2,478.0,data/input/scripts_imsdb/Hackers.txt,False,1
+1995,113277,Heat,2,494.0,data/input/scripts_imsdb/Hea.txt,True,3
+1995,113492,Judge Dredd,3,592.0,data/input/scripts_imsdb/Judge-Dredd.txt,False,0
+1995,113540,Kids,3,599.0,data/input/scripts_imsdb/Kids.txt,False,1
+1995,113627,Leaving Las Vegas,2,629.0,data/input/scripts_imsdb/Leaving-Las-Vegas.txt,False,0
+1995,113820,Mighty Morphin Power Rangers: The Movie,3,716.0,data/input/scripts_imsdb/Mighty-Morphin-Power-Rangers-The-Movie.txt,False,1
+1995,113972,Nick of Time,3,761.0,data/input/scripts_imsdb/Nick-of-Time.txt,False,1
+1995,114369,Se7en,1,907.0,data/input/scripts_imsdb/Se7en.txt,False,0
+1995,114388,Sense and Sensibility,3,911.0,data/input/scripts_imsdb/Sense-and-Sensibility.txt,True,3
+1995,114558,Strange Days,3,992.0,data/input/scripts_imsdb/Strange-Days.txt,False,1
+1995,114709,Toy Story,1,1055.0,data/input/scripts_imsdb/Toy-Story.txt,False,0
+1996,115632,Basquiat,2,134.0,data/input/scripts_imsdb/Basquia.txt,False,1
+1996,115736,Bound,3,193.0,data/input/scripts_imsdb/Bound.txt,True,3
+1996,115759,Broken Arrow,0,211.0,data/input/scripts_imsdb/Broken-Arrow.txt,False,0
+1996,115964,Crash,3,277.0,data/input/scripts_imsdb/Cras.txt,False,1
+1996,116225,escape from l.a.,1,,data/input/scripts_kaggle/ESCAPE FROM L.A..TXT,False,0
+1996,116282,Fargo,2,382.0,data/input/scripts_imsdb/Fargo.txt,False,1
+1996,116367,From Dusk Till Dawn,1,417.0,data/input/scripts_imsdb/From-Dusk-Till-Dawn.txt,False,1
+1996,116629,Independence Day,3,549.0,data/input/scripts_imsdb/Independence-Day.txt,False,1
+1996,116684,Jane Eyre,3,578.0,data/input/scripts_imsdb/Jane-Eyre.txt,True,3
+1996,116695,Jerry Maguire,2,585.0,data/input/scripts_imsdb/Jerry-Maguire.txt,False,2
+1996,116905,Lone Star,2,655.0,data/input/scripts_imsdb/Lone-Star.txt,True,3
+1997,116922,Lost Highway,1,664.0,data/input/scripts_imsdb/Lost-Highway.txt,False,1
+1996,117571,Scream,3,904.0,data/input/scripts_imsdb/Screa.txt,False,1
+1996,117731,Star Trek: First Contact,3,972.0,data/input/scripts_imsdb/Star-Trek-First-Contac.txt,False,0
+1996,117802,Swingers,2,1008.0,data/input/scripts_imsdb/Swingers.txt,True,3
+1996,117918,Tin Cup,3,1044.0,data/input/scripts_imsdb/Tin-Cup.txt,True,3
+1996,117951,Trainspotting,2,1058.0,data/input/scripts_imsdb/Trainspotting.txt,False,0
+1997,118571,Air Force One,1,40.0,data/input/scripts_imsdb/Air-Force-One.txt,True,3
+1997,118583,Alien: Resurrection,3,49.0,data/input/scripts_imsdb/Alien-Resurrection.txt,True,3
+1997,118617,Anastasia,3,80.0,data/input/scripts_imsdb/Anastasia.txt,True,3
+1998,118636,Apt Pupil,1,92.0,data/input/scripts_imsdb/Apt-Pupi.txt,False,1
+1997,118749,Boogie Nights,3,188.0,data/input/scripts_imsdb/Boogie-Nights.txt,True,3
+1997,118842,Chasing Amy,3,241.0,data/input/scripts_imsdb/Chasing-Amy.txt,False,0
+1998,118929,Dark City,1,297.0,data/input/scripts_imsdb/Dark-City.txt,False,0
+1997,119008,Donnie Brasco,1,335.0,data/input/scripts_imsdb/Donnie-Brasco.txt,False,1
+1997,119081,Event Horizon,3,369.0,data/input/scripts_imsdb/Event-Horizon.txt,False,0
+1997,119094,face/off,1,,data/input/scripts_kaggle/FACE-OFF.TXT,True,3
+1997,119173,G.I. Jane,3,425.0,data/input/scripts_imsdb/G.I.-Jane.txt,True,3
+1997,119177,Gattaca,1,434.0,data/input/scripts_imsdb/Gattaca.txt,False,1
+1997,119217,Good Will Hunting,0,460.0,data/input/scripts_imsdb/Good-Will-Hunting.txt,False,1
+1997,119280,Mrs. Brown,3,737.0,data/input/scripts_imsdb/Mrs.-Brown.txt,False,1
+1997,119396,Jackie Brown,3,576.0,data/input/scripts_imsdb/Jackie-Brown.txt,True,3
+1997,119488,L.A. Confidential,1,612.0,data/input/scripts_imsdb/L.A.-Confidentia.txt,False,1
+1997,119528,Liar Liar,1,637.0,data/input/scripts_imsdb/Liar-Liar.txt,False,1
+1998,119643,Meet Joe Black,1,703.0,data/input/scripts_imsdb/Meet-Joe-Black.txt,False,1
+1997,119654,Men in Black,1,707.0,data/input/scripts_imsdb/Men-in-Black.txt,False,1
+1997,120082,Scream 2,3,905.0,data/input/scripts_imsdb/Scream-2.txt,False,1
+1998,120184,Sphere,1,967.0,data/input/scripts_imsdb/Sphere.txt,False,0
+1997,120201,Starship Troopers,3,984.0,data/input/scripts_imsdb/Starship-Troopers.txt,True,3
+1997,120338,Titanic,3,1047.0,data/input/scripts_imsdb/Titanic.txt,True,3
+1997,120347,Tomorrow Never Dies,1,1051.0,data/input/scripts_imsdb/Tomorrow-Never-Dies.txt,False,0
+1998,120586,American History X,2,62.0,data/input/scripts_imsdb/American-History-X.txt,False,0
+1998,120587,Antz,3,87.0,data/input/scripts_imsdb/Antz.txt,False,1
+1998,120591,Armageddon,1,97.0,data/input/scripts_imsdb/Armageddon.txt,False,0
+1999,120601,Being John Malkovich,3,148.0,data/input/scripts_imsdb/Being-John-Malkovic.txt,False,2
+1998,120603,Beloved,3,152.0,data/input/scripts_imsdb/Beloved.txt,True,3
+1998,120611,Blade,1,170.0,data/input/scripts_imsdb/Blade.txt,False,1
+1999,120655,Dogma,3,334.0,data/input/scripts_imsdb/Dogma.txt,False,2
+1998,120660,Enemy of the State,1,359.0,data/input/scripts_imsdb/Enemy-of-the-State.txt,False,1
+2005,120667,Fantastic Four,1,380.0,data/input/scripts_imsdb/Fantastic-Four.txt,False,1
+1998,120669,Fear and Loathing in Las Vegas,1,386.0,data/input/scripts_imsdb/Fear-and-Loathing-in-Las-Vegas.txt,False,0
+1998,120685,Godzilla,3,456.0,data/input/scripts_imsdb/Godzilla.txt,False,1
+1998,120686,Stepmom,3,987.0,data/input/scripts_imsdb/Stepmo.txt,True,3
+1998,120696,Hard Rain,2,489.0,data/input/scripts_imsdb/Hard-Rain.txt,False,1
+1998,120735,"Lock, Stock and Two Smoking Barrels",1,652.0,"data/input/scripts_imsdb/Lock,-Stock-and-Two-Smoking-Barrels.txt",False,0
+1998,120738,Lost in Space,3,666.0,data/input/scripts_imsdb/Lost-in-Space.txt,True,3
+1998,120780,Out of Sight,2,790.0,data/input/scripts_imsdb/Out-of-Sig.txt,True,3
+1998,120789,Pleasantville,3,821.0,data/input/scripts_imsdb/Pleasantville.txt,False,2
+2002,120804,Resident Evil,3,867.0,data/input/scripts_imsdb/Resident-Evi.txt,True,3
+1998,120812,Rush Hour,1,888.0,data/input/scripts_imsdb/Rush-Hour.txt,False,1
+1998,120815,Saving Private Ryan,0,898.0,data/input/scripts_imsdb/Saving-Private-Ryan.txt,False,0
+1998,120890,Wild Things,3,1120.0,data/input/scripts_imsdb/Wild-Things.txt,True,3
+1999,120891,Wild Wild West,2,1122.0,data/input/scripts_imsdb/Wild-Wild-Wes.txt,False,1
+2000,120903,X-Men,1,1136.0,data/input/scripts_imsdb/X-Men.txt,True,3
+1998,122690,Ronin,1,881.0,data/input/scripts_imsdb/Ronin.txt,False,0
+1999,122933,Analyze This,1,79.0,data/input/scripts_imsdb/Analyze-This.txt,False,1
+1997,123755,Cube,3,290.0,data/input/scripts_imsdb/Cube.txt,False,1
+1999,125439,Notting Hill,3,775.0,data/input/scripts_imsdb/Notting-Hi.txt,True,3
+1999,125664,Man on the Moon,1,680.0,data/input/scripts_imsdb/Man-on-the-Moon.txt,False,1
+2001,126029,Shrek,1,930.0,data/input/scripts_imsdb/Shrek.txt,False,0
+1999,126886,Election,3,356.0,data/input/scripts_imsdb/Election.txt,True,3
+1998,128445,Rushmore,3,890.0,data/input/scripts_imsdb/Rushmore.txt,False,0
+1998,128853,you've got mail,3,,data/input/scripts_kaggle/YOU_VE GOT MAIL.TXT,True,3
+1998,130018,I Still Know What You Did Last Summer,3,539.0,data/input/scripts_imsdb/I-Still-Know-What-You-Did-Last-Summer.txt,True,3
+1999,132347,Mystery Men,1,749.0,data/input/scripts_imsdb/Mystery-Men.txt,True,3
+2000,134084,Scream 3,3,906.0,data/input/scripts_imsdb/Scream-3.txt,True,3
+1999,134273,8MM,1,20.0,data/input/scripts_imsdb/8MM.txt,False,0
+2000,134847,Pitch Black,3,817.0,data/input/scripts_imsdb/Pitch-Black.txt,True,3
+1999,137523,Fight Club,1,391.0,data/input/scripts_imsdb/Fight-Club.txt,False,1
+1998,138097,Shakespeare in Love,3,919.0,data/input/scripts_imsdb/Shakespeare-in-Love.txt,True,3
+2003,138524,Intolerable Cruelty,3,563.0,data/input/scripts_imsdb/Intolerable-Cruelty.txt,False,2
+1998,138704,Pi,2,811.0,data/input/scripts_imsdb/Pi.txt,False,0
+1999,139134,Cruel Intentions,3,288.0,data/input/scripts_imsdb/Cruel-Intentions.txt,False,2
+1999,139414,Lake Placid,3,617.0,data/input/scripts_imsdb/Lake-Placid.txt,False,0
+2000,142032,Dune,3,346.0,data/input/scripts_imsdb/Dune.txt,True,3
+2000,144084,American Psycho,3,69.0,data/input/scripts_imsdb/American-Psycho.txt,False,1
+2002,145487,Spider-Man,1,968.0,data/input/scripts_imsdb/Spider-Man.txt,False,1
+2000,146882,High Fidelity,2,512.0,data/input/scripts_imsdb/High-Fidelity.txt,False,1
+1999,147800,10 Things I Hate About You,3,0.0,data/input/scripts_imsdb/10-Things-I-Hate-About-You.txt,False,2
+1999,151738,Never Been Kissed,3,753.0,data/input/scripts_imsdb/Never-Been-Kissed.txt,True,3
+1999,151804,Office Space,1,782.0,data/input/scripts_imsdb/Office-Space.txt,False,1
+1999,157503,Drop Dead Gorgeous,3,342.0,data/input/scripts_imsdb/Drop-Dead-Gorgeous.txt,True,3
+2003,159365,Cold Mountain,3,261.0,data/input/scripts_imsdb/Cold-Mountain.txt,False,2
+2000,161081,What Lies Beneath,3,1107.0,data/input/scripts_imsdb/What-Lies-Benea.txt,True,3
+2000,162222,Cast Away,2,229.0,data/input/scripts_imsdb/Cast-Away.txt,False,1
+2001,162346,Ghost World,3,445.0,data/input/scripts_imsdb/Ghost-World.txt,True,3
+1999,162661,Sleepy Hollow,3,945.0,data/input/scripts_imsdb/Sleepy-Hollow.txt,False,1
+2001,163025,Jurassic Park III,2,595.0,data/input/scripts_imsdb/Jurassic-Park-III.txt,False,1
+1999,163187,Runaway Bride,1,886.0,data/input/scripts_imsdb/Runaway-Bride.txt,False,2
+1999,163651,American Pie,2,67.0,data/input/scripts_imsdb/American-Pie.txt,False,2
+2000,164052,Hollow Man,3,519.0,data/input/scripts_imsdb/Hollow-Man.txt,False,2
+2001,166276,Monkeybone,3,729.0,data/input/scripts_imsdb/Monkeybone.txt,True,3
+1999,166943,Music of the Heart,3,743.0,data/input/scripts_imsdb/Music-of-the-Hear.txt,True,3
+2004,167190,Hellboy,1,501.0,data/input/scripts_imsdb/Hellboy.txt,False,1
+2004,167456,Thunderbirds,3,1039.0,data/input/scripts_imsdb/Thunderbirds.txt,False,1
+1999,169547,American Beauty,3,59.0,data/input/scripts_imsdb/American-Beauty.txt,True,3
+2000,172495,Gladiator,0,449.0,data/input/scripts_imsdb/Gladiator.txt,False,1
+2000,173716,Cecil B. Demented,3,232.0,data/input/scripts_imsdb/Cecil-B.-Demented.txt,True,3
+2000,174480,Autumn in New York,1,110.0,data/input/scripts_imsdb/Autumn-in-New-York.txt,True,3
+2000,175526,Cherry Falls,3,243.0,data/input/scripts_imsdb/Cherry-Falls.txt,False,2
+1999,175880,Magnolia,3,673.0,data/input/scripts_imsdb/Magnolia.txt,False,2
+2002,181689,Minority Report,1,721.0,data/input/scripts_imsdb/Minority-Repor.txt,False,1
+2000,181865,Traffic,3,1056.0,data/input/scripts_imsdb/Traffic.txt,False,2
+2000,181875,Almost Famous,3,55.0,data/input/scripts_imsdb/Almost-Famous.txt,False,2
+2000,183523,Mission to Mars,1,727.0,data/input/scripts_imsdb/Mission-to-Mars.txt,False,1
+2002,183649,Phone Booth,1,810.0,data/input/scripts_imsdb/Phone-Boo.txt,False,1
+2000,185014,Wonder Boys,1,1130.0,data/input/scripts_imsdb/Wonder-Boys.txt,False,1
+2000,185431,Little Nicky,1,650.0,data/input/scripts_imsdb/Little-Nicky.txt,False,1
+2002,187738,Blade II,1,171.0,data/input/scripts_imsdb/Blade-II.txt,False,0
+2000,195685,Erin Brockovich,3,364.0,data/input/scripts_imsdb/Erin-Brockovic.txt,True,3
+2000,195714,Final Destination,1,393.0,data/input/scripts_imsdb/Final-Destination.txt,False,0
+2000,195945,Next Friday,2,758.0,data/input/scripts_imsdb/Next-Friday.txt,False,1
+2000,199753,Red Planet,0,858.0,data/input/scripts_imsdb/Red-Plane.txt,False,0
+2001,206275,Save the Last Dance,3,896.0,data/input/scripts_imsdb/Save-the-Last-Dance.txt,False,2
+2000,209144,Memento,1,706.0,data/input/scripts_imsdb/Memento.txt,False,0
+2000,210070,ginger snaps,3,,data/input/scripts_kaggle/GINGER SNAPS.TXT,True,3
+2001,211443,Jason X,3,579.0,data/input/scripts_imsdb/Jason-X.txt,True,3
+2001,212985,Hannibal,3,486.0,data/input/scripts_imsdb/Hanniba.txt,False,0
+2001,213149,Pearl Harbor,2,800.0,data/input/scripts_imsdb/Pearl-Harbor.txt,False,2
+2002,217505,Gangs of New York,1,432.0,data/input/scripts_imsdb/Gangs-of-New-York.txt,False,2
+2000,217869,Unbreakable,0,1077.0,data/input/scripts_imsdb/Unbreakable.txt,False,1
+2001,218817,Antitrust,2,86.0,data/input/scripts_imsdb/Antitrus.txt,False,1
+2001,219822,Human Nature,3,532.0,data/input/scripts_imsdb/Human-Nature.txt,True,3
+2001,221027,Blow,1,179.0,data/input/scripts_imsdb/Blow.txt,False,1
+2002,238546,Queen of the Damned,3,847.0,data/input/scripts_imsdb/Queen-of-the-Damned.txt,False,1
+2001,244244,Swordfish,1,1009.0,data/input/scripts_imsdb/Swordfis.txt,False,1
+2001,247425,In the Bedroom,3,545.0,data/input/scripts_imsdb/In-the-Bedroo.txt,False,0
+2001,250494,Legally Blonde,3,630.0,data/input/scripts_imsdb/Legally-Blonde.txt,False,1
+2003,251736,House of 1000 Corpses,3,527.0,data/input/scripts_imsdb/House-of-1000-Corpses.txt,False,2
+2001,252503,Heist,3,499.0,data/input/scripts_imsdb/Heis.txt,False,0
+2002,253754,Star Trek: Nemesis,1,974.0,data/input/scripts_imsdb/Star-Trek-Nemesis.txt,False,1
+2002,258000,Panic Room,3,793.0,data/input/scripts_imsdb/Panic-Roo.txt,False,1
+2007,259324,Ghost Rider,0,443.0,data/input/scripts_imsdb/Ghost-Rider.txt,False,1
+2001,259711,Vanilla Sky,1,1085.0,data/input/scripts_imsdb/Vanilla-Sky.txt,False,1
+2001,261392,Jay and Silent Bob Strike Back,3,582.0,data/input/scripts_imsdb/Jay-and-Silent-Bob-Strike-Back.txt,True,3
+2003,264395,Basic,3,132.0,data/input/scripts_imsdb/Basic.txt,False,0
+2002,264464,Catch Me If You Can,2,230.0,data/input/scripts_imsdb/Catch-Me-If-You-Can.txt,False,1
+2002,266452,Death to Smoochy,2,312.0,data/input/scripts_imsdb/Death-to-Smoochy.txt,False,0
+2003,266543,Finding Nemo,1,395.0,data/input/scripts_imsdb/Finding-Nemo.txt,False,1
+2001,266915,Rush Hour 2,3,889.0,data/input/scripts_imsdb/Rush-Hour-2.txt,False,0
+2002,268126,Adaptation,3,32.0,data/input/scripts_imsdb/Adaptation.txt,False,2
+2002,270288,Confessions of a Dangerous Mind,2,268.0,data/input/scripts_imsdb/Confessions-of-a-Dangerous-Mind.txt,False,1
+2002,272338,Punch-Drunk Love,1,844.0,data/input/scripts_imsdb/Punch-Drunk-Love.txt,False,1
+2002,278435,Enough,2,361.0,data/input/scripts_imsdb/Enoug.txt,True,3
+2002,278504,Insomnia,1,558.0,data/input/scripts_imsdb/Insomnia.txt,True,3
+2002,281358,a walk to remember,3,,data/input/scripts_kaggle/A WALK TO REMEMBER.TXT,False,1
+2002,283632,They,3,1027.0,data/input/scripts_imsdb/They.txt,False,1
+2002,286106,Signs,1,935.0,data/input/scripts_imsdb/Signs.txt,False,1
+2002,288477,Ghost Ship,3,444.0,data/input/scripts_imsdb/Ghost-Ship.txt,False,0
+2002,295701,xXx,1,1138.0,data/input/scripts_imsdb/xXx.txt,False,0
+2001,299937,Go,2,451.0,data/input/scripts_imsdb/Go.txt,False,1
+2003,306685,Cradle 2 the Grave,1,275.0,data/input/scripts_imsdb/Cradle-2-the-Grave.txt,True,3
+2002,307479,Solaris,1,956.0,data/input/scripts_imsdb/Solaris.txt,False,0
+2002,307901,25th Hour,2,012.0,data/input/scripts_imsdb/25th-Hour.txt,False,1
+2003,307987,Bad Santa,0,126.0,data/input/scripts_imsdb/Bad-Santa.txt,False,1
+2003,309593,Final Destination 2,3,394.0,data/input/scripts_imsdb/Final-Destination-2.txt,False,2
+2003,311113,master and commander: the far side of the world,0,,data/input/scripts_kaggle/MASTER AND COMMANDER_ THE FAR SIDE OF THE WORLD.TXT,False,0
+2003,315327,Bruce Almighty,3,214.0,data/input/scripts_imsdb/Bruce-Almighty.txt,False,2
+2003,319061,Big Fish,1,157.0,data/input/scripts_imsdb/Big-Fis.txt,False,2
+2002,319970,Carrie,3,225.0,data/input/scripts_imsdb/Carrie.txt,False,1
+2004,327554,Catwoman,3,231.0,data/input/scripts_imsdb/Catwoman.txt,True,3
+2009,327597,Coraline,3,273.0,data/input/scripts_imsdb/Coraline.txt,True,3
+2003,329101,Freddy vs. Jason,3,410.0,data/input/scripts_imsdb/Freddy-vs.-Jason.txt,True,3
+2004,333766,Garden State,3,433.0,data/input/scripts_imsdb/Garden-State.txt,False,1
+2003,335266,lost in translation,3,,data/input/scripts_kaggle/LOST IN TRANSLATION.TXT,True,3
+2003,337741,something's gotta give,3,,data/input/scripts_kaggle/SOMETHING_S GOTTA GIVE.TXT,False,1
+2004,337921,Cellular,3,235.0,data/input/scripts_imsdb/Cellular.txt,False,1
+2004,338013,Eternal Sunshine of the Spotless Mind,2,367.0,data/input/scripts_imsdb/Eternal-Sunshine-of-the-Spotless-Mind.txt,False,1
+2004,343818,"I, Robot",1,541.0,"data/input/scripts_imsdb/I,-Robo.txt",False,0
+2003,348836,Gothika,3,461.0,data/input/scripts_imsdb/Gothika.txt,True,3
+2004,349903,Ocean's Twelve,2,781.0,data/input/scripts_imsdb/Ocean's-Twelve.txt,False,1
+2004,351977,Walking Tall,1,1093.0,data/input/scripts_imsdb/Walking-Ta.txt,False,0
+2004,359013,Blade: Trinity,3,173.0,data/input/scripts_imsdb/Blade-Trinity.txt,False,1
+2005,360486,Constantine,1,270.0,data/input/scripts_imsdb/Constantine.txt,False,1
+2005,360717,King Kong,0,603.0,data/input/scripts_imsdb/King-Kong.txt,False,0
+2009,361748,Inglourious Basterds,3,555.0,data/input/scripts_imsdb/Inglourious-Basterds.txt,False,1
+2004,363282,New York Minute,3,755.0,data/input/scripts_imsdb/New-York-Minute.txt,False,1
+2004,363547,Dawn of the Dead,3,303.0,data/input/scripts_imsdb/Dawn-of-the-Dead.txt,False,0
+2004,364045,Taking Lives,2,1013.0,data/input/scripts_imsdb/Taking-Lives.txt,False,1
+2009,365929,Whiteout,3,1115.0,data/input/scripts_imsdb/Whiteou.txt,True,3
+2006,366548,Happy Feet,3,488.0,data/input/scripts_imsdb/Happy-Fee.txt,False,0
+2004,366551,Harold and Kumar Go to White Castle,3,491.0,data/input/scripts_imsdb/Harold-and-Kumar-Go-to-White-Castle.txt,False,1
+2003,366920,Pride and Prejudice,3,831.0,data/input/scripts_imsdb/Pride-and-Prejudice.txt,True,3
+2004,369339,Collateral,1,262.0,data/input/scripts_imsdb/Collatera.txt,False,1
+2004,371246,Spanglish,3,963.0,data/input/scripts_imsdb/Spanglis.txt,True,3
+2007,373883,Halloween,3,480.0,data/input/scripts_imsdb/Halloween.txt,True,3
+2004,374900,Napoleon Dynamite,1,750.0,data/input/scripts_imsdb/Napoleon-Dynamite.txt,False,0
+2004,375063,Sideways,3,933.0,data/input/scripts_imsdb/Sideways.txt,False,1
+2004,375679,Crash,3,277.0,data/input/scripts_imsdb/Cras.txt,False,1
+2005,379725,Capote,3,224.0,data/input/scripts_imsdb/Capote.txt,False,1
+2005,379786,Serenity,3,912.0,data/input/scripts_imsdb/Serenity.txt,True,3
+2008,383028,"Synecdoche, New York",3,1010.0,"data/input/scripts_imsdb/Synecdoche,-New-York.txt",False,2
+2004,387564,Saw,2,899.0,data/input/scripts_imsdb/Saw.txt,False,1
+2005,393109,Brick,1,207.0,data/input/scripts_imsdb/Brick.txt,False,1
+2005,399295,Lord of War,2,662.0,data/input/scripts_imsdb/Lord-of-War.txt,False,1
+2009,403702,Youth in Revolt,1,1143.0,data/input/scripts_imsdb/Youth-in-Revo.txt,False,2
+2006,405296,A Scanner Darkly,1,26.0,data/input/scripts_imsdb/A-Scanner-Darkly.txt,False,0
+2005,407304,War of the Worlds,3,1100.0,data/input/scripts_imsdb/War-of-the-Worlds.txt,False,1
+2007,408236,Sweeney Todd: The Demon Barber of Fleet Street,1,1005.0,data/input/scripts_imsdb/Sweeney-Todd-The-Demon-Barber-of-Fleet-Stree.txt,False,0
+2009,409459,Watchmen,3,1103.0,data/input/scripts_imsdb/Watchmen.txt,False,2
+2007,413267,Shrek the Third,3,931.0,data/input/scripts_imsdb/Shrek-the-Third.txt,False,1
+2007,414055,Elizabeth: The Golden Age,3,358.0,data/input/scripts_imsdb/Elizabeth-The-Golden-Age.txt,True,3
+2005,414387,Pride and Prejudice,3,831.0,data/input/scripts_imsdb/Pride-and-Prejudice.txt,True,3
+2006,430357,Miami Vice,1,711.0,data/input/scripts_imsdb/Miami-Vice.txt,False,1
+2009,432283,fantastic mr. fox,1,,data/input/scripts_kaggle/FANTASTIC MR. FOX.TXT,False,1
+2005,434409,V for Vendetta,3,1083.0,data/input/scripts_imsdb/V-for-Vendetta.txt,True,3
+2007,435705,Next,2,757.0,data/input/scripts_imsdb/Nex.txt,False,1
+2009,438488,Terminator Salvation,2,1023.0,data/input/scripts_imsdb/Terminator-Salvation.txt,False,1
+2006,439815,Slither,3,947.0,data/input/scripts_imsdb/Slither.txt,False,2
+2008,441773,Kung Fu Panda,3,611.0,data/input/scripts_imsdb/Kung-Fu-Panda.txt,False,0
+2012,443272,Lincoln,3,645.0,data/input/scripts_imsdb/Lincoln.txt,False,0
+2010,446029,scott pilgrim vs. the world,3,,data/input/scripts_kaggle/SCOTT PILGRIM VS. THE WORLD.TXT,True,3
+2008,448157,Hancock,0,482.0,data/input/scripts_imsdb/Hancock.txt,False,1
+2005,448179,Wild Things: Diamonds in the Rough,3,1121.0,data/input/scripts_imsdb/Wild-Things-Diamonds-in-the-Roug.txt,True,3
+2006,449467,Babel,3,116.0,data/input/scripts_imsdb/Babe.txt,True,3
+2008,449487,Passengers,3,796.0,data/input/scripts_imsdb/Passengers.txt,False,0
+2017,451279,Wonder Woman,3,1131.0,data/input/scripts_imsdb/Wonder-Woman.txt,True,3
+2007,452623,Gone Baby Gone,3,457.0,data/input/scripts_imsdb/Gone-Baby-Gone.txt,True,3
+2007,453556,TMNT,1,1048.0,data/input/scripts_imsdb/TMNT.txt,False,1
+2013,453562,42,2,15.0,data/input/scripts_imsdb/42.txt,False,1
+2012,454876,Life of Pi,1,641.0,data/input/scripts_imsdb/Life-of-Pi.txt,False,1
+2006,455857,When a Stranger Calls,3,1108.0,data/input/scripts_imsdb/When-a-Stranger-Calls.txt,True,3
+2009,458525,X-Men Origins: Wolverine,3,1137.0,data/input/scripts_imsdb/X-Men-Origins-Wolverine.txt,False,1
+2011,466893,Margaret,3,687.0,data/input/scripts_imsdb/Margare.txt,True,3
+2008,467197,Max Payne,3,700.0,data/input/scripts_imsdb/Max-Payne.txt,False,1
+2007,467406,Juno,3,593.0,data/input/scripts_imsdb/Juno.txt,True,3
+2015,470752,Ex Machina,1,372.0,data/input/scripts_imsdb/Ex-Machina.txt,False,0
+2006,470765,for your consideration,3,,data/input/scripts_kaggle/FOR YOUR CONSIDERATION.TXT,False,2
+2009,472033,9,0,21.0,data/input/scripts_imsdb/9.txt,False,0
+2006,475394,smokin' aces,3,,data/input/scripts_kaggle/SMOKIN_ ACES.TXT,False,0
+2007,477348,No Country for Old Men,3,773.0,data/input/scripts_imsdb/No-Country-for-Old-Men.txt,False,0
+2007,478311,Knocked Up,3,608.0,data/input/scripts_imsdb/Knocked-Up.txt,False,1
+2006,479884,Crank,0,276.0,data/input/scripts_imsdb/Crank.txt,False,2
+2011,480687,Hall Pass,2,479.0,data/input/scripts_imsdb/Hall-Pass.txt,False,2
+2007,486822,Disturbia,3,330.0,data/input/scripts_imsdb/Disturbia.txt,False,2
+2007,486946,Wild Hogs,1,1119.0,data/input/scripts_imsdb/Wild-Hogs.txt,False,1
+2007,488120,Fracture,1,405.0,data/input/scripts_imsdb/Fracture.txt,False,1
+2008,489018,Day of the Dead,3,304.0,data/input/scripts_imsdb/Day-of-the-Dead.txt,True,3
+2008,493464,Wanted,1,1097.0,data/input/scripts_imsdb/Wanted.txt,False,1
+2007,498399,We Own the Night,0,1106.0,data/input/scripts_imsdb/We-Own-the-Nig.txt,False,0
+2009,499549,Avatar,3,111.0,data/input/scripts_imsdb/Avatar.txt,False,2
+2007,757361,Margot at the Wedding,3,689.0,data/input/scripts_imsdb/Margot-at-the-Wedding.txt,True,3
+2009,758746,Friday the 13th,2,413.0,data/input/scripts_imsdb/Friday-the-13.txt,False,1
+2007,758758,Into the Wild,1,561.0,data/input/scripts_imsdb/Into-the-Wild.txt,False,1
+2007,765429,American Gangster,1,60.0,data/input/scripts_imsdb/American-Gangster.txt,False,1
+2007,765443,Eastern Promises,3,349.0,data/input/scripts_imsdb/Eastern-Promises.txt,True,3
+2011,780504,Drive,3,340.0,data/input/scripts_imsdb/Drive.txt,False,1
+2013,790636,Dallas Buyers Club,3,293.0,data/input/scripts_imsdb/Dallas-Buyers-Club.txt,False,1
+2008,790686,Mirrors,1,723.0,data/input/scripts_imsdb/Mirrors.txt,True,3
+2009,795351,Case 39,3,227.0,data/input/scripts_imsdb/Case-39.txt,True,3
+2007,795368,Death at a Funeral,3,311.0,data/input/scripts_imsdb/Death-at-a-Funera.txt,False,2
+2009,796366,Star Trek,3,970.0,data/input/scripts_imsdb/Star-Trek.txt,False,1
+2008,800240,Deception,1,314.0,data/input/scripts_imsdb/Deception.txt,False,0
+2010,800320,Clash of the Titans,3,254.0,data/input/scripts_imsdb/Clash-of-the-Titans.txt,True,3
+2011,800369,Thor,3,1033.0,data/input/scripts_imsdb/Thor.txt,False,1
+2008,811080,Speed Racer,3,966.0,data/input/scripts_imsdb/Speed-Racer.txt,False,1
+2014,816692,Interstellar,3,559.0,data/input/scripts_imsdb/Interstellar.txt,False,0
+2011,822847,Priest,1,832.0,data/input/scripts_imsdb/Pries.txt,False,1
+2008,824747,Changeling,3,237.0,data/input/scripts_imsdb/Changeling.txt,False,2
+2007,829482,Superbad,3,1000.0,data/input/scripts_imsdb/Superbad.txt,False,1
+2014,831387,Godzilla,2,456.0,data/input/scripts_imsdb/Godzilla.txt,False,1
+2019,837563,Pet Sematary,3,806.0,data/input/scripts_imsdb/Pet-Sematary.txt,True,3
+2009,838247,After.Life,1,38.0,data/input/scripts_imsdb/After.Life.txt,False,1
+2008,862846,Sunshine Cleaning,3,998.0,data/input/scripts_imsdb/Sunshine-Cleaning.txt,True,3
+2009,875034,Nine,2,768.0,data/input/scripts_imsdb/Nine.txt,False,1
+2009,881891,All About Steve,3,52.0,data/input/scripts_imsdb/All-About-Steve.txt,False,2
+2008,887883,Burn After Reading,1,219.0,data/input/scripts_imsdb/Burn-After-Reading.txt,False,1
+2008,887971,While She Was Out,3,1109.0,data/input/scripts_imsdb/While-She-Was-Ou.txt,True,3
+2010,892769,How to Train Your Dragon,3,528.0,data/input/scripts_imsdb/How-to-Train-Your-Dragon.txt,False,0
+2008,910936,Pineapple Express,2,814.0,data/input/scripts_imsdb/Pineapple-Express.txt,False,1
+2008,910970,wall-e,1,,data/input/scripts_kaggle/WALL-E.TXT,False,0
+2009,913425,Broken Embraces,3,212.0,data/input/scripts_imsdb/Broken-Embraces.txt,True,3
+2009,914837,44 Inch Chest,1,16.0,data/input/scripts_imsdb/44-Inch-Ches.txt,False,0
+2008,926129,Prom Night,3,837.0,data/input/scripts_imsdb/Prom-Nig.txt,False,1
+2008,942385,Tropic Thunder,0,1064.0,data/input/scripts_imsdb/Tropic-Thunder.txt,False,1
+2011,945513,Source Code,1,960.0,data/input/scripts_imsdb/Source-Code.txt,False,0
+2010,947798,Black Swan,3,168.0,data/input/scripts_imsdb/Black-Swan.txt,True,3
+2008,959337,Revolutionary Road,3,870.0,data/input/scripts_imsdb/Revolutionary-Road.txt,False,1
+2009,974661,17 Again,3,008.0,data/input/scripts_imsdb/17-Again.txt,False,2
+2012,975645,Hitchcock,2,517.0,data/input/scripts_imsdb/Hitchcock.txt,True,3
+2010,977855,Fair Game,3,378.0,data/input/scripts_imsdb/Fair-Game.txt,True,3
+2008,978759,Frozen River,3,421.0,data/input/scripts_imsdb/Frozen-River.txt,False,2
+2010,985694,Machete,3,669.0,data/input/scripts_imsdb/Machete.txt,True,3
+2008,985699,Valkyrie,1,1084.0,data/input/scripts_imsdb/Valkyrie.txt,False,0
+2009,986263,Surrogates,1,1003.0,data/input/scripts_imsdb/Surrogates.txt,True,3
+2009,988045,Sherlock Holmes,1,925.0,data/input/scripts_imsdb/Sherlock-Holmes.txt,False,1
+2011,993842,Hanna,3,484.0,data/input/scripts_imsdb/Hanna.txt,True,3
+2008,1000774,Sex and the City,3,916.0,data/input/scripts_imsdb/Sex-and-the-City.txt,True,3
+2009,1001508,he's just not that into you,3,,data/input/scripts_kaggle/HE_S JUST NOT THAT INTO YOU.TXT,False,1
+2010,1001526,Megamind,0,705.0,data/input/scripts_imsdb/Megamind.txt,False,0
+2008,1010048,Slumdog Millionaire,1,948.0,data/input/scripts_imsdb/Slumdog-Millionaire.txt,False,0
+2008,1013753,Milk,1,717.0,data/input/scripts_imsdb/Milk.txt,False,0
+2009,1019452,A Serious Man,2,27.0,data/input/scripts_imsdb/A-Serious-Man.txt,False,1
+2012,1024648,Argo,3,96.0,data/input/scripts_imsdb/Argo.txt,False,1
+2010,1027718,Wall Street: Money Never Sleeps,3,1095.0,data/input/scripts_imsdb/Wall-Street-Money-Never-Sleeps.txt,False,1
+2008,1032755,RocknRolla,1,878.0,data/input/scripts_imsdb/RocknRolla.txt,False,1
+2009,1034032,Gamer,1,429.0,data/input/scripts_imsdb/Gamer.txt,False,1
+2008,1034303,Defiance,3,318.0,data/input/scripts_imsdb/Defiance.txt,False,2
+2010,1038686,Legion,3,632.0,data/input/scripts_imsdb/Legion.txt,False,2
+2012,1045658,Silver Linings Playbook,3,938.0,data/input/scripts_imsdb/Silver-Linings-Playbook.txt,False,1
+2009,1045772,I Love You Phillip Morris,1,537.0,data/input/scripts_imsdb/I-Love-You-Phillip-Morris.txt,False,1
+2009,1045778,Year One,3,1139.0,data/input/scripts_imsdb/Year-One.txt,False,1
+2009,1046173,G.I. Joe: The Rise of Cobra,1,426.0,data/input/scripts_imsdb/G.I.-Joe-The-Rise-of-Cobra.txt,False,1
+2008,1046947,Last Chance Harvey,3,621.0,data/input/scripts_imsdb/Last-Chance-Harvey.txt,True,3
+2009,1049413,Up,1,1080.0,data/input/scripts_imsdb/Up.txt,False,0
+2009,1057500,Invictus,1,566.0,data/input/scripts_imsdb/Invictus.txt,False,1
+2008,1059786,Eagle Eye,1,348.0,data/input/scripts_imsdb/Eagle-Eye.txt,False,2
+2014,1065073,Boyhood,3,200.0,data/input/scripts_imsdb/Boyhood.txt,False,2
+2011,1067583,Water for Elephants,1,1104.0,data/input/scripts_imsdb/Water-for-Elephants.txt,False,1
+2011,1067774,Monte Carlo,3,730.0,data/input/scripts_imsdb/Monte-Carlo.txt,True,3
+2008,1068680,Yes Man,1,1140.0,data/input/scripts_imsdb/Yes-Man.txt,False,1
+2008,1084950,Rachel Getting Married,3,849.0,data/input/scripts_imsdb/Rachel-Getting-Married.txt,True,3
+2011,1092026,Paul,3,799.0,data/input/scripts_imsdb/Pau.txt,False,1
+2008,1099212,Twilight,3,1069.0,data/input/scripts_imsdb/Twilig.txt,False,2
+2014,1100089,Foxcatcher,1,404.0,data/input/scripts_imsdb/Foxcatcher.txt,False,1
+2010,1104001,tron legacy,1,,data/input/scripts_kaggle/TRON LEGACY.TXT,False,0
+2010,1120985,Blue Valentine,2,180.0,data/input/scripts_imsdb/Blue-Valentine.txt,True,3
+2014,1126590,Big Eyes,3,156.0,data/input/scripts_imsdb/Big-Eyes.txt,True,3
+2010,1126591,Burlesque,3,218.0,data/input/scripts_imsdb/Burlesque.txt,False,1
+2009,1127180,Drag Me to Hell,3,338.0,data/input/scripts_imsdb/Drag-Me-to-He.txt,True,3
+2009,1129445,Amelia,3,58.0,data/input/scripts_imsdb/Amelia.txt,False,2
+2009,1131734,jennifer's body,3,,data/input/scripts_kaggle/JENNIFER_S BODY.TXT,False,1
+2009,1148204,Orphan,3,788.0,data/input/scripts_imsdb/Orphan.txt,True,3
+2009,1152836,Public Enemies,1,842.0,data/input/scripts_imsdb/Public-Enemies.txt,False,1
+2021,1160419,Dune,3,346.0,data/input/scripts_imsdb/Dune.txt,True,3
+2009,1174732,An Education,3,77.0,data/input/scripts_imsdb/An-Education.txt,True,3
+2009,1182345,Moon,1,731.0,data/input/scripts_imsdb/Moon.txt,False,1
+2009,1186367,Ninja Assassin,1,770.0,data/input/scripts_imsdb/Ninja-Assassin.txt,False,0
+2009,1186373,Wonder Woman,3,1131.0,data/input/scripts_imsdb/Wonder-Woman.txt,True,3
+2009,1188729,Pandorum,1,792.0,data/input/scripts_imsdb/Pandoru.txt,False,0
+2009,1190080,2012,1,011.0,data/input/scripts_imsdb/2012.txt,True,3
+2009,1193138,Up in the Air,2,1081.0,data/input/scripts_imsdb/Up-in-the-Air.txt,True,3
+2009,1194263,Get Low,1,436.0,data/input/scripts_imsdb/Get-Low.txt,False,0
+2009,1197624,Law Abiding Citizen,3,627.0,data/input/scripts_imsdb/Law-Abiding-Citizen.txt,False,1
+2009,1201167,Funny People,1,424.0,data/input/scripts_imsdb/Funny-People.txt,False,1
+2008,1205489,Gran Torino,2,464.0,data/input/scripts_imsdb/Gran-Torino.txt,False,1
+2011,1210166,Moneyball,1,728.0,data/input/scripts_imsdb/Moneyba.txt,False,1
+2011,1216475,Cars 2,2,226.0,data/input/scripts_imsdb/Cars-2.txt,False,1
+2011,1217613,Battle: Los Angeles,1,139.0,data/input/scripts_imsdb/Battle-Los-Angeles.txt,False,0
+2011,1219289,Limitless,1,644.0,data/input/scripts_imsdb/Limitless.txt,False,1
+2009,1226774,In the Loop,3,546.0,data/input/scripts_imsdb/In-the-Loop.txt,True,3
+2011,1229822,Jane Eyre,3,578.0,data/input/scripts_imsdb/Jane-Eyre.txt,True,3
+2009,1230414,it's complicated,3,,data/input/scripts_kaggle/IT_S COMPLICATED.TXT,True,3
+2010,1231587,Hot Tub Time Machine,1,525.0,data/input/scripts_imsdb/Hot-Tub-Time-Machine.txt,False,1
+2011,1233334,Pariah,3,795.0,data/input/scripts_imsdb/Paria.txt,True,3
+2012,1276104,Looper,1,657.0,data/input/scripts_imsdb/Looper.txt,False,1
+2010,1279935,Date Night,3,301.0,data/input/scripts_imsdb/Date-Nig.txt,True,3
+2010,1282140,Easy A,3,350.0,data/input/scripts_imsdb/Easy-A.txt,True,3
+2011,1284575,Bad Teacher,3,127.0,data/input/scripts_imsdb/Bad-Teacher.txt,True,3
+2013,1288558,Evil Dead,3,370.0,data/input/scripts_imsdb/Evil-Dead.txt,False,1
+2016,1289401,Ghostbusters,3,446.0,data/input/scripts_imsdb/Ghostbusters.txt,False,1
+2011,1291584,Warrior,1,1102.0,data/input/scripts_imsdb/Warrior.txt,False,1
+2013,1311071,Kill Your Darlings,1,601.0,data/input/scripts_imsdb/Kill-Your-Darlings.txt,False,1
+2011,1318514,Rise of the Planet of the Apes,1,873.0,data/input/scripts_imsdb/Rise-of-the-Planet-of-the-Apes.txt,False,0
+2013,1322269,August: Osage County,3,106.0,data/input/scripts_imsdb/August-Osage-County.txt,True,3
+2010,1323045,Frozen,1,419.0,data/input/scripts_imsdb/Frozen.txt,False,1
+2011,1334512,Arthur,2,100.0,data/input/scripts_imsdb/Arthur.txt,False,2
+2011,1340800,Tinker Tailor Soldier Spy,1,1046.0,data/input/scripts_imsdb/Tinker-Tailor-Soldier-Spy.txt,False,1
+2016,1355644,Passengers,0,796.0,data/input/scripts_imsdb/Passengers.txt,False,0
+2015,1365050,Beasts of No Nation,0,142.0,data/input/scripts_imsdb/Beasts-of-No-Nation.txt,False,1
+2011,1372686,Coriolanus,2,274.0,data/input/scripts_imsdb/Coriolanus.txt,False,1
+2010,1375666,Inception,3,547.0,data/input/scripts_imsdb/Inception.txt,False,0
+2012,1386703,Total Recall,1,1053.0,data/input/scripts_imsdb/Total-Reca.txt,False,0
+2017,1396484,It,3,569.0,data/input/scripts_imsdb/I.txt,False,0
+2015,1398426,Straight Outta Compton,1,991.0,data/input/scripts_imsdb/Straight-Outta-Compton.txt,False,1
+2011,1401152,Unknown,1,1079.0,data/input/scripts_imsdb/Unknown.txt,True,3
+2011,1403177,Hesher,1,511.0,data/input/scripts_imsdb/Hesher.txt,False,1
+2010,1403865,True Grit,3,1065.0,data/input/scripts_imsdb/True-Gri.txt,False,0
+2010,1403981,Remember Me,3,862.0,data/input/scripts_imsdb/Remember-Me.txt,True,3
+2012,1405365,celeste and jesse forever,3,,data/input/scripts_kaggle/CELESTE AND JESSE FOREVER.TXT,True,3
+2011,1411238,No Strings Attached,3,774.0,data/input/scripts_imsdb/No-Strings-Attached.txt,False,1
+2016,1431045,Deadpool,1,309.0,data/input/scripts_imsdb/Deadpoo.txt,False,1
+2011,1438176,Fright Night,3,415.0,data/input/scripts_imsdb/Fright-Nig.txt,False,1
+2011,1441326,Martha Marcy May Marlene,3,691.0,data/input/scripts_imsdb/Martha-Marcy-May-Marlene.txt,True,3
+2012,1446192,Rise of the Guardians,1,872.0,data/input/scripts_imsdb/Rise-of-the-Guardians.txt,False,1
+2012,1446714,Prometheus,3,838.0,data/input/scripts_imsdb/Prometheus.txt,True,3
+2013,1454468,Gravity,0,468.0,data/input/scripts_imsdb/Gravity.txt,False,0
+2010,1462758,Buried,1,217.0,data/input/scripts_imsdb/Buried.txt,False,1
+2011,1464540,I Am Number Four,1,535.0,data/input/scripts_imsdb/I-Am-Number-Four.txt,False,0
+2011,1477837,Cedar Rapids,1,233.0,data/input/scripts_imsdb/Cedar-Rapids.txt,False,1
+2011,1478338,Bridesmaids,3,208.0,data/input/scripts_imsdb/Bridesmaids.txt,True,3
+2013,1483013,Oblivion,3,777.0,data/input/scripts_imsdb/Oblivion.txt,False,1
+2011,1486185,Red Riding Hood,3,859.0,data/input/scripts_imsdb/Red-Riding-Hood.txt,True,3
+2011,1499658,Horrible Bosses,3,521.0,data/input/scripts_imsdb/Horrible-Bosses.txt,False,1
+2018,1502407,Halloween,3,480.0,data/input/scripts_imsdb/Halloween.txt,True,3
+2015,1502712,Fantastic Four,0,380.0,data/input/scripts_imsdb/Fantastic-Four.txt,False,1
+2012,1525366,Grabbers,3,462.0,data/input/scripts_imsdb/Grabbers.txt,False,2
+2010,1532503,Beginners,1,146.0,data/input/scripts_imsdb/Beginners.txt,False,1
+2010,1542344,127 Hours,3,005.0,data/input/scripts_imsdb/127-Hours.txt,False,2
+2011,1568911,War Horse,1,1099.0,data/input/scripts_imsdb/War-Horse.txt,False,1
+2010,1591095,Insidious,3,557.0,data/input/scripts_imsdb/Insidious.txt,False,1
+2013,1602613,Only God Forgives,3,785.0,data/input/scripts_imsdb/Only-God-Forgives.txt,False,1
+2012,1602620,Amour,3,76.0,data/input/scripts_imsdb/Amour.txt,False,2
+2011,1605783,Midnight in Paris,3,714.0,data/input/scripts_imsdb/Midnight-in-Paris.txt,False,1
+2011,1606392,Win Win,3,1124.0,data/input/scripts_imsdb/Win-Win.txt,False,2
+2011,1615147,Margin Call,1,688.0,data/input/scripts_imsdb/Margin-Ca.txt,False,0
+2011,1622547,30 Minutes or Less,1,14.0,data/input/scripts_imsdb/30-Minutes-or-Less.txt,False,1
+2012,1623288,ParaNorman,3,794.0,data/input/scripts_imsdb/ParaNorman.txt,False,1
+2012,1637725,Ted,2,1020.0,data/input/scripts_imsdb/Ted.txt,False,1
+2014,1646971,How to Train Your Dragon 2,1,529.0,data/input/scripts_imsdb/How-to-Train-Your-Dragon-2.txt,False,1
+2011,1650062,Super 8,3,999.0,data/input/scripts_imsdb/Super-8.txt,False,1
+2011,1655420,My Week with Marilyn,3,748.0,data/input/scripts_imsdb/My-Week-with-Marilyn.txt,False,1
+2011,1657507,Colombiana,1,264.0,data/input/scripts_imsdb/Colombiana.txt,False,1
+2011,1675192,Take Shelter,3,1012.0,data/input/scripts_imsdb/Take-Shelter.txt,False,1
+2013,1690953,Despicable Me 2,3,321.0,data/input/scripts_imsdb/Despicable-Me-2.txt,True,3
+2012,1706593,Chronicle,1,246.0,data/input/scripts_imsdb/Chronicle.txt,False,1
+2012,1707386,Les Miserables,3,634.0,data/input/scripts_imsdb/Les-Miserables.txt,False,0
+2011,1723811,Shame,1,921.0,data/input/scripts_imsdb/Shame.txt,False,1
+2012,1735898,Snow White and the Huntsman,3,953.0,data/input/scripts_imsdb/Snow-White-and-the-Huntsman.txt,False,1
+2012,1748122,Moonrise Kingdom,3,732.0,data/input/scripts_imsdb/Moonrise-Kingdo.txt,False,1
+2012,1758830,this is 40,3,,data/input/scripts_kaggle/THIS IS 40.TXT,True,3
+2012,1764183,Arbitrage,2,93.0,data/input/scripts_imsdb/Arbitrage.txt,True,3
+2012,1781769,Anna Karenina,2,82.0,data/input/scripts_imsdb/Anna-Karenina.txt,True,3
+2012,1790885,Zero Dark Thirty,3,1144.0,data/input/scripts_imsdb/Zero-Dark-Thirty.txt,False,2
+2013,1798709,Her,2,510.0,data/input/scripts_imsdb/Her.txt,False,1
+2013,1800241,American Hustle,3,63.0,data/input/scripts_imsdb/American-Hustle.txt,False,1
+2018,1825683,Black Panther,3,165.0,data/input/scripts_imsdb/Black-Panther.txt,False,1
+2012,1853728,Django Unchained,1,331.0,data/input/scripts_imsdb/Django-Unchained.txt,False,1
+2012,1907668,Flight,3,399.0,data/input/scripts_imsdb/Flig.txt,True,3
+2013,1935179,Mud,1,738.0,data/input/scripts_imsdb/Mud.txt,False,0
+2013,1939659,Carrie,3,225.0,data/input/scripts_imsdb/Carrie.txt,False,1
+2013,1979320,Rush,1,887.0,data/input/scripts_imsdb/Rus.txt,False,1
+2011,1986806,Catwoman,3,231.0,data/input/scripts_imsdb/Catwoman.txt,True,3
+2013,2024544,12 Years a Slave,3,004.0,data/input/scripts_imsdb/12-Years-a-Slave.txt,False,1
+2015,2058673,Point Break,0,822.0,data/input/scripts_imsdb/Point-Break.txt,False,0
+2012,2063781,Smashed,3,949.0,data/input/scripts_imsdb/Smashed.txt,False,1
+2012,2125435,Beasts of the Southern Wild,3,143.0,data/input/scripts_imsdb/Beasts-of-the-Southern-Wild.txt,False,1
+2013,2140373,Saving Mr. Banks,3,897.0,data/input/scripts_imsdb/Saving-Mr.-Banks.txt,True,3
+2014,2179136,American Sniper,1,71.0,data/input/scripts_imsdb/American-Sniper.txt,False,0
+2014,2180411,Into the Woods,3,562.0,data/input/scripts_imsdb/Into-the-Woods.txt,True,3
+2014,2235108,Dear White People,3,310.0,data/input/scripts_imsdb/Dear-White-People.txt,False,1
+2012,2243973,Hannibal,3,486.0,data/input/scripts_imsdb/Hanniba.txt,False,0
+2013,2294629,Frozen,3,419.0,data/input/scripts_imsdb/Frozen.txt,False,1
+2013,2334649,Fruitvale Station,3,422.0,data/input/scripts_imsdb/Fruitvale-Station.txt,False,1
+2017,2380307,Coco,3,259.0,data/input/scripts_imsdb/Coco.txt,False,1
+2014,2404181,Belle,3,151.0,data/input/scripts_imsdb/Belle.txt,True,3
+2015,2488496,Star Wars: The Force Awakens,3,981.0,data/input/scripts_imsdb/Star-Wars-The-Force-Awakens.txt,True,3
+2014,2562232,Birdman,3,161.0,data/input/scripts_imsdb/Birdman.txt,False,1
+2017,2771200,Beauty and the Beast,3,144.0,data/input/scripts_imsdb/Beauty-and-the-Beas.txt,False,1
+2014,2802154,Leviathan,3,636.0,data/input/scripts_imsdb/Leviathan.txt,False,0
+2014,2911666,John Wick,1,590.0,data/input/scripts_imsdb/John-Wick.txt,False,0
+2014,2937898,A Most Violent Year,3,23.0,data/input/scripts_imsdb/A-Most-Violent-Year.txt,False,1
+2016,2948356,Zootopia,3,1146.0,data/input/scripts_imsdb/Zootopia.txt,False,1
+2015,2948840,Life,3,638.0,data/input/scripts_imsdb/Life.txt,False,1
+2015,3170832,Room,3,882.0,data/input/scripts_imsdb/Roo.txt,False,0
+2017,3315342,Logan,3,653.0,data/input/scripts_imsdb/Logan.txt,False,1
+2015,3397884,Sicario,0,932.0,data/input/scripts_imsdb/Sicario.txt,True,3
+2017,3450958,War for the Planet of the Apes,1,1098.0,data/input/scripts_imsdb/War-for-the-Planet-of-the-Apes.txt,False,0
+2015,3569230,Legend,3,631.0,data/input/scripts_imsdb/Legend.txt,False,0
+2016,3783958,La La Land,3,613.0,data/input/scripts_imsdb/La-La-Land.txt,True,3
+2015,4145324,Bound,3,193.0,data/input/scripts_imsdb/Bound.txt,True,3
+2017,5052448,Get Out,3,438.0,data/input/scripts_imsdb/Get-Ou.txt,False,1
+2017,5442430,Life,3,638.0,data/input/scripts_imsdb/Life.txt,False,1
+2019,6139732,Aladdin,3,43.0,data/input/scripts_imsdb/Aladdin.txt,False,0
+2019,6476140,Serenity,1,912.0,data/input/scripts_imsdb/Serenity.txt,True,3
+2018,6644200,A Quiet Place,3,25.0,data/input/scripts_imsdb/A-Quiet-Place.txt,False,0
+2019,7286456,Joker,3,591.0,data/input/scripts_imsdb/Joker.txt,False,0
+2018,7349662,BlacKkKlansman,3,169.0,data/input/scripts_imsdb/BlacKkKlansman.txt,False,1
+2019,10199590,Les Miserables,0,634.0,data/input/scripts_imsdb/Les-Miserables.txt,False,0
+2022,10278918,Willow,3,1123.0,data/input/scripts_imsdb/Willow.txt,True,3
+2022,11245972,Scream,3,904.0,data/input/scripts_imsdb/Screa.txt,False,1
+2021,13651628,Belle,3,151.0,data/input/scripts_imsdb/Belle.txt,True,3
+1946,38650,it's a wonderful life,3,,data/input/scripts_kaggle/IT'S A WONDERFUL LIFE.TXT,False,1
+1955,48545,rebel without a cause,1,,data/input/scripts_kaggle/REBEL WITHOUT A CAUSE.TXT,False,0
+1975,73486,one flew over the cuckoo's nest,2,,data/input/scripts_kaggle/ONE FLEW OVER THE CUCKOO'S NEST.TXT,False,1
+1992,104348,glengarry glen ross,0,,data/input/scripts_kaggle/GLENGARRY GLEN ROSS.TXT,False,0
+1993,108052,schindler's list,3,,data/input/scripts_kaggle/SCHINDLER'S LIST.TXT,False,1
+1995,114746,twelve monkeys,1,,data/input/scripts_kaggle/TWELVE MONKEYS.TXT,True,3
+1997,119229,grosse pointe blank,3,,data/input/scripts_kaggle/GROSSE POINTE BLANK.TXT,False,1
+1999,145660,austin powers: the spy who shagged me,1,,data/input/scripts_kaggle/AUSTIN POWERS_ THE SPY WHO SHAGGED ME.TXT,False,1
+
