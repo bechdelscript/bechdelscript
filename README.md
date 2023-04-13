@@ -133,10 +133,10 @@ The results were computed on our 694 movies of our dataset. Here is a summary of
 | --- |Strict rules (True, True)| Intermediate rules (True, False)| Soft rules (False, False)|
 |:----:|:----:|:----:|:----:|
 |Definition Reminder| Women have to be alone and not mention a man the whole discussion. | Women have to be alone and should exchange 2 replicas without mentionning a man. | Women should exchange 2 replicas without mentionning a man. |
-|Accuracy| 62% | 65% | 69% | 
+|**Accuracy| 62% | 65% | 69%** | 
 |Precision| 79% | 81% | 72% |
 |Recall| 37% | 45% | 67% |
-|F1-score| 50% | 58% | 69% |
+|**F1-score| 50% | 58% | 69%** |
 |True Positive| 137 | 164 | 248 |
 |False Positive | 35 | 38 | 95 |
 |True Negative | 292 | 289 | 232 |
