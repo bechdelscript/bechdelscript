@@ -151,7 +151,7 @@ You can find a more complete description of our results in the [backend/data/out
 If you would like to improve on this project, feel free to do so, while ensuring you respect the license below. Please remember to credit the project authors.
 
 ## :handshake: Authors and acknowledgment 
-The three authors of this project are listed as contributors on this repository : Lucie Clemot [(@osnapitzlu)](https://github.com/osnapitzlu), Sacha Muller [(@sachamuller)](https://github.com/sachamuller), Guilhem Prince [(@guilhemprince)](https://github.com/guilhemprince).
+The three authors of this project are listed as contributors on this repository : Lucie Clemot [(@oluclemot)](https://github.com/luclemot), Sacha Muller [(@sachamuller)](https://github.com/sachamuller), Guilhem Prince [(@guilhemprince)](https://github.com/guilhemprince).
 This open source contribution and project is the result of an academic project which took place in the French engineering school CentraleSupélec.
 We would like to give a shoutout to the school, along with the company that helped us build this tool : [Illuin Technology](https://www.illuin.tech). More specifically, thank you to Theo Rubenach [(@Toz3wm)](https://github.com/Toz3wm) for your help and guidance.
 
